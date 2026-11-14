@@ -3,6 +3,9 @@ from pathlib import Path
 root = Path(__file__).parent
 page = (root / "src/page.html").read_text()
 js = "\n".join((root / "src" / f).read_text() for f in ["data.js", "art.js", "core.js", "catalog.js", "content.js", "game.js", "screens2.js", "screens.js"])
+from PIL import Image
+mani = {f.stem: [f.name, *Image.open(f).size] for f in sorted((root / "public/mani").glob("*")) if f.suffix.lower() in (".jpg", ".jpeg", ".png", ".webp")}
+js = "const MANI_FILES = " + __import__("json").dumps(mani) + ";\n" + js
 page = page.replace("/*JS*/", js)
 (root / "dist").mkdir(exist_ok=True)
 (root / "dist/manna.html").write_text(page)
@@ -15,4 +18,5 @@ full = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
 (root / "dist/index.html").write_text(full)
 import shutil
 shutil.copy(root / "public/blivre.js", root / "dist/blivre.js")
+shutil.copytree(root / "public/mani", root / "dist/mani", dirs_exist_ok=True)
 print("ok", len(full))

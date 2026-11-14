@@ -1,77 +1,74 @@
-/* Manna: jornada (caminho de lições) e motor da lição com exercícios. */
+/* Manna: jornada (sumário de lições) e motor da lição com exercícios. */
 
 const UNIT = 5;
-const ZIG = [0, 40, 58, 40, 0, -40, -58, -40];
 const STOP = new Set('quando sobre entre depois antes mesmo porque pelos pelas pelo pela como todos todas também ainda outro outra outros outras nossa nosso deles dele dela onde cada muito mostra diz para esta este essa esse isso aquele seus suas qualquer'.split(' '));
 
 /* ---------- Jornada ---------- */
-function topBar() {
-  const id = curTrail(), t = trilha(id), st = S.streak, hoje = studiedToday();
-  return '<header class="hud">' +
-    '<button class="hud-trail" data-a="open" data-ov="plano" aria-label="Meu plano">' + icon('livro') + '<span>' + t.nome + '</span></button>' +
-    '<div class="hud-r"><button class="hud-i' + (hoje ? ' lit' : '') + '" data-a="sheet" data-s="ofensiva" aria-label="Ofensiva">' + ART.grao() + '<b class="tnum">' + st.count + '</b></button>' +
-    '<button class="hud-i" data-a="open" data-ov="loja" aria-label="Loja">' + ART.vaso('vaso sm') + '<b class="tnum">' + S.grains + '</b></button></div></header>';
+function capa(titulo, sub, extra) {
+  return '<header class="capa"><div class="capa-in"><div class="capa-top"><span class="brand sm">manna</span>' + statusPills() + '</div><h1 class="capa-t">' + titulo + '</h1>' + (sub ? '<p class="capa-s">' + sub + '</p>' : '') + (extra || '') + '</div></header>';
 }
-
-function vJornada() {
+function statusPills() {
+  const st = S.streak, hoje = studiedToday();
+  return '<div class="pills"><button class="spill' + (hoje ? ' lit' : '') + '" data-a="sheet" data-s="ofensiva" aria-label="Ofensiva de ' + plural(st.count, 'dia', 'dias') + '">' + ART.grao() + '<b class="tnum">' + st.count + '</b><span>' + (st.count === 1 ? 'dia' : 'dias') + '</span></button>' +
+    '<button class="spill" data-a="open" data-ov="loja" aria-label="' + S.grains + ' grãos de maná, abrir loja"><b class="tnum">' + S.grains + '</b><span>grãos</span></button></div>';
+}
+function grainMark(state, n) {
+  return '<span class="gm ' + state + '" aria-hidden="true"><svg viewBox="0 0 30 40"><ellipse cx="15" cy="20" rx="12" ry="17" transform="rotate(-18 15 20)"/></svg><i class="tnum">' + (state === 'done' ? '' : n) + '</i>' + (state === 'done' ? icon('check', 'ic gm-c') : '') + '</span>';
+}
+function vTarefas() {
   ensureQuests();
-  const id = curTrail(), t = trilha(id), d = doneCount(id), xpd = todayXP();
-  let h = topBar() + '<main class="screen">';
-  if (ui.notice) h += '<div class="note" role="status">' + esc(ui.notice) + ' <button class="link" data-a="dismiss">Ok</button></div>';
-  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="risk">' + ART.mani('mani xs', 'triste') + '<p>Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite. Uma lição resolve.</p></div>';
-
-  /* Meta do dia e missões */
-  h += '<section class="daily"><div class="daily-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida: ' + xpd + ' XP' : 'Hoje você fez ' + xpd + ' de ' + S.goal + ' XP') + '</h2></div><span class="bar thick"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span>';
-  if (boostOn()) h += '<p class="boost">' + icon('raio') + ' XP em dobro por mais ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</p>';
-  h += '<ul class="quests">';
+  const xpd = todayXP();
+  let h = '<section class="tarefas"><div class="t-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida' : 'Hoje: ' + xpd + ' de ' + S.goal + ' XP') + '</h2>' + (boostOn() ? '<span class="boost">XP em dobro por ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</span>' : '') + '</div><span class="line"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><ul>';
   S.quests.list.forEach((q, i) => {
     const def = questDef(q.id), ok = q.p >= q.n;
-    h += '<li><div class="q-t"><span>' + def.t(q.n) + '</span><span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span></div><div class="q-r"><span class="bar"><i style="width:' + Math.min(100, q.p / q.n * 100) + '%"></i></span>' +
-      (q.claimed ? '<span class="claimed">' + icon('check', 'ic sm') + '</span>' : ok ? '<button class="btn mini" data-a="claim" data-i="' + i + '">+10 ' + ART.vaso('vaso xs') + '</button>' : '<span class="reward">' + ART.vaso('vaso xs') + '</span>') + '</div></li>';
+    h += '<li class="' + (ok ? 'ok' : '') + '"><span class="tk">' + (ok ? icon('check', 'ic xs') : '') + '</span><span class="tt">' + def.t(q.n) + '</span>' +
+      (q.claimed ? '<span class="muted">+10 grãos</span>' : ok ? '<button class="btn chip-btn" data-a="claim" data-i="' + i + '">Pegar 10 grãos</button>' : '<span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span>') + '</li>';
   });
-  h += '</ul></section>';
+  return h + '</ul></section>';
+}
+function vJornada() {
+  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length;
+  const extra = '<button class="trail-sw" data-a="open" data-ov="plano"><span><b>' + esc(t.nome) + '</b><small>' + d + ' de ' + n + (t.tipo === 'Plano' ? ' leituras' : ' lições') + ' · trocar ou ver o plano</small></span>' + icon('voltar', 'ic flip') + '</button><span class="line on-dark"><i style="width:' + (d / n * 100) + '%"></i></span>';
+  let h = capa('Sua porção de hoje', fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }), extra) + '<main class="screen sheet-top">';
+  if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite.</p></div>';
 
+  /* Porção do dia */
+  if (d < n) {
+    const l = t.licoes[d], ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+    if (studiedToday()) {
+      h += '<section class="porcao done"><div class="p-txt"><h2>Porção colhida hoje</h2><p class="muted">O maná não se guardava. A próxima é ' + esc(l.ref) + '.</p><button class="btn sec" data-a="startLesson" data-i="' + d + '">Ler mais uma agora</button></div>' + ART.mani('mani m-md', 'joinha', 'Porção colhida!') + '</section>';
+    } else {
+      h += '<section class="porcao">' + ART.mani('mani m-md', 'leitora', 'Sua porção de hoje está pronta.') + '<div class="p-txt"><p class="p-ref">' + esc(l.ref) + '</p><h2>' + esc(l.titulo) + '</h2>' + (ctx ? '<p class="muted">' + esc(ctx) + '</p>' : '') +
+        '<button class="btn" data-a="startLesson" data-i="' + d + '">Colher a porção' + icon('voltar', 'ic flip') + '</button><p class="fine">' + (S.quiz.minutos || 10) + ' minutos · +15 XP</p></div></section>';
+    }
+  } else {
+    h += '<section class="porcao done"><div class="p-txt"><h2>Glória a Deus! Você terminou ' + esc(t.nome) + '.</h2><button class="btn" data-a="open" data-ov="plano">Escolher a próxima etapa</button></div>' + ART.mani('mani m-md', 'grata', 'Glória a Deus!') + '</section>';
+  }
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
     const nd = c.study.dias.findIndex((_, i) => !c.feitos.includes(i));
-    h += '<button class="culto-row" data-a="open" data-ov="culto" data-id="' + c.id + '"><span class="cr-ic">' + icon('domingo') + '</span><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo do culto concluído' : 'Estudo do culto · dia ' + (nd + 1) + ' de 5') + '</small></span><span class="chev">›</span></button>';
+    h += '<button class="row-link" data-a="open" data-ov="culto" data-id="' + c.id + '"><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo da pregação concluído' : 'Estudo da pregação · dia ' + (nd + 1) + ' de 5') + '</small></span>' + icon('voltar', 'ic flip') + '</button>';
   }
+  h += vTarefas();
 
-  /* Caminho */
-  const US = t.unit || UNIT, units = Math.ceil(t.licoes.length / US), cu = Math.floor(Math.min(d, t.licoes.length - 1) / US);
-  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 4);
-  h += '<div class="path">';
-  if (u0 > 0) h += '<p class="path-more muted">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + '</p>';
+  /* Sumário da trilha */
+  const US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
+  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
+  h += '<section class="sumario"><h2>Sumário de ' + esc(t.nome) + '</h2>';
+  if (u0 > 0) h += '<p class="muted small">' + plural(u0 * US, 'lição anterior feita', 'lições anteriores feitas') + '</p>';
   for (let u = u0; u < u1; u++) {
-    const a = u * US, b = Math.min(t.licoes.length, a + US);
-    const unitDone = d >= b;
-    h += '<section class="unit"><div class="banner"><div><h3>' + esc(US === 7 ? chunkRef(t.licoes.slice(a, b).flatMap(l => parseRef(l.ref))).replace(/;.*$/, '') + (b - a > 1 ? ' em diante' : '') : t.licoes[a].titulo) + '</h3><small>' + (US === 7 ? 'Semana ' : 'Unidade ') + (u + 1) + ' · ' + (US === 7 ? 'leituras ' : 'lições ') + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
-    const deco = ART.deco[ART.decoOrder[(u + hash(id)) % ART.decoOrder.length]];
-    h += '<div class="deco-wrap ' + (u % 2 ? 'left' : 'right') + '">' + deco + '</div>';
+    const a = u * US, b = Math.min(n, a + US), unitDone = d >= b;
+    h += '<div class="parte"><h3>' + (US === 7 ? 'Semana ' : 'Parte ') + (u + 1) + '<span>' + (US === 7 ? esc(t.licoes[a].ref.split(';')[0]) + ' a ' + esc(t.licoes[b - 1].ref.split(';').pop().trim()) : esc(t.licoes[a].titulo)) + '</span></h3><ol>';
     for (let i = a; i < b; i++) {
-      const st = i < d ? 'done' : i === d ? 'cur' : 'lock';
-      const x = ZIG[i % ZIG.length];
-      h += '<div class="node-w" style="--x:' + x + 'px">' + (st === 'cur' && ui.pop !== i ? '<span class="start-bubble">' + (i === 0 ? 'Começar' : 'Continuar') + '</span>' : '') +
-        '<button class="node ' + st + '" data-a="pop" data-i="' + i + '" aria-label="Lição ' + (i + 1) + ': ' + esc(t.licoes[i].titulo) + (st === 'done' ? ', feita' : st === 'lock' ? ', bloqueada' : '') + '">' +
-        (st === 'done' ? icon('check', 'ic node-ic') : st === 'cur' ? icon('livro', 'ic node-ic') : icon('cadeado', 'ic node-ic')) + '</button>';
-      if (ui.pop === i) h += vPop(t, i, st);
-      h += '</div>';
+      const l = t.licoes[i], st = i < d ? 'done' : i === d ? 'cur' : 'lock';
+      h += '<li><button class="li-row ' + st + '" data-a="lrow" data-i="' + i + '" data-st="' + st + '">' + grainMark(st, i + 1) + '<span class="li-t"><b>' + esc(l.titulo) + '</b><small>' + (l.titulo !== l.ref ? esc(l.ref) + ' · ' : '') + (st === 'done' ? 'feita · toque para revisar' : st === 'cur' ? 'é a de hoje' : 'abre depois da anterior') + '</small></span>' + (st === 'lock' ? icon('cadeado', 'ic sm muted') : icon('voltar', 'ic sm flip')) + '</button></li>';
     }
     const ck = id + ':' + u, opened = S.chests[ck];
-    const x = ZIG[b % ZIG.length];
-    h += '<div class="node-w" style="--x:' + x + 'px"><button class="node chest' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : unitDone ? ', pronto para abrir' : ', bloqueado') + '">' + ART.vaso('vaso node-vaso') + '</button>' + (unitDone && !opened ? '<span class="start-bubble low">Abrir</span>' : '') + '</div>';
-    h += '</div></section>';
+    h += '<li><button class="li-row vaso-row' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '">' + ART.vaso('vaso gm-v') + '<span class="li-t"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : unitDone ? 'pronto: toque para abrir' : 'abre ao terminar a ' + (US === 7 ? 'semana' : 'parte')) + '</small></span></button></li></ol></div>';
   }
-  if (u1 < units) h += '<p class="path-more muted">Mais ' + plural(t.licoes.length - u1 * US, 'lição', 'lições') + ' adiante na jornada.</p>';
-  h += '<div class="path-end">' + ART.mani('mani md', isDone(id) ? 'festa' : 'feliz') + '<p>' + (isDone(id) ? 'Você completou ' + t.nome + '.' : 'Faltam ' + plural(t.licoes.length - d, 'lição', 'lições') + ' para completar ' + t.nome + '.') + '</p><button class="btn sec" data-a="open" data-ov="plano">Ver meu plano</button></div></div>';
-  return h + '</main>';
-}
-
-function vPop(t, i, st) {
-  const l = t.licoes[i];
-  if (st === 'lock') return '<div class="pop lock" role="dialog"><b>' + esc(l.titulo) + '</b><p>Complete as lições anteriores para liberar esta.</p></div>';
-  return '<div class="pop" role="dialog"><b>' + esc(l.titulo) + '</b><p>' + l.ref + ' · lição ' + (i + 1) + ' de ' + t.licoes.length + '</p>' +
-    (st === 'done' ? '<button class="btn wbtn" data-a="startLesson" data-i="' + i + '" data-r="1">' + icon('repetir', 'ic sm') + ' Revisar · +5 XP</button>' : '<button class="btn wbtn" data-a="startLesson" data-i="' + i + '">Começar · +15 XP</button>') + '</div>';
+  if (u1 < units) h += '<p class="muted small">Mais ' + plural(n - u1 * US, 'lição', 'lições') + ' depois destas.</p>';
+  return h + '</section></main>';
 }
 
 /* ---------- Construção dos exercícios ---------- */
@@ -168,21 +165,24 @@ function bibleText(vs, opts) {
 }
 
 /* ---------- Telas da lição ---------- */
+function lessonTop(L, t, l) {
+  const tot = L.steps.length, segs = Array.from({ length: tot }, (_, i) => '<i class="' + (i < L.i ? 'on' : i === L.i ? 'now' : '') + '"></i>').join('');
+  return '<header class="ltop"><div class="lt-row"><span class="lt-t"><b>' + esc(l.ref) + '</b><small class="tnum">' + (L.review ? 'Revisão · ' : '') + 'etapa ' + Math.min(L.i + 1, tot) + ' de ' + tot + (L.combo >= 3 ? ' · ' + L.combo + ' acertos seguidos' : '') + '</small></span><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button></div><div class="segs">' + segs + '</div></header>';
+}
 function vLessonScreen() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
-  if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'pensa') + '<p class="body-l">Abrindo a Bíblia…</p></main></div>';
+  if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col"><p class="body-l">Abrindo a Bíblia…</p></main></div>';
   if (L.phase === 'fim') return vFim(L);
   if (L.phase === 'ofensiva') return vOfensivaUp();
-  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'triste') + '<h2 class="qt">Espere, não vá ainda!</h2><p class="body-l">Se sair agora, você perde o progresso desta lição.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn ghost danger-t" data-a="lessonQuit">Sair da lição</button></footer></div>';
-  const t2 = t, s = L.steps[L.i], prog = Math.min(100, (L.i / (L.steps.length)) * 100);
-  let h = '<div class="lesson"><header class="lhead"><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button><span class="bar thick"><i style="width:' + prog + '%"></i></span>' +
-    (L.combo >= 3 ? '<span class="combo tnum">' + L.combo + ' seguidas</span>' : '<span class="combo ghost tnum">' + (L.review ? 'Revisão' : '') + '</span>') + '</header><main class="lz">';
+  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col"><h2 class="qt">Sair da lição?</h2><p class="body-l">O que você fez nesta lição não fica salvo.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn sec" data-a="lessonQuit">Sair</button></footer></div>';
+  const s = L.steps[L.i];
+  let h = '<div class="lesson">' + lessonTop(L, t, l) + '<main class="lz">';
   if (s.k === 'leia') {
-    const ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? S.quiz.versao : '';
+    const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
     const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">' + (L.vs.length ? 'Leia <b>' + esc(l.ref) + '</b> com calma. Depois a gente pratica.' : 'Abra a sua Bíblia em <b>' + esc(l.ref) + '</b> e leia com calma.') + '</div></div>' +
-      '<article class="intro"><h2 class="sc-t">' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref && !l.plano ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
-    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre (BLIVRE), CC BY.' + (ver && ver !== 'BLIVRE' ? ' Se preferir, leia também na ' + ver + '.' : '') + '</p></article>';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + t.nota + '</p>' : '') + '</article>';
+    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>';
+    else h += '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
       if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
@@ -190,68 +190,69 @@ function vLessonScreen() {
       if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
     }
     h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label></main>';
-    h += '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Continuar</button></footer></div>';
-    return h;
+    return h + '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
   if (s.k === 'reflita') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="intro"><h2 class="sc-q">' + esc(s.q) + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
-    h += '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir lição</button></footer></div>';
-    return h;
+    h += '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    return h + '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
   }
   const ck = L.checked;
   if (s.k === 'mc') {
-    h += '<h2 class="ex-q">' + esc(s.q) + '</h2>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="choices">';
-    s.opts.forEach((o, j) => {
+    h += '<h1 class="ex-q">' + esc(s.q) + '</h1>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="opts" role="radiogroup">';
+    s.opts.forEach(o => {
       let cls = L.pick === o ? ' sel' : '';
       if (ck) cls = o === s.ans ? ' right' : (L.pick === o ? ' wrong' : ' dim');
-      h += '<button class="choice' + cls + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '><span class="key tnum">' + (j + 1) + '</span><span>' + esc(o) + '</span></button>';
+      h += '<button class="opt' + cls + '" role="radio" aria-checked="' + (L.pick === o) + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '><span class="rd">' + (ck && o === s.ans ? icon('check', 'ic xs') : ck && L.pick === o ? icon('fechar', 'ic xs') : '') + '</span><span>' + esc(o) + '</span></button>';
     });
     h += '</div>';
   } else if (s.k === 'fill') {
-    const shown = L.pick ? '<span class="blank filled">' + esc(L.pick) + '</span>' : '<span class="blank">&nbsp;</span>';
-    h += '<h2 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h2>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
-    s.opts.forEach(o => { h += '<button class="tile' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
+    const shown = L.pick ? '<span class="gap filled">' + esc(L.pick) + '</span>' : '<span class="gap">&nbsp;</span>';
+    h += '<h1 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h1>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="verse">' + esc(s.before) + shown + esc(s.after) + '</p><div class="words">';
+    s.opts.forEach(o => { h += '<button class="word' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
     h += '</div>';
   } else if (s.k === 'tiles') {
-    h += '<h2 class="ex-q">' + s.prompt + '</h2><div class="speak small">' + ART.mani('mani xs', 'pensa') + '<div class="bubble">' + esc(s.hint) + '</div></div><div class="tiles answer">';
-    if (!L.built.length) h += '<span class="placeholder">Toque nas palavras abaixo</span>';
-    L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="tile" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
-    h += '</div><div class="tiles bank">';
-    s.bank.forEach(w => { const used = L.built.includes(w.id); h += '<button class="tile' + (used ? ' used' : '') + '" data-a="tile" data-id="' + w.id + '"' + (used || ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
+    const parts = String(s.hint).split(': ');
+    h += '<h1 class="ex-q">' + s.prompt + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
+    L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="gap filled" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button> '; });
+    if (!ck && L.built.length < s.target.length) h += '<span class="gap">&nbsp;</span>';
+    h += '</p><div class="words">';
+    s.bank.forEach(w => { const used = L.built.includes(w.id); h += '<button class="word' + (used ? ' used' : '') + '" data-a="tile" data-id="' + w.id + '"' + (used || ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
     h += '</div>';
+  }
+  if (ck) {
+    const ok = ck === 'ok', ansTxt = s.k === 'tiles' ? s.target.join(' ') : s.ans;
+    const elog = ['Isso mesmo.', 'Certo.', 'Muito bem.', 'Exato.'][(L.right + L.i) % 4];
+    h += '<div class="fb ' + (ok ? 'ok' : 'bad') + '" role="status"><span class="fb-i">' + icon(ok ? 'check' : 'fechar', 'ic sm') + '</span><div><b>' + (ok ? elog : 'A resposta é: ' + esc(ansTxt)) + '</b>' + (s.exp && (s.ia || !ok) ? '<p>' + esc(s.exp) + '</p>' : '') + '</div></div>';
   }
   h += '</main>';
   const ready = s.k === 'tiles' ? L.built.length > 0 : !!L.pick;
-  if (!ck) h += '<footer class="lfoot"><button class="btn" data-a="checkAns"' + (ready ? '' : ' disabled') + '>Verificar</button></footer>';
-  else {
-    const ok = ck === 'ok', ansTxt = s.k === 'tiles' ? s.target.join(' ') : s.ans;
-    const elog = ['Muito bem!', 'Isso mesmo!', 'Excelente!', 'Certinho!', 'Mandou bem!'][(L.right + L.i) % 5];
-    h += '<footer class="lfoot sheet ' + (ok ? 'ok' : 'bad') + '" role="status"><div class="sheet-t">' + (ok ? icon('check', 'ic') : icon('fechar', 'ic')) + '<div><h3>' + (ok ? elog : 'Resposta certa:') + '</h3>' + (ok ? (s.exp && s.ia ? '<p>' + esc(s.exp) + '</p>' : '') : '<p><b>' + esc(ansTxt) + '</b></p>' + (s.exp ? '<p>' + esc(s.exp) + '</p>' : '')) + '</div></div><button class="btn ' + (ok ? 'okbtn' : 'badbtn') + '" data-a="next">Continuar</button></footer>';
-  }
+  h += ck ? '<footer class="lfoot"><button class="btn" data-a="next">Continuar' + icon('voltar', 'ic flip') + '</button></footer>'
+    : '<footer class="lfoot"><button class="btn" data-a="checkAns"' + (ready ? '' : ' disabled') + '>Conferir</button></footer>';
   return h + '</div>';
 }
 
 function vFim(L) {
-  const r = L.result;
-  return '<div class="lesson"><main class="lz center-col fim">' + ART.mani('mani lg', 'festa') + '<h2 class="qt">' + (L.review ? 'Revisão concluída!' : r.perfect ? 'Lição perfeita!' : 'Lição concluída!') + '</h2>' +
-    '<div class="res"><div class="r-xp"><small>XP total</small><b data-count="' + r.xp + '">0</b></div><div class="r-ac"><small>' + (r.acc >= 90 ? 'Precisão alta' : 'Precisão') + '</small><b data-count="' + r.acc + '" data-suf="%">0%</b></div><div class="r-tm"><small>Tempo</small><b>' + r.tempo + '</b></div></div>' +
-    (r.grains ? '<p class="body-l">+' + r.grains + ' grãos de maná' + (r.boost ? ' · XP em dobro ativo' : '') + '</p>' : '') +
-    (S.group && !L.review ? '<p class="fine">Check-in postado no grupo ' + esc(S.group.nome) + '.</p>' : '') +
-    '</main><footer class="lfoot"><button class="btn" data-a="afterFim">Continuar</button></footer></div>';
+  const r = L.result, l = trilha(L.id).licoes[L.idx];
+  const linha = (k, v) => '<li><span>' + k + '</span><i></i><b class="tnum">' + v + '</b></li>';
+  return '<div class="lesson"><main class="lz fim">' + ART.mani('mani m-lg', 'grata', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.') +
+    '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(l.ref) + '</h1><ul>' +
+    linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Acertos', '<span data-count="' + r.acc + '">0</span>%') + linha('Tempo', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
+    '</ul>' + (r.perfect && !L.review ? '<p class="muted">Sem nenhum erro.</p>' : '') + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
+    '</main><footer class="lfoot"><button class="btn" data-a="afterFim">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function weekRow() {
   const ws = weekStart(), nm = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   return '<div class="week">' + nm.map((n, i) => {
     const k = addDays(ws, i), on = S.days.includes(k), hoje = k === todayK();
-    return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '"><small>' + n + '</small><span>' + (on ? ART.grao() : '') + '</span></div>';
+    return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '">' + grainMark(on ? 'done' : hoje ? 'cur' : 'lock', '') + '<small>' + n + '</small></div>';
   }).join('') + '</div>';
 }
 function vOfensivaUp() {
   const n = S.streak.count;
-  const frase = n === 1 ? 'Primeiro dia colhido. O maná cai de novo amanhã.' : n < 7 ? 'Faltam ' + (7 - n) + ' dias para uma semana inteira.' : n % 7 === 0 ? 'Mais uma semana inteira na Palavra.' : 'O maná não se guardava, e você colheu de novo.';
-  return '<div class="lesson streak-bg"><main class="lz center-col"><div class="big-streak">' + ART.grao('grao huge') + '<b class="tnum" data-count="' + n + '">' + n + '</b></div><h2 class="qt">' + plural(n, 'dia', 'dias') + ' de ofensiva!</h2><p class="body-l">' + frase + '</p>' + weekRow() +
-    '<p class="fine">Protetores de ofensiva: ' + S.protetores + '. Eles salvam um dia perdido.</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar</button></footer></div>';
+  const fala = n === 1 ? 'Primeiro dia colhido!' : n + ' dias seguidos! Continue firme.';
+  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', 'joinha', fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">' + n + '</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
+    '<p class="muted">' + (S.protetores ? 'Você tem ' + plural(S.protetores, 'protetor', 'protetores') + ' para um dia difícil.' : 'Sem protetor guardado: dá para comprar na loja.') + '</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function finishLesson() {
@@ -276,5 +277,5 @@ function finishLesson() {
   checkAch(); save();
   L.result = { xp, acc, tempo, perfect, grains, boost, up };
   L.phase = 'fim';
-  render(); SND.fim(); rain(80); countUp();
+  render(); SND.fim(); rain(40); countUp();
 }

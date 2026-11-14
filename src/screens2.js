@@ -33,7 +33,7 @@ function vSugestoes(onb) {
   if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
-  if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>O Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Pedir sugestões mais precisas ao Mani</button>';
+  if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Refinar as sugestões com IA</button>';
   return h;
 }
 
@@ -47,14 +47,14 @@ function vFaixas() {
 }
 function objPronto() { return (S.objSel || []).length > 0 || S.objetivo.trim().length >= 3; }
 function vObjetivo(s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">O que você quer viver com a Bíblia este ano? Marque quantos quiser.</div></div>' + vFaixas() +
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">O que você quer viver com a Bíblia este ano?</h1><p class="lede">Marque quantos quiser.</p>' + vFaixas() +
     '<label class="field">Quer contar com suas palavras?<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e a vida de Daniel">' + esc(S.objetivo) + '</textarea></label>';
   return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (objPronto() ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
 }
 function vQuizSug(s) {
   const sg = sugestoes();
   if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para você. Escolha quantas quiser e mude quando precisar.</div></div>';
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">Trilhas para o seu objetivo</h1><p class="lede">Escolha quantas quiser. Dá para mudar quando precisar.</p>';
   h += vSugestoes(true);
   return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
 }
@@ -120,7 +120,7 @@ function saveTrail(t, add) {
 
 /* ---------- Bíblia Livre e hinário ---------- */
 function vBiblia() {
-  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
+  let h = '<main class="screen sheet-top">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
     '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.bibMode === 'biblia') + '" data-a="bibMode" data-m="biblia">Bíblia</button><button role="tab" aria-selected="' + (ui.bibMode === 'hinario') + '" data-a="bibMode" data-m="hinario">Hinário</button></div>';
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {

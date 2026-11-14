@@ -2,14 +2,14 @@
 
 /* ---------- Onboarding ---------- */
 const QUIZ = [
-  { k: 'denom', t: 'Qual é a sua igreja ou denominação?', fala: 'Prazer, eu sou o Mani! Primeiro, me conta: qual é a sua igreja?', opts: DENOMINACOES.map(d => d[0]) },
+  { k: 'denom', t: 'Qual é a sua igreja ou denominação?', sub: 'Nas dúvidas, a visão da sua tradição aparece primeiro.', fala: '', opts: DENOMINACOES.map(d => d[0]) },
   { k: 'convertido', t: 'Há quanto tempo você é convertido?', fala: 'Há quanto tempo você caminha com Jesus?', opts: ['Menos de 1 ano', 'De 1 a 5 anos', 'De 5 a 15 anos', 'Mais de 15 anos', 'Ainda estou conhecendo'] },
   { k: 'leitura', t: 'Como está sua leitura bíblica hoje?', fala: 'Sem julgamento: como está sua leitura da Bíblia?', opts: ['Leio todo dia', 'Leio às vezes', 'Parei de ler'] },
   { k: 'minutos', t: 'Quanto tempo você tem por dia?', fala: 'Quanto tempo por dia você quer separar?', opts: [[5, '5 minutos · leve'], [10, '10 minutos · firme'], [20, '20 minutos · intenso']] },
   { k: 'objetivo', t: 'Qual é o seu objetivo para este ano?' },
   { k: 'sugestoes', t: 'Sugestões para o seu objetivo' },
   { k: 'celula', t: 'Você participa de célula ou EBD?', fala: 'Você participa de célula ou de EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
-  { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual versão da Bíblia você usa? O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, dá para acompanhar nela também.', opts: [
+  { k: 'versao', t: 'Qual versão da Bíblia você usa?', sub: 'O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, pode acompanhar nela também.', fala: 'Qual versão da Bíblia você usa? O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, dá para acompanhar nela também.', opts: [
     { v: 'BLIVRE', l: 'Bíblia Livre', tag: 'Já vem no app', d: 'Tradução brasileira de 2018, feita a partir do hebraico e do grego. Você lê o texto completo aqui no Manna, sem precisar abrir outra Bíblia.' },
     { v: 'ARA', l: 'Almeida Revista e Atualizada (ARA)', d: 'Linguagem formal e muito fiel ao original. Comum em igrejas batistas, presbiterianas e adventistas.' },
     { v: 'ARC', l: 'Almeida Revista e Corrigida (ARC)', d: 'A mais tradicional, com português clássico ("vós", "porventura"). Muito usada nas Assembleias de Deus.' },
@@ -25,19 +25,19 @@ const goalFor = m => ({ 5: 20, 10: 30, 20: 50 }[m] || 30);
 
 function vOnboarding() {
   const s = S.step;
-  if (s === 0) return '<main class="onb-hero"><div class="sky">' + ART.banner() + '</div>' + ART.mani('mani hero', 'feliz') +
-    '<div class="onb-c"><h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p><p class="body-l">Uma jornada pela Bíblia com lições curtas, ofensiva, liga semanal e os amigos da sua igreja.</p>' +
-    '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto.</p></div></main>';
+  if (s === 0) return '<main class="onb-hero"><div class="onb-top">' + ART.logo('logo md') + '<span class="brand">manna</span></div>' + ART.mani('mani m-hero', 'leitora', 'Oi! Eu sou Mani. Vamos colher sua porção de hoje?') +
+    '<div class="onb-c"><h1>Sua porção diária da Palavra</h1><p>Lições curtas na Bíblia, a pregação do culto virando estudo e os irmãos da sua igreja junto com você.</p>' +
+    '<button class="btn" data-a="next">Montar meu plano' + icon('voltar', 'ic flip') + '</button><p class="fine">Leva 1 minuto.</p></div></main>';
   if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
   if (s === QUIZ.length + 2) return vPaywall();
   return vConvite();
 }
 function quizHead(s) {
-  return '<div class="qhead"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><span class="bar thick"><i style="width:' + (s / QUIZ.length * 100) + '%"></i></span></div>';
+  return '<div class="qhead"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><span class="tnum muted">' + s + ' de ' + QUIZ.length + '</span></div><div class="segs">' + QUIZ.map((_, i) => '<i class="' + (i + 1 < s ? 'on' : i + 1 === s ? 'now' : '') + '"></i>').join('') + '</div>';
 }
 function vQuiz(q, s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', s === 5 ? 'festa' : 'feliz') + '<div class="bubble">' + q.fala + '</div></div><h2 class="sr">' + q.t + '</h2>';
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">' + q.t + '</h1>' + (q.sub ? '<p class="lede">' + q.sub + '</p>' : '');
   if (q.multi) {
     const sel = S.quiz.trilhas;
     ['Livro', 'Personagem', 'Tema'].forEach(tp => {
@@ -66,7 +66,7 @@ function vQuiz(q, s) {
 function vResultado() {
   const q = S.quiz, first = trilha(q.trilhas[0]);
   const des = (q.celula === 'Célula' || q.celula === 'Os dois') ? 'Chame sua célula para "Evangelhos em 30 dias".' : 'Faça 7 dias seguidos e ganhe a medalha Fiel.';
-  let h = '<main class="screen"><div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Pronto! Montei o seu plano. Começa hoje, ' + fmt(todayK()) + '.</div></div><h1 class="h1">Seu plano para 2027</h1>';
+  let h = '<main class="screen">' + ART.mani('mani m-md row', 'grata', 'Pronto! Seu plano está montado.') + '<h1 class="h1">Seu plano para 2027</h1><p class="lede">Começa hoje, ' + fmt(todayK()) + '.</p>';
   h += '<section class="plan-path">';
   q.trilhas.forEach((id, i) => {
     const t = trilha(id);
@@ -85,7 +85,7 @@ function vPaywall() {
   const p = S.plano || 'anual';
   const plans = [['anual', 'Anual', 'R$ 7,49', '/mês', 'R$ 89,90 cobrados uma vez por ano'], ['mensal', 'Mensal', 'R$ 9,90', '/mês', 'Cancele quando quiser'], ['familia', 'Família ou célula', 'R$ 149,90', '/ano', 'Até 5 pessoas']];
   const preco = { anual: 'R$ 89,90 por ano', mensal: 'R$ 9,90 por mês', familia: 'R$ 149,90 por ano' }[p];
-  let h = '<main class="screen"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><div class="pw-top">' + ART.deco.vasoGrande + '<h1 class="h1">Comece com 7 dias grátis</h1></div>' +
+  let h = '<main class="screen"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><h1 class="h1">Comece com 7 dias grátis</h1>' +
     '<ul class="perks"><li>' + icon('check', 'ic sm') + 'Jornada completa com todas as metas</li><li>' + icon('check', 'ic sm') + 'Culto de domingo virando estudo da semana</li><li>' + icon('check', 'ic sm') + 'Dúvidas com versículos e as visões das tradições</li><li>' + icon('check', 'ic sm') + 'Liga semanal, grupos e protetor de ofensiva</li></ul><div class="choices">';
   plans.forEach(([id, nome, v, per, det]) => {
     h += '<button class="choice plan' + (p === id ? ' sel' : '') + '" data-a="plan" data-id="' + id + '" aria-pressed="' + (p === id) + '">' + (id === 'anual' ? '<span class="ribbon">Economize 24%</span>' : '') + '<span class="pl-l"><b>' + nome + '</b><small>' + det + '</small></span><span class="pl-p"><b class="tnum">' + v + '</b><small>' + per + '</small></span></button>';
@@ -95,7 +95,7 @@ function vPaywall() {
   return h;
 }
 function vConvite() {
-  return '<main class="screen"><div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Quem lê junto não para. Bora chamar o pessoal da igreja?</div></div><h1 class="h1">Estude com a sua igreja</h1>' + vGroupForms(true) + '<button class="btn ghost" data-a="finish">Agora não</button></main>';
+  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms(true) + '<button class="btn sec" data-a="finish">Agora não</button></main>';
 }
 
 /* ---------- Domingo ---------- */
@@ -104,11 +104,11 @@ function busyBtn(label) {
     (ui.aiErr ? '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>' : '');
 }
 function pageHead(title, sub) {
-  return '<header class="phead"><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</header>';
+  return capa(title, sub);
 }
 function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
+  let h = '<main class="screen sheet-top">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + (ui.domMode === 'culto' ? ART.mani('mani m-sm row', 'leitora', 'Como foi o culto? Me conta o tema.') : '') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
     h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
       '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
@@ -148,7 +148,7 @@ function vDuvidas() {
   const f = ui.filtro.toLowerCase();
   const list = DUVIDAS.filter(d => !f || (d.q + ' ' + d.cat).toLowerCase().includes(f));
   const cats = [...new Set(DUVIDAS.map(d => d.cat))];
-  let h = '<main class="screen">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
+  let h = '<main class="screen sheet-top">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
   h += '<form class="form ask" data-f="duvida"><label class="field" for="d-q">Pergunte sem vergonha. Só você vê.</label><textarea id="d-q" rows="2" maxlength="300" aria-label="Sua pergunta" placeholder="Ex.: Posso ser padrinho numa igreja católica?"></textarea>' +
     (SAMPLE ? busyBtn('Perguntar') : '<p class="fine">' + (aiChecked ? 'A pergunta livre usa IA e não está disponível aqui. A biblioteca abaixo funciona normalmente.' : 'Verificando a IA…') + '</p>') + '</form>';
   if (S.perguntas.length) {
@@ -170,7 +170,7 @@ function vDuvidas() {
 
 /* ---------- Liga e grupo ---------- */
 function vLiga() {
-  let h = '<main class="screen"><div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.ligaMode === 'liga') + '" data-a="ligaMode" data-m="liga">Liga semanal</button><button role="tab" aria-selected="' + (ui.ligaMode === 'grupo') + '" data-a="ligaMode" data-m="grupo">Meu grupo</button></div>';
+  let h = '<main class="screen sheet-top">' + capa(ui.ligaMode === 'grupo' ? (S.group ? esc(S.group.nome) : 'Seu grupo') : 'Liga da semana', ui.ligaMode === 'grupo' ? 'Leitura junto com a sua igreja.' : 'Quem mais estudou nesta semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.ligaMode === 'liga') + '" data-a="ligaMode" data-m="liga">Liga semanal</button><button role="tab" aria-selected="' + (ui.ligaMode === 'grupo') + '" data-a="ligaMode" data-m="grupo">Meu grupo</button></div>';
   if (ui.ligaMode === 'grupo') return h + vGrupoBody() + '</main>';
   const ws = weekStart(), di = diff(ws, todayK()), rows = leagueTable(ws, di), lg = LIGAS[S.league.div];
   const resta = 7 - di;
@@ -201,7 +201,8 @@ function vGrupoBody() {
   if (!g) return '<p class="lede">Leia junto com a sua célula: desafio com prazo, ranking e check-in todo dia.</p>' + vGroupForms(false);
   const d = desafio(g.desafio), dia = Math.min(d.dias, diff(g.start, todayK()) + 1), meus = S.chapters - g.chapAtStart;
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
-  let h = '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
+  const semana = weekChaps() + MEMBROS.reduce((a, m) => a + Math.round(m.rate * 7), 0);
+  let h = ART.mani('mani m-sm row', 'joinha', 'Sua célula leu ' + semana + ' capítulos esta semana.') + '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
   h += '<section class="card"><div class="sec-h"><h3>Seu progresso no desafio</h3><span class="tnum muted">' + meus + '/' + d.caps + '</span></div><span class="bar thick"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><p class="fine">O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' capítulos por dia.</p></section>';
   const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
   h += '<section class="sec"><h2>Você está em ' + mp + 'º no grupo</h2><ol class="league">';
@@ -224,7 +225,7 @@ function vGrupoBody() {
 function vPerfil() {
   const st = S.streak, lg = LIGAS[S.league.div];
   const resumo = 'Minha semana no Manna: ofensiva de ' + plural(st.count, 'dia', 'dias') + ', ' + plural(weekChaps(), 'capítulo lido', 'capítulos lidos') + ' e ' + weekXPFrom(weekStart()) + ' XP. Sua porção diária da Palavra.';
-  let h = '<main class="screen"><section class="prof"><span class="av xl me">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
+  let h = '<main class="screen sheet-top">' + capa('Perfil', '') + '<section class="prof"><span class="av xl me">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
   h += '<section class="stats2"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + S.xp + '</b><span>XP no total</span></div><div><b>' + lg.nome + '</b><span>liga atual</span></div><div><b class="tnum">' + S.chapters + '</b><span>capítulos lidos</span></div></section>';
   h += '<section class="sec"><h2>Você estudou ' + weekDays() + ' de 7 dias nesta semana</h2><div class="card">' + weekRow() + '<p class="fine">Recorde: ' + plural(st.best, 'dia', 'dias') + '. Protetores guardados: ' + S.protetores + ' de 2.</p></div></section>';
   h += '<section class="sec"><h2>' + plural(ACH.filter(a => achLevel(a) > 0).length, 'conquista', 'conquistas') + ' de ' + ACH.length + '</h2><ul class="medals">';
@@ -312,7 +313,7 @@ function vDuvida(id) {
   const order = minha ? [minha].concat(Object.keys(TRADICOES).filter(k => k !== minha)) : Object.keys(TRADICOES);
   order.forEach(k => { if (d.trad[k]) h += '<div class="trad' + (k === minha ? ' mine' : '') + '"><p class="who"><b>' + TRADICOES[k] + '</b>' + (k === minha ? ' <span class="muted">· sua tradição</span>' : '') + '</p><p>' + esc(d.trad[k]) + '</p></div>'; });
   if (!minha) h += '<p class="fine">Sua igreja pode ter uma posição própria sobre isso.</p>';
-  h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section><section class="pastor">' + ART.mani('mani xs', 'feliz') + '<div><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja.</p></div></section>';
+  h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section><section class="pastor"><div><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja.</p></div></section>';
   if (d.ia) h += '<p class="fine">Resposta gerada por IA. Confira os versículos.</p>';
   return h + '</main>';
 }
@@ -386,6 +387,11 @@ const A = {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
+  },
+  lrow(el) {
+    const i = Number(el.dataset.i), st = el.dataset.st;
+    if (st === 'lock') { toast('Esta lição abre depois da anterior.'); return; }
+    startLesson(curTrail(), i, st === 'done'); window.scrollTo(0, 0);
   },
   pop(el) {
     const i = Number(el.dataset.i);

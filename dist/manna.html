@@ -553,9 +553,224 @@ textarea.obj { width: 100%; padding: 14px 16px; border: 2px solid var(--line); b
 .field textarea, .ask textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; }
 .ask { gap: 10px; }
 .scroll textarea, .form textarea, .form input, .form select, .search { border-width: 1px; }
+
+/* ===== v5: linguagem visual própria do Manna (livro e grão) ===== */
+:root { --pill: 999px; --ink: #0F1B3D; --creme: #FDEFE2; }
+body { background: var(--bg); }
+#app { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.screen { gap: 20px; }
+.screen.sheet-top { padding-top: 0; }
+
+/* Botões em pílula, sem volume */
+.btn { border: 0; border-bottom: 0; border-radius: var(--pill); min-height: 52px; padding: 14px 22px; font: 700 16px/1.2 var(--f-body); letter-spacing: 0; background: var(--ouro); color: var(--noite); transition: transform .12s ease, background .12s; }
+.btn .ic { width: 18px; height: 18px; }
+.btn:active:not(:disabled) { transform: scale(.98); border-bottom-width: 0; }
+.btn:disabled { background: var(--soft); color: var(--muted); border: 0; }
+.btn.sec { background: transparent; color: var(--fg); border: 1.5px solid var(--fg); border-bottom: 1.5px solid var(--fg); }
+.btn.ghost { border: 0; }
+.btn.mini, .btn.chip-btn { min-height: 34px; padding: 6px 14px; font-size: 14px; border: 0; }
+.btn.mini.sec { border: 1.5px solid var(--fg); }
+.btn.okbtn, .btn.badbtn, .btn.wbtn { border: 0; }
+.flip { transform: rotate(180deg); }
+.ic.flip { transform: rotate(180deg); }
+
+/* Capa: faixa Noite no topo das abas */
+.capa { margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-top: calc(-1 * env(safe-area-inset-top, 0px)); background: var(--noite); color: var(--pergaminho); padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 28px max(16px, env(safe-area-inset-left, 0px)); border-radius: 0 0 28px 28px; }
+.capa-in { max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+.capa-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.capa .brand { color: var(--ouro); }
+.capa-t { font: 800 28px/1.15 var(--f-body); letter-spacing: -0.02em; }
+.capa-s { color: rgba(245,241,230,.72); font-size: 15px; }
+.capa-s:first-letter { text-transform: uppercase; }
+.pills { display: flex; gap: 6px; }
+.spill { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: var(--pill); border: 1px solid rgba(245,241,230,.22); background: transparent; color: var(--pergaminho); font-size: 13px; }
+.spill b { font-weight: 800; font-size: 15px; }
+.spill .grao { width: 12px; height: 16px; fill: rgba(245,241,230,.45); }
+.spill.lit .grao { fill: var(--ouro); }
+.trail-sw { margin-top: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 12px 14px; border-radius: 16px; border: 1px solid rgba(245,241,230,.18); background: rgba(245,241,230,.06); color: var(--pergaminho); text-align: left; }
+.trail-sw span { display: flex; flex-direction: column; min-width: 0; }
+.trail-sw small { color: rgba(245,241,230,.65); font-size: 13px; }
+.line { display: block; height: 4px; border-radius: 4px; background: var(--soft); overflow: hidden; }
+.line i { display: block; height: 100%; background: var(--fg); border-radius: 4px; }
+.line.on-dark { background: rgba(245,241,230,.16); margin-top: 8px; }
+.line.on-dark i { background: var(--ouro); }
+.sheet-top > :first-child + * { margin-top: 0; }
+
+/* Mani: quadro creme liso, uma vez por tela */
+.mani { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; flex: none; width: auto; height: auto; animation: none !important; }
+.m-tile { display: block; box-sizing: border-box; background: var(--creme); border-radius: 22px; padding: 12px; line-height: 0; overflow: hidden; }
+.m-tile img { display: block; width: 100%; height: auto; }
+.m-sm .m-tile { width: 76px; border-radius: 18px; }
+.m-md .m-tile { width: 112px; }
+.porcao .m-md .m-tile { width: 92px; padding: 8px; border-radius: 18px; }
+.porcao .btn { white-space: nowrap; padding-inline: 18px; }
+.m-lg .m-tile { width: 168px; border-radius: 28px; }
+.m-hero .m-tile { width: 200px; border-radius: 32px; }
+.m-fala { font-size: 14px; font-weight: 600; color: var(--fg); text-align: center; width: max-content; max-width: min(30ch, 80vw); }
+.mani.row .m-fala { width: auto; flex: 1; min-width: 0; }
+.m-md .m-tile { padding: 12px; } .m-lg .m-tile, .m-hero .m-tile { padding: 18px; }
+.mani.row { flex-direction: row; align-items: center; gap: 14px; }
+.mani.row .m-fala { text-align: left; font-size: 15px; }
+.speak .mani, .path-end .mani { animation: none; }
+
+/* Porção do dia */
+.porcao { display: flex; gap: 16px; align-items: flex-start; padding: 18px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); margin-top: -14px; position: relative; }
+.porcao .mani .m-fala { display: none; }
+.p-txt { display: flex; flex-direction: column; gap: 8px; min-width: 0; flex: 1; }
+.p-ref { font-weight: 700; color: var(--muted); font-size: 14px; }
+.porcao h2 { font: 800 21px/1.2 var(--f-body); }
+.porcao .btn { margin-top: 6px; }
+.row-link { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); text-align: left; }
+.row-link span { display: flex; flex-direction: column; min-width: 0; }
+.row-link small { color: var(--muted); }
+.note { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--soft); }
+.note.warn { background: var(--mine); }
+
+/* Tarefas do dia */
+.tarefas { display: flex; flex-direction: column; gap: 10px; }
+.t-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.t-h h2 { font: 800 18px/1.25 var(--f-body); }
+.boost { font-size: 13px; font-weight: 700; color: var(--muted); }
+.tarefas ul { list-style: none; padding: 0; margin: 4px 0 0; border-top: 1px solid var(--line); }
+.tarefas li { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.tk { width: 22px; height: 22px; flex: none; border-radius: 50%; border: 1.5px solid var(--line-dk); display: grid; place-items: center; }
+.tarefas li.ok .tk { background: var(--noite); border-color: var(--noite); color: var(--ouro); }
+.tt { flex: 1; min-width: 0; font-size: 15px; }
+.tarefas li.ok .tt { color: var(--muted); }
+
+/* Sumário: a trilha como índice de um livro */
+.sumario { display: flex; flex-direction: column; gap: 6px; }
+.sumario > h2 { font: 800 20px/1.25 var(--f-body); margin-bottom: 4px; }
+.small { font-size: 14px; }
+.parte { display: flex; flex-direction: column; }
+.parte h3 { display: flex; flex-direction: column; gap: 2px; padding: 16px 0 8px; font: 800 13px/1.3 var(--f-body); color: var(--muted); }
+.parte h3 span { font: 700 17px/1.3 var(--f-body); color: var(--fg); }
+.parte ol { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+.parte li { border-bottom: 1px solid var(--line); }
+.li-row { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 2px; background: none; border: 0; text-align: left; }
+.li-t { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.li-t b { font-weight: 700; font-size: 16px; }
+.li-t small { color: var(--muted); font-size: 13px; }
+.li-row.lock .li-t b { color: var(--muted); font-weight: 600; }
+.li-row.cur { background: var(--mine); border-radius: 14px; padding-inline: 10px; margin: 4px 0; }
+.ic.muted { color: var(--muted); }
+.gm { position: relative; width: 34px; height: 42px; flex: none; display: grid; place-items: center; }
+.gm svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.gm ellipse { fill: transparent; stroke: var(--line-dk); stroke-width: 1.6; }
+.gm i { position: relative; font: 700 13px/1 var(--f-body); font-style: normal; color: var(--muted); }
+.gm.done ellipse { fill: var(--ouro); stroke: var(--ouro-dk); }
+.gm.cur ellipse { fill: var(--noite); stroke: var(--noite); }
+.gm.cur i { color: var(--ouro); }
+.gm .gm-c { position: relative; width: 16px; height: 16px; color: var(--noite); stroke-width: 3; }
+.vaso-row .gm-v { width: 34px; height: 38px; }
+.vaso-row.lock .gm-v { opacity: .4; filter: grayscale(1); }
+.vaso-row.ready { background: var(--mine); border-radius: 14px; padding-inline: 10px; }
+.vaso-row.opened { opacity: .6; }
+
+/* Abas: barra Noite */
+.tabs { background: var(--noite); border-top: 0; padding-top: 8px; }
+.tabs button { color: rgba(245,241,230,.6); font-weight: 600; }
+.tabs button[aria-current] { color: var(--ouro); background: none; }
+.tabs button[aria-current] span { font-weight: 800; }
+
+/* Lição */
+.ltop { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; background: var(--bg); padding-block: 12px 10px; display: flex; flex-direction: column; gap: 10px; }
+.lt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.lt-t { display: flex; flex-direction: column; min-width: 0; }
+.lt-t b { font-size: 16px; }
+.lt-t small { color: var(--muted); font-size: 13px; }
+.ltop .iconbtn { margin: 0 -10px 0 0; }
+.segs { display: flex; gap: 4px; }
+.segs i { flex: 1; height: 4px; border-radius: 4px; background: var(--soft); }
+.segs i.on { background: var(--fg); }
+.segs i.now { background: var(--ouro-dk); }
+.qhead { justify-content: space-between; }
+.lfoot { background: var(--bg); border-top: 0; padding-top: 10px; }
+.ex-q { font: 800 22px/1.3 var(--f-body); letter-spacing: -0.01em; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 56px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); text-align: left; font-size: 16px; font-weight: 500; }
+.rd { width: 22px; height: 22px; flex: none; border-radius: 50%; border: 1.5px solid var(--line-dk); display: grid; place-items: center; }
+.opt.sel { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
+.opt.sel .rd { border: 6px solid var(--fg); }
+.opt.right { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
+.opt.right .rd { background: var(--ok); border-color: var(--ok); color: var(--surface); }
+.opt.wrong { border-color: var(--bad); }
+.opt.wrong .rd { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.opt.dim { opacity: .5; }
+.verse { font: 400 21px/1.75 var(--f-book); }
+.gap { display: inline-block; min-width: 88px; border: 0; border-bottom: 2px solid var(--fg); background: none; padding: 0 4px; margin: 0 2px; font: inherit; line-height: 1.3; text-align: center; }
+.gap.filled { color: var(--fg); border-bottom-color: var(--ouro-dk); background: var(--mine); border-radius: 6px 6px 0 0; min-width: 0; }
+.words { display: flex; flex-wrap: wrap; gap: 8px; }
+.word { padding: 9px 14px; border: 1px solid var(--line-dk); border-radius: 10px; background: var(--surface); font: 400 17px/1.2 var(--f-book); }
+.word.used { visibility: hidden; }
+.word.right { border-color: var(--ok); color: var(--ok); }
+.fb { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+.fb-i { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--surface); }
+.fb.ok .fb-i { background: var(--ok); } .fb.bad .fb-i { background: var(--bad); }
+.fb b { font-size: 16px; } .fb p { font-size: 15px; color: var(--muted); margin-top: 2px; }
+.fb .ic { stroke-width: 3; }
+@media (prefers-reduced-motion: no-preference) { .fb { animation: fbin .2s ease-out; } }
+@keyframes fbin { from { transform: translateY(6px); } to { transform: none; } }
+.check.big { border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.diario { width: 100%; padding: 20px; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
+.diario h1 { font: 800 24px/1.2 var(--f-body); }
+.diario ul { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-direction: column; gap: 10px; }
+.diario li { display: flex; align-items: baseline; gap: 8px; font-size: 16px; }
+.diario li i { flex: 1; border-bottom: 1.5px dotted var(--line-dk); transform: translateY(-4px); }
+.diario li b { font-weight: 800; }
+.lz.fim { align-items: center; gap: 22px; padding-top: 28px; }
+.streak-n { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.streak-n b { font: 800 64px/1 var(--f-body); color: var(--fg); }
+.streak-n span { font-size: 16px; font-weight: 600; color: var(--muted); }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 14px 10px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.wd { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.wd .gm { width: 26px; height: 32px; }
+.wd .gm .gm-c { width: 12px; height: 12px; }
+.wd.today small { color: var(--fg); font-weight: 800; }
+canvas.rain { opacity: .9; }
+
+/* Onboarding */
+.onb-hero { min-height: 100vh; min-height: 100dvh; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); margin-bottom: calc(-96px - env(safe-area-inset-bottom, 0px)); padding: 24px max(16px, env(safe-area-inset-right, 0px)) 32px max(16px, env(safe-area-inset-left, 0px)); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+.onb-top { display: flex; align-items: center; gap: 10px; align-self: flex-start; }
+.onb-top .brand { color: var(--pergaminho); font-size: 26px; }
+.logo.md { width: 36px; height: 36px; }
+.onb-hero .m-fala { color: var(--pergaminho); font-size: 16px; }
+.onb-c { display: flex; flex-direction: column; gap: 14px; align-items: stretch; width: 100%; max-width: 420px; margin-top: auto; }
+.onb-c h1 { font: 800 30px/1.15 var(--f-body); letter-spacing: -0.02em; }
+.onb-c p { color: rgba(245,241,230,.75); font-size: 16px; }
+.onb-c .fine { color: rgba(245,241,230,.55); }
+.choice { border: 1px solid var(--line); border-bottom: 1px solid var(--line); border-radius: 16px; font-weight: 600; }
+.choice:active:not(:disabled) { transform: scale(.99); border-bottom-width: 1px; }
+.choice.sel { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); background: var(--surface); }
+.pp-n { border-bottom: 0; }
+.ribbon { border-radius: 6px; }
+.tl { border-left-width: 1.5px; }
+
+/* Listas, liga, perfil, folhas */
+.seg { background: var(--soft); border-radius: var(--pill); padding: 4px; }
+.seg button { border-radius: var(--pill); border: 0; }
+.seg button[aria-selected="true"], .seg button[aria-checked="true"] { background: var(--noite); color: var(--pergaminho); border: 0; }
+.tabs-h button[aria-selected="true"] { background: var(--noite); color: var(--pergaminho); }
+.banner { border-bottom: 0; border-radius: 20px; }
+.lr { border-radius: 0; border: 0; border-bottom: 1px solid var(--line); padding-inline: 4px; }
+.lr.me { background: var(--mine); border-radius: 12px; box-shadow: none; border-bottom-color: transparent; padding-inline: 10px; }
+.zone { justify-content: flex-start; padding-left: 4px; }
+.prof { padding-top: 4px; margin-top: -10px; }
+.stats2 > div, .stats3 > div { border: 0; border-radius: 0; background: none; padding: 10px 2px; border-top: 1px solid var(--line); }
+.chap, .book, .tcard, .shop li, .mt-b, .pick { border-bottom-width: 1px; }
+.chap.lido { border-color: var(--noite); }
+.pill { border-bottom-width: 1px; }
+.pill.on { border-color: var(--noite); background: var(--noite); color: var(--ouro); }
+.sheet-panel { border-top: 0; }
+.modal { border-width: 1px; }
+.medals, .hinos, .list { background: var(--surface); }
+.quote { font-size: 17px; }
+#toast { border-bottom: 0; border-radius: var(--pill); }
+.selbar { border-radius: var(--pill); }
 </style>
 <div id="app"></div>
 <script>
+const MANI_FILES = {"grata": ["grata.jpg", 440, 500], "joinha": ["joinha.jpg", 267, 265], "leitora": ["leitora.jpg", 480, 502]};
 /* Manna: conteúdo da V1 de teste (trilhas, desafios, dúvidas). */
 
 const L = (ref, titulo, ctx, q, caps) => ({ ref, titulo, ctx, q, caps: caps || 1 });
@@ -966,30 +1181,22 @@ DUVIDAS[DUVIDAS.length - 1].trad.adventista = 'Guarda o sábado, do pôr do sol 
 
 const ART = {};
 
-/* Mani: a pombinha, mascote do app. humor: feliz, festa, pensa, triste */
-ART.mani = (cls, humor) => {
-  const h = humor || 'feliz', L = 'var(--pomba-tr)', W = 'var(--pomba)', A = 'var(--pomba-asa)';
-  const asas = h === 'festa'
-    ? '<path d="M27 60 C12 52 4 36 6 22 C12 26 16 30 20 30 C18 36 22 42 30 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M73 60 C88 52 96 36 94 22 C88 26 84 30 80 30 C82 36 78 42 70 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>'
-    : '<path d="M25 62 C12 66 9 84 16 98 C22 94 26 86 30 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M75 62 C88 66 91 84 84 98 C78 94 74 86 70 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>';
-  const olhos = h === 'festa'
-    ? '<path d="M33 42 Q39 34 45 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M55 42 Q61 34 67 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/>'
-    : '<ellipse cx="39" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/><ellipse cx="61" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/>' +
-      '<circle cx="' + (h === 'pensa' ? 41 : 40) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/><circle cx="' + (h === 'pensa' ? 63 : 62) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/>' +
-      '<circle cx="' + (h === 'pensa' ? 42.4 : 41.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/><circle cx="' + (h === 'pensa' ? 64.4 : 63.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/>';
-  const sobr = h === 'triste' ? '<path d="M32 32 L44 35 M68 32 L56 35" stroke="var(--noite)" stroke-width="3" stroke-linecap="round"/>' : '';
-  const bico = h === 'festa'
-    ? '<path d="M43 51 L57 51 L50 56 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/><path d="M45 57 L55 57 L50 62 Z" fill="var(--ouro-dk)"/>'
-    : '<path d="M43 51 L57 51 L50 60 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/>';
-  const grao = h === 'festa' ? '<ellipse cx="50" cy="8" rx="4" ry="6" transform="rotate(-20 50 8)" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="1.5"/>' : '';
-  return '<svg class="' + (cls || 'mani') + '" viewBox="0 0 100 124" aria-hidden="true">' +
-    '<ellipse cx="50" cy="118" rx="24" ry="4.5" fill="var(--chao)"/>' + grao +
-    '<path d="M60 98 L80 112 L82 102 L90 104 L80 92 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>' +
-    '<path d="M44 108 v7 M40 115 h8 M56 108 v7 M52 115 h8" stroke="var(--ouro-dk)" stroke-width="3" stroke-linecap="round"/>' +
-    '<path d="M50 16 C66 16 75 28 74 42 C88 54 86 94 66 106 C58 111 42 111 34 106 C14 94 12 54 26 42 C25 28 34 16 50 16 Z" fill="' + W + '" stroke="' + L + '" stroke-width="3.2" stroke-linejoin="round"/>' +
-    '<path d="M48 17 C45 9 50 5 55 8" stroke="' + L + '" stroke-width="3" fill="none" stroke-linecap="round"/>' +
-    '<ellipse cx="50" cy="84" rx="15" ry="17" fill="var(--pomba-peito)"/>' + asas + olhos + sobr +
-    '<ellipse cx="30" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/><ellipse cx="70" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/>' + bico + '</svg>';
+/* Mani: a pombinha 3D do manual do mascote. Poses aprovadas em public/mani/; as que faltam caem para uma pose próxima,
+   e emoções de dor ou erro ficam sem Mani até a pose própria existir (o manual proíbe pose alegre nesses momentos). */
+const MANI_ALIAS = { feliz: 'grata', festa: 'grata', acolhedor: 'grata', orando: 'grata', animado: 'joinha', surpreso: 'joinha', determinado: 'joinha', curioso: 'leitora', pensativo: 'leitora', pensa: 'leitora' };
+const MANI_SEM = ['triste', 'ansioso', 'bravinho', 'sonolento'];
+function maniFile(pose) {
+  const F = typeof MANI_FILES !== 'undefined' ? MANI_FILES : {};
+  if (F[pose]) return F[pose];
+  if (MANI_SEM.includes(pose)) return null;
+  const alt = MANI_ALIAS[pose];
+  return alt && F[alt] ? F[alt] : (F.leitora || null);
+}
+ART.mani = (cls, pose, fala) => {
+  const f = maniFile(pose || 'leitora');
+  if (!f) return '';
+  const [arq, w, h] = Array.isArray(f) ? f : [f, 1, 1];
+  return '<figure class="' + (cls || 'mani') + '"><span class="m-tile"><img src="mani/' + arq + '" width="' + w + '" height="' + h + '" alt="Mani"></span>' + (fala ? '<figcaption class="m-fala">' + String(fala).replace(/[<>&]/g, '') + '</figcaption>' : '') + '</figure>';
 };
 
 ART.grao = cls => '<svg class="' + (cls || 'grao') + '" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4.2" ry="6.4" transform="rotate(-22 6 8)"/></svg>';
@@ -1589,80 +1796,77 @@ function postFeed(text, ref) {
 }
 
 
-/* Manna: jornada (caminho de lições) e motor da lição com exercícios. */
+/* Manna: jornada (sumário de lições) e motor da lição com exercícios. */
 
 const UNIT = 5;
-const ZIG = [0, 40, 58, 40, 0, -40, -58, -40];
 const STOP = new Set('quando sobre entre depois antes mesmo porque pelos pelas pelo pela como todos todas também ainda outro outra outros outras nossa nosso deles dele dela onde cada muito mostra diz para esta este essa esse isso aquele seus suas qualquer'.split(' '));
 
 /* ---------- Jornada ---------- */
-function topBar() {
-  const id = curTrail(), t = trilha(id), st = S.streak, hoje = studiedToday();
-  return '<header class="hud">' +
-    '<button class="hud-trail" data-a="open" data-ov="plano" aria-label="Meu plano">' + icon('livro') + '<span>' + t.nome + '</span></button>' +
-    '<div class="hud-r"><button class="hud-i' + (hoje ? ' lit' : '') + '" data-a="sheet" data-s="ofensiva" aria-label="Ofensiva">' + ART.grao() + '<b class="tnum">' + st.count + '</b></button>' +
-    '<button class="hud-i" data-a="open" data-ov="loja" aria-label="Loja">' + ART.vaso('vaso sm') + '<b class="tnum">' + S.grains + '</b></button></div></header>';
+function capa(titulo, sub, extra) {
+  return '<header class="capa"><div class="capa-in"><div class="capa-top"><span class="brand sm">manna</span>' + statusPills() + '</div><h1 class="capa-t">' + titulo + '</h1>' + (sub ? '<p class="capa-s">' + sub + '</p>' : '') + (extra || '') + '</div></header>';
 }
-
-function vJornada() {
+function statusPills() {
+  const st = S.streak, hoje = studiedToday();
+  return '<div class="pills"><button class="spill' + (hoje ? ' lit' : '') + '" data-a="sheet" data-s="ofensiva" aria-label="Ofensiva de ' + plural(st.count, 'dia', 'dias') + '">' + ART.grao() + '<b class="tnum">' + st.count + '</b><span>' + (st.count === 1 ? 'dia' : 'dias') + '</span></button>' +
+    '<button class="spill" data-a="open" data-ov="loja" aria-label="' + S.grains + ' grãos de maná, abrir loja"><b class="tnum">' + S.grains + '</b><span>grãos</span></button></div>';
+}
+function grainMark(state, n) {
+  return '<span class="gm ' + state + '" aria-hidden="true"><svg viewBox="0 0 30 40"><ellipse cx="15" cy="20" rx="12" ry="17" transform="rotate(-18 15 20)"/></svg><i class="tnum">' + (state === 'done' ? '' : n) + '</i>' + (state === 'done' ? icon('check', 'ic gm-c') : '') + '</span>';
+}
+function vTarefas() {
   ensureQuests();
-  const id = curTrail(), t = trilha(id), d = doneCount(id), xpd = todayXP();
-  let h = topBar() + '<main class="screen">';
-  if (ui.notice) h += '<div class="note" role="status">' + esc(ui.notice) + ' <button class="link" data-a="dismiss">Ok</button></div>';
-  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="risk">' + ART.mani('mani xs', 'triste') + '<p>Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite. Uma lição resolve.</p></div>';
-
-  /* Meta do dia e missões */
-  h += '<section class="daily"><div class="daily-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida: ' + xpd + ' XP' : 'Hoje você fez ' + xpd + ' de ' + S.goal + ' XP') + '</h2></div><span class="bar thick"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span>';
-  if (boostOn()) h += '<p class="boost">' + icon('raio') + ' XP em dobro por mais ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</p>';
-  h += '<ul class="quests">';
+  const xpd = todayXP();
+  let h = '<section class="tarefas"><div class="t-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida' : 'Hoje: ' + xpd + ' de ' + S.goal + ' XP') + '</h2>' + (boostOn() ? '<span class="boost">XP em dobro por ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</span>' : '') + '</div><span class="line"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><ul>';
   S.quests.list.forEach((q, i) => {
     const def = questDef(q.id), ok = q.p >= q.n;
-    h += '<li><div class="q-t"><span>' + def.t(q.n) + '</span><span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span></div><div class="q-r"><span class="bar"><i style="width:' + Math.min(100, q.p / q.n * 100) + '%"></i></span>' +
-      (q.claimed ? '<span class="claimed">' + icon('check', 'ic sm') + '</span>' : ok ? '<button class="btn mini" data-a="claim" data-i="' + i + '">+10 ' + ART.vaso('vaso xs') + '</button>' : '<span class="reward">' + ART.vaso('vaso xs') + '</span>') + '</div></li>';
+    h += '<li class="' + (ok ? 'ok' : '') + '"><span class="tk">' + (ok ? icon('check', 'ic xs') : '') + '</span><span class="tt">' + def.t(q.n) + '</span>' +
+      (q.claimed ? '<span class="muted">+10 grãos</span>' : ok ? '<button class="btn chip-btn" data-a="claim" data-i="' + i + '">Pegar 10 grãos</button>' : '<span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span>') + '</li>';
   });
-  h += '</ul></section>';
+  return h + '</ul></section>';
+}
+function vJornada() {
+  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length;
+  const extra = '<button class="trail-sw" data-a="open" data-ov="plano"><span><b>' + esc(t.nome) + '</b><small>' + d + ' de ' + n + (t.tipo === 'Plano' ? ' leituras' : ' lições') + ' · trocar ou ver o plano</small></span>' + icon('voltar', 'ic flip') + '</button><span class="line on-dark"><i style="width:' + (d / n * 100) + '%"></i></span>';
+  let h = capa('Sua porção de hoje', fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }), extra) + '<main class="screen sheet-top">';
+  if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite.</p></div>';
 
+  /* Porção do dia */
+  if (d < n) {
+    const l = t.licoes[d], ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+    if (studiedToday()) {
+      h += '<section class="porcao done"><div class="p-txt"><h2>Porção colhida hoje</h2><p class="muted">O maná não se guardava. A próxima é ' + esc(l.ref) + '.</p><button class="btn sec" data-a="startLesson" data-i="' + d + '">Ler mais uma agora</button></div>' + ART.mani('mani m-md', 'joinha', 'Porção colhida!') + '</section>';
+    } else {
+      h += '<section class="porcao">' + ART.mani('mani m-md', 'leitora', 'Sua porção de hoje está pronta.') + '<div class="p-txt"><p class="p-ref">' + esc(l.ref) + '</p><h2>' + esc(l.titulo) + '</h2>' + (ctx ? '<p class="muted">' + esc(ctx) + '</p>' : '') +
+        '<button class="btn" data-a="startLesson" data-i="' + d + '">Colher a porção' + icon('voltar', 'ic flip') + '</button><p class="fine">' + (S.quiz.minutos || 10) + ' minutos · +15 XP</p></div></section>';
+    }
+  } else {
+    h += '<section class="porcao done"><div class="p-txt"><h2>Glória a Deus! Você terminou ' + esc(t.nome) + '.</h2><button class="btn" data-a="open" data-ov="plano">Escolher a próxima etapa</button></div>' + ART.mani('mani m-md', 'grata', 'Glória a Deus!') + '</section>';
+  }
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
     const nd = c.study.dias.findIndex((_, i) => !c.feitos.includes(i));
-    h += '<button class="culto-row" data-a="open" data-ov="culto" data-id="' + c.id + '"><span class="cr-ic">' + icon('domingo') + '</span><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo do culto concluído' : 'Estudo do culto · dia ' + (nd + 1) + ' de 5') + '</small></span><span class="chev">›</span></button>';
+    h += '<button class="row-link" data-a="open" data-ov="culto" data-id="' + c.id + '"><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo da pregação concluído' : 'Estudo da pregação · dia ' + (nd + 1) + ' de 5') + '</small></span>' + icon('voltar', 'ic flip') + '</button>';
   }
+  h += vTarefas();
 
-  /* Caminho */
-  const US = t.unit || UNIT, units = Math.ceil(t.licoes.length / US), cu = Math.floor(Math.min(d, t.licoes.length - 1) / US);
-  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 4);
-  h += '<div class="path">';
-  if (u0 > 0) h += '<p class="path-more muted">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + '</p>';
+  /* Sumário da trilha */
+  const US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
+  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
+  h += '<section class="sumario"><h2>Sumário de ' + esc(t.nome) + '</h2>';
+  if (u0 > 0) h += '<p class="muted small">' + plural(u0 * US, 'lição anterior feita', 'lições anteriores feitas') + '</p>';
   for (let u = u0; u < u1; u++) {
-    const a = u * US, b = Math.min(t.licoes.length, a + US);
-    const unitDone = d >= b;
-    h += '<section class="unit"><div class="banner"><div><h3>' + esc(US === 7 ? chunkRef(t.licoes.slice(a, b).flatMap(l => parseRef(l.ref))).replace(/;.*$/, '') + (b - a > 1 ? ' em diante' : '') : t.licoes[a].titulo) + '</h3><small>' + (US === 7 ? 'Semana ' : 'Unidade ') + (u + 1) + ' · ' + (US === 7 ? 'leituras ' : 'lições ') + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
-    const deco = ART.deco[ART.decoOrder[(u + hash(id)) % ART.decoOrder.length]];
-    h += '<div class="deco-wrap ' + (u % 2 ? 'left' : 'right') + '">' + deco + '</div>';
+    const a = u * US, b = Math.min(n, a + US), unitDone = d >= b;
+    h += '<div class="parte"><h3>' + (US === 7 ? 'Semana ' : 'Parte ') + (u + 1) + '<span>' + (US === 7 ? esc(t.licoes[a].ref.split(';')[0]) + ' a ' + esc(t.licoes[b - 1].ref.split(';').pop().trim()) : esc(t.licoes[a].titulo)) + '</span></h3><ol>';
     for (let i = a; i < b; i++) {
-      const st = i < d ? 'done' : i === d ? 'cur' : 'lock';
-      const x = ZIG[i % ZIG.length];
-      h += '<div class="node-w" style="--x:' + x + 'px">' + (st === 'cur' && ui.pop !== i ? '<span class="start-bubble">' + (i === 0 ? 'Começar' : 'Continuar') + '</span>' : '') +
-        '<button class="node ' + st + '" data-a="pop" data-i="' + i + '" aria-label="Lição ' + (i + 1) + ': ' + esc(t.licoes[i].titulo) + (st === 'done' ? ', feita' : st === 'lock' ? ', bloqueada' : '') + '">' +
-        (st === 'done' ? icon('check', 'ic node-ic') : st === 'cur' ? icon('livro', 'ic node-ic') : icon('cadeado', 'ic node-ic')) + '</button>';
-      if (ui.pop === i) h += vPop(t, i, st);
-      h += '</div>';
+      const l = t.licoes[i], st = i < d ? 'done' : i === d ? 'cur' : 'lock';
+      h += '<li><button class="li-row ' + st + '" data-a="lrow" data-i="' + i + '" data-st="' + st + '">' + grainMark(st, i + 1) + '<span class="li-t"><b>' + esc(l.titulo) + '</b><small>' + (l.titulo !== l.ref ? esc(l.ref) + ' · ' : '') + (st === 'done' ? 'feita · toque para revisar' : st === 'cur' ? 'é a de hoje' : 'abre depois da anterior') + '</small></span>' + (st === 'lock' ? icon('cadeado', 'ic sm muted') : icon('voltar', 'ic sm flip')) + '</button></li>';
     }
     const ck = id + ':' + u, opened = S.chests[ck];
-    const x = ZIG[b % ZIG.length];
-    h += '<div class="node-w" style="--x:' + x + 'px"><button class="node chest' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : unitDone ? ', pronto para abrir' : ', bloqueado') + '">' + ART.vaso('vaso node-vaso') + '</button>' + (unitDone && !opened ? '<span class="start-bubble low">Abrir</span>' : '') + '</div>';
-    h += '</div></section>';
+    h += '<li><button class="li-row vaso-row' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '">' + ART.vaso('vaso gm-v') + '<span class="li-t"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : unitDone ? 'pronto: toque para abrir' : 'abre ao terminar a ' + (US === 7 ? 'semana' : 'parte')) + '</small></span></button></li></ol></div>';
   }
-  if (u1 < units) h += '<p class="path-more muted">Mais ' + plural(t.licoes.length - u1 * US, 'lição', 'lições') + ' adiante na jornada.</p>';
-  h += '<div class="path-end">' + ART.mani('mani md', isDone(id) ? 'festa' : 'feliz') + '<p>' + (isDone(id) ? 'Você completou ' + t.nome + '.' : 'Faltam ' + plural(t.licoes.length - d, 'lição', 'lições') + ' para completar ' + t.nome + '.') + '</p><button class="btn sec" data-a="open" data-ov="plano">Ver meu plano</button></div></div>';
-  return h + '</main>';
-}
-
-function vPop(t, i, st) {
-  const l = t.licoes[i];
-  if (st === 'lock') return '<div class="pop lock" role="dialog"><b>' + esc(l.titulo) + '</b><p>Complete as lições anteriores para liberar esta.</p></div>';
-  return '<div class="pop" role="dialog"><b>' + esc(l.titulo) + '</b><p>' + l.ref + ' · lição ' + (i + 1) + ' de ' + t.licoes.length + '</p>' +
-    (st === 'done' ? '<button class="btn wbtn" data-a="startLesson" data-i="' + i + '" data-r="1">' + icon('repetir', 'ic sm') + ' Revisar · +5 XP</button>' : '<button class="btn wbtn" data-a="startLesson" data-i="' + i + '">Começar · +15 XP</button>') + '</div>';
+  if (u1 < units) h += '<p class="muted small">Mais ' + plural(n - u1 * US, 'lição', 'lições') + ' depois destas.</p>';
+  return h + '</section></main>';
 }
 
 /* ---------- Construção dos exercícios ---------- */
@@ -1759,21 +1963,24 @@ function bibleText(vs, opts) {
 }
 
 /* ---------- Telas da lição ---------- */
+function lessonTop(L, t, l) {
+  const tot = L.steps.length, segs = Array.from({ length: tot }, (_, i) => '<i class="' + (i < L.i ? 'on' : i === L.i ? 'now' : '') + '"></i>').join('');
+  return '<header class="ltop"><div class="lt-row"><span class="lt-t"><b>' + esc(l.ref) + '</b><small class="tnum">' + (L.review ? 'Revisão · ' : '') + 'etapa ' + Math.min(L.i + 1, tot) + ' de ' + tot + (L.combo >= 3 ? ' · ' + L.combo + ' acertos seguidos' : '') + '</small></span><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button></div><div class="segs">' + segs + '</div></header>';
+}
 function vLessonScreen() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
-  if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'pensa') + '<p class="body-l">Abrindo a Bíblia…</p></main></div>';
+  if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col"><p class="body-l">Abrindo a Bíblia…</p></main></div>';
   if (L.phase === 'fim') return vFim(L);
   if (L.phase === 'ofensiva') return vOfensivaUp();
-  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'triste') + '<h2 class="qt">Espere, não vá ainda!</h2><p class="body-l">Se sair agora, você perde o progresso desta lição.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn ghost danger-t" data-a="lessonQuit">Sair da lição</button></footer></div>';
-  const t2 = t, s = L.steps[L.i], prog = Math.min(100, (L.i / (L.steps.length)) * 100);
-  let h = '<div class="lesson"><header class="lhead"><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button><span class="bar thick"><i style="width:' + prog + '%"></i></span>' +
-    (L.combo >= 3 ? '<span class="combo tnum">' + L.combo + ' seguidas</span>' : '<span class="combo ghost tnum">' + (L.review ? 'Revisão' : '') + '</span>') + '</header><main class="lz">';
+  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col"><h2 class="qt">Sair da lição?</h2><p class="body-l">O que você fez nesta lição não fica salvo.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn sec" data-a="lessonQuit">Sair</button></footer></div>';
+  const s = L.steps[L.i];
+  let h = '<div class="lesson">' + lessonTop(L, t, l) + '<main class="lz">';
   if (s.k === 'leia') {
-    const ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? S.quiz.versao : '';
+    const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
     const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">' + (L.vs.length ? 'Leia <b>' + esc(l.ref) + '</b> com calma. Depois a gente pratica.' : 'Abra a sua Bíblia em <b>' + esc(l.ref) + '</b> e leia com calma.') + '</div></div>' +
-      '<article class="intro"><h2 class="sc-t">' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref && !l.plano ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
-    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre (BLIVRE), CC BY.' + (ver && ver !== 'BLIVRE' ? ' Se preferir, leia também na ' + ver + '.' : '') + '</p></article>';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + t.nota + '</p>' : '') + '</article>';
+    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>';
+    else h += '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
       if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
@@ -1781,68 +1988,69 @@ function vLessonScreen() {
       if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
     }
     h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label></main>';
-    h += '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Continuar</button></footer></div>';
-    return h;
+    return h + '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
   if (s.k === 'reflita') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="intro"><h2 class="sc-q">' + esc(s.q) + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
-    h += '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir lição</button></footer></div>';
-    return h;
+    h += '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    return h + '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
   }
   const ck = L.checked;
   if (s.k === 'mc') {
-    h += '<h2 class="ex-q">' + esc(s.q) + '</h2>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="choices">';
-    s.opts.forEach((o, j) => {
+    h += '<h1 class="ex-q">' + esc(s.q) + '</h1>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="opts" role="radiogroup">';
+    s.opts.forEach(o => {
       let cls = L.pick === o ? ' sel' : '';
       if (ck) cls = o === s.ans ? ' right' : (L.pick === o ? ' wrong' : ' dim');
-      h += '<button class="choice' + cls + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '><span class="key tnum">' + (j + 1) + '</span><span>' + esc(o) + '</span></button>';
+      h += '<button class="opt' + cls + '" role="radio" aria-checked="' + (L.pick === o) + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '><span class="rd">' + (ck && o === s.ans ? icon('check', 'ic xs') : ck && L.pick === o ? icon('fechar', 'ic xs') : '') + '</span><span>' + esc(o) + '</span></button>';
     });
     h += '</div>';
   } else if (s.k === 'fill') {
-    const shown = L.pick ? '<span class="blank filled">' + esc(L.pick) + '</span>' : '<span class="blank">&nbsp;</span>';
-    h += '<h2 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h2>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
-    s.opts.forEach(o => { h += '<button class="tile' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
+    const shown = L.pick ? '<span class="gap filled">' + esc(L.pick) + '</span>' : '<span class="gap">&nbsp;</span>';
+    h += '<h1 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h1>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="verse">' + esc(s.before) + shown + esc(s.after) + '</p><div class="words">';
+    s.opts.forEach(o => { h += '<button class="word' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
     h += '</div>';
   } else if (s.k === 'tiles') {
-    h += '<h2 class="ex-q">' + s.prompt + '</h2><div class="speak small">' + ART.mani('mani xs', 'pensa') + '<div class="bubble">' + esc(s.hint) + '</div></div><div class="tiles answer">';
-    if (!L.built.length) h += '<span class="placeholder">Toque nas palavras abaixo</span>';
-    L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="tile" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
-    h += '</div><div class="tiles bank">';
-    s.bank.forEach(w => { const used = L.built.includes(w.id); h += '<button class="tile' + (used ? ' used' : '') + '" data-a="tile" data-id="' + w.id + '"' + (used || ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
+    const parts = String(s.hint).split(': ');
+    h += '<h1 class="ex-q">' + s.prompt + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
+    L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="gap filled" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button> '; });
+    if (!ck && L.built.length < s.target.length) h += '<span class="gap">&nbsp;</span>';
+    h += '</p><div class="words">';
+    s.bank.forEach(w => { const used = L.built.includes(w.id); h += '<button class="word' + (used ? ' used' : '') + '" data-a="tile" data-id="' + w.id + '"' + (used || ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
     h += '</div>';
+  }
+  if (ck) {
+    const ok = ck === 'ok', ansTxt = s.k === 'tiles' ? s.target.join(' ') : s.ans;
+    const elog = ['Isso mesmo.', 'Certo.', 'Muito bem.', 'Exato.'][(L.right + L.i) % 4];
+    h += '<div class="fb ' + (ok ? 'ok' : 'bad') + '" role="status"><span class="fb-i">' + icon(ok ? 'check' : 'fechar', 'ic sm') + '</span><div><b>' + (ok ? elog : 'A resposta é: ' + esc(ansTxt)) + '</b>' + (s.exp && (s.ia || !ok) ? '<p>' + esc(s.exp) + '</p>' : '') + '</div></div>';
   }
   h += '</main>';
   const ready = s.k === 'tiles' ? L.built.length > 0 : !!L.pick;
-  if (!ck) h += '<footer class="lfoot"><button class="btn" data-a="checkAns"' + (ready ? '' : ' disabled') + '>Verificar</button></footer>';
-  else {
-    const ok = ck === 'ok', ansTxt = s.k === 'tiles' ? s.target.join(' ') : s.ans;
-    const elog = ['Muito bem!', 'Isso mesmo!', 'Excelente!', 'Certinho!', 'Mandou bem!'][(L.right + L.i) % 5];
-    h += '<footer class="lfoot sheet ' + (ok ? 'ok' : 'bad') + '" role="status"><div class="sheet-t">' + (ok ? icon('check', 'ic') : icon('fechar', 'ic')) + '<div><h3>' + (ok ? elog : 'Resposta certa:') + '</h3>' + (ok ? (s.exp && s.ia ? '<p>' + esc(s.exp) + '</p>' : '') : '<p><b>' + esc(ansTxt) + '</b></p>' + (s.exp ? '<p>' + esc(s.exp) + '</p>' : '')) + '</div></div><button class="btn ' + (ok ? 'okbtn' : 'badbtn') + '" data-a="next">Continuar</button></footer>';
-  }
+  h += ck ? '<footer class="lfoot"><button class="btn" data-a="next">Continuar' + icon('voltar', 'ic flip') + '</button></footer>'
+    : '<footer class="lfoot"><button class="btn" data-a="checkAns"' + (ready ? '' : ' disabled') + '>Conferir</button></footer>';
   return h + '</div>';
 }
 
 function vFim(L) {
-  const r = L.result;
-  return '<div class="lesson"><main class="lz center-col fim">' + ART.mani('mani lg', 'festa') + '<h2 class="qt">' + (L.review ? 'Revisão concluída!' : r.perfect ? 'Lição perfeita!' : 'Lição concluída!') + '</h2>' +
-    '<div class="res"><div class="r-xp"><small>XP total</small><b data-count="' + r.xp + '">0</b></div><div class="r-ac"><small>' + (r.acc >= 90 ? 'Precisão alta' : 'Precisão') + '</small><b data-count="' + r.acc + '" data-suf="%">0%</b></div><div class="r-tm"><small>Tempo</small><b>' + r.tempo + '</b></div></div>' +
-    (r.grains ? '<p class="body-l">+' + r.grains + ' grãos de maná' + (r.boost ? ' · XP em dobro ativo' : '') + '</p>' : '') +
-    (S.group && !L.review ? '<p class="fine">Check-in postado no grupo ' + esc(S.group.nome) + '.</p>' : '') +
-    '</main><footer class="lfoot"><button class="btn" data-a="afterFim">Continuar</button></footer></div>';
+  const r = L.result, l = trilha(L.id).licoes[L.idx];
+  const linha = (k, v) => '<li><span>' + k + '</span><i></i><b class="tnum">' + v + '</b></li>';
+  return '<div class="lesson"><main class="lz fim">' + ART.mani('mani m-lg', 'grata', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.') +
+    '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(l.ref) + '</h1><ul>' +
+    linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Acertos', '<span data-count="' + r.acc + '">0</span>%') + linha('Tempo', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
+    '</ul>' + (r.perfect && !L.review ? '<p class="muted">Sem nenhum erro.</p>' : '') + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
+    '</main><footer class="lfoot"><button class="btn" data-a="afterFim">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function weekRow() {
   const ws = weekStart(), nm = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
   return '<div class="week">' + nm.map((n, i) => {
     const k = addDays(ws, i), on = S.days.includes(k), hoje = k === todayK();
-    return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '"><small>' + n + '</small><span>' + (on ? ART.grao() : '') + '</span></div>';
+    return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '">' + grainMark(on ? 'done' : hoje ? 'cur' : 'lock', '') + '<small>' + n + '</small></div>';
   }).join('') + '</div>';
 }
 function vOfensivaUp() {
   const n = S.streak.count;
-  const frase = n === 1 ? 'Primeiro dia colhido. O maná cai de novo amanhã.' : n < 7 ? 'Faltam ' + (7 - n) + ' dias para uma semana inteira.' : n % 7 === 0 ? 'Mais uma semana inteira na Palavra.' : 'O maná não se guardava, e você colheu de novo.';
-  return '<div class="lesson streak-bg"><main class="lz center-col"><div class="big-streak">' + ART.grao('grao huge') + '<b class="tnum" data-count="' + n + '">' + n + '</b></div><h2 class="qt">' + plural(n, 'dia', 'dias') + ' de ofensiva!</h2><p class="body-l">' + frase + '</p>' + weekRow() +
-    '<p class="fine">Protetores de ofensiva: ' + S.protetores + '. Eles salvam um dia perdido.</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar</button></footer></div>';
+  const fala = n === 1 ? 'Primeiro dia colhido!' : n + ' dias seguidos! Continue firme.';
+  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', 'joinha', fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">' + n + '</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
+    '<p class="muted">' + (S.protetores ? 'Você tem ' + plural(S.protetores, 'protetor', 'protetores') + ' para um dia difícil.' : 'Sem protetor guardado: dá para comprar na loja.') + '</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function finishLesson() {
@@ -1867,7 +2075,7 @@ function finishLesson() {
   checkAch(); save();
   L.result = { xp, acc, tempo, perfect, grains, boost, up };
   L.phase = 'fim';
-  render(); SND.fim(); rain(80); countUp();
+  render(); SND.fim(); rain(40); countUp();
 }
 
 /* Manna: objetivo do ano, plano aberto, catálogo, leitor da Bíblia Livre, hinário e trilhas criadas por IA. */
@@ -1905,7 +2113,7 @@ function vSugestoes(onb) {
   if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
-  if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>O Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Pedir sugestões mais precisas ao Mani</button>';
+  if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Refinar as sugestões com IA</button>';
   return h;
 }
 
@@ -1919,14 +2127,14 @@ function vFaixas() {
 }
 function objPronto() { return (S.objSel || []).length > 0 || S.objetivo.trim().length >= 3; }
 function vObjetivo(s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">O que você quer viver com a Bíblia este ano? Marque quantos quiser.</div></div>' + vFaixas() +
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">O que você quer viver com a Bíblia este ano?</h1><p class="lede">Marque quantos quiser.</p>' + vFaixas() +
     '<label class="field">Quer contar com suas palavras?<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e a vida de Daniel">' + esc(S.objetivo) + '</textarea></label>';
   return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (objPronto() ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
 }
 function vQuizSug(s) {
   const sg = sugestoes();
   if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para você. Escolha quantas quiser e mude quando precisar.</div></div>';
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">Trilhas para o seu objetivo</h1><p class="lede">Escolha quantas quiser. Dá para mudar quando precisar.</p>';
   h += vSugestoes(true);
   return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
 }
@@ -1992,7 +2200,7 @@ function saveTrail(t, add) {
 
 /* ---------- Bíblia Livre e hinário ---------- */
 function vBiblia() {
-  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
+  let h = '<main class="screen sheet-top">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
     '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.bibMode === 'biblia') + '" data-a="bibMode" data-m="biblia">Bíblia</button><button role="tab" aria-selected="' + (ui.bibMode === 'hinario') + '" data-a="bibMode" data-m="hinario">Hinário</button></div>';
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {
@@ -2062,14 +2270,14 @@ if (window.claude && window.claude.use) {
 
 /* ---------- Onboarding ---------- */
 const QUIZ = [
-  { k: 'denom', t: 'Qual é a sua igreja ou denominação?', fala: 'Prazer, eu sou o Mani! Primeiro, me conta: qual é a sua igreja?', opts: DENOMINACOES.map(d => d[0]) },
+  { k: 'denom', t: 'Qual é a sua igreja ou denominação?', sub: 'Nas dúvidas, a visão da sua tradição aparece primeiro.', fala: '', opts: DENOMINACOES.map(d => d[0]) },
   { k: 'convertido', t: 'Há quanto tempo você é convertido?', fala: 'Há quanto tempo você caminha com Jesus?', opts: ['Menos de 1 ano', 'De 1 a 5 anos', 'De 5 a 15 anos', 'Mais de 15 anos', 'Ainda estou conhecendo'] },
   { k: 'leitura', t: 'Como está sua leitura bíblica hoje?', fala: 'Sem julgamento: como está sua leitura da Bíblia?', opts: ['Leio todo dia', 'Leio às vezes', 'Parei de ler'] },
   { k: 'minutos', t: 'Quanto tempo você tem por dia?', fala: 'Quanto tempo por dia você quer separar?', opts: [[5, '5 minutos · leve'], [10, '10 minutos · firme'], [20, '20 minutos · intenso']] },
   { k: 'objetivo', t: 'Qual é o seu objetivo para este ano?' },
   { k: 'sugestoes', t: 'Sugestões para o seu objetivo' },
   { k: 'celula', t: 'Você participa de célula ou EBD?', fala: 'Você participa de célula ou de EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
-  { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual versão da Bíblia você usa? O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, dá para acompanhar nela também.', opts: [
+  { k: 'versao', t: 'Qual versão da Bíblia você usa?', sub: 'O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, pode acompanhar nela também.', fala: 'Qual versão da Bíblia você usa? O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, dá para acompanhar nela também.', opts: [
     { v: 'BLIVRE', l: 'Bíblia Livre', tag: 'Já vem no app', d: 'Tradução brasileira de 2018, feita a partir do hebraico e do grego. Você lê o texto completo aqui no Manna, sem precisar abrir outra Bíblia.' },
     { v: 'ARA', l: 'Almeida Revista e Atualizada (ARA)', d: 'Linguagem formal e muito fiel ao original. Comum em igrejas batistas, presbiterianas e adventistas.' },
     { v: 'ARC', l: 'Almeida Revista e Corrigida (ARC)', d: 'A mais tradicional, com português clássico ("vós", "porventura"). Muito usada nas Assembleias de Deus.' },
@@ -2085,19 +2293,19 @@ const goalFor = m => ({ 5: 20, 10: 30, 20: 50 }[m] || 30);
 
 function vOnboarding() {
   const s = S.step;
-  if (s === 0) return '<main class="onb-hero"><div class="sky">' + ART.banner() + '</div>' + ART.mani('mani hero', 'feliz') +
-    '<div class="onb-c"><h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p><p class="body-l">Uma jornada pela Bíblia com lições curtas, ofensiva, liga semanal e os amigos da sua igreja.</p>' +
-    '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto.</p></div></main>';
+  if (s === 0) return '<main class="onb-hero"><div class="onb-top">' + ART.logo('logo md') + '<span class="brand">manna</span></div>' + ART.mani('mani m-hero', 'leitora', 'Oi! Eu sou Mani. Vamos colher sua porção de hoje?') +
+    '<div class="onb-c"><h1>Sua porção diária da Palavra</h1><p>Lições curtas na Bíblia, a pregação do culto virando estudo e os irmãos da sua igreja junto com você.</p>' +
+    '<button class="btn" data-a="next">Montar meu plano' + icon('voltar', 'ic flip') + '</button><p class="fine">Leva 1 minuto.</p></div></main>';
   if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
   if (s === QUIZ.length + 2) return vPaywall();
   return vConvite();
 }
 function quizHead(s) {
-  return '<div class="qhead"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><span class="bar thick"><i style="width:' + (s / QUIZ.length * 100) + '%"></i></span></div>';
+  return '<div class="qhead"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><span class="tnum muted">' + s + ' de ' + QUIZ.length + '</span></div><div class="segs">' + QUIZ.map((_, i) => '<i class="' + (i + 1 < s ? 'on' : i + 1 === s ? 'now' : '') + '"></i>').join('') + '</div>';
 }
 function vQuiz(q, s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', s === 5 ? 'festa' : 'feliz') + '<div class="bubble">' + q.fala + '</div></div><h2 class="sr">' + q.t + '</h2>';
+  let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">' + q.t + '</h1>' + (q.sub ? '<p class="lede">' + q.sub + '</p>' : '');
   if (q.multi) {
     const sel = S.quiz.trilhas;
     ['Livro', 'Personagem', 'Tema'].forEach(tp => {
@@ -2126,7 +2334,7 @@ function vQuiz(q, s) {
 function vResultado() {
   const q = S.quiz, first = trilha(q.trilhas[0]);
   const des = (q.celula === 'Célula' || q.celula === 'Os dois') ? 'Chame sua célula para "Evangelhos em 30 dias".' : 'Faça 7 dias seguidos e ganhe a medalha Fiel.';
-  let h = '<main class="screen"><div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Pronto! Montei o seu plano. Começa hoje, ' + fmt(todayK()) + '.</div></div><h1 class="h1">Seu plano para 2027</h1>';
+  let h = '<main class="screen">' + ART.mani('mani m-md row', 'grata', 'Pronto! Seu plano está montado.') + '<h1 class="h1">Seu plano para 2027</h1><p class="lede">Começa hoje, ' + fmt(todayK()) + '.</p>';
   h += '<section class="plan-path">';
   q.trilhas.forEach((id, i) => {
     const t = trilha(id);
@@ -2145,7 +2353,7 @@ function vPaywall() {
   const p = S.plano || 'anual';
   const plans = [['anual', 'Anual', 'R$ 7,49', '/mês', 'R$ 89,90 cobrados uma vez por ano'], ['mensal', 'Mensal', 'R$ 9,90', '/mês', 'Cancele quando quiser'], ['familia', 'Família ou célula', 'R$ 149,90', '/ano', 'Até 5 pessoas']];
   const preco = { anual: 'R$ 89,90 por ano', mensal: 'R$ 9,90 por mês', familia: 'R$ 149,90 por ano' }[p];
-  let h = '<main class="screen"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><div class="pw-top">' + ART.deco.vasoGrande + '<h1 class="h1">Comece com 7 dias grátis</h1></div>' +
+  let h = '<main class="screen"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button><h1 class="h1">Comece com 7 dias grátis</h1>' +
     '<ul class="perks"><li>' + icon('check', 'ic sm') + 'Jornada completa com todas as metas</li><li>' + icon('check', 'ic sm') + 'Culto de domingo virando estudo da semana</li><li>' + icon('check', 'ic sm') + 'Dúvidas com versículos e as visões das tradições</li><li>' + icon('check', 'ic sm') + 'Liga semanal, grupos e protetor de ofensiva</li></ul><div class="choices">';
   plans.forEach(([id, nome, v, per, det]) => {
     h += '<button class="choice plan' + (p === id ? ' sel' : '') + '" data-a="plan" data-id="' + id + '" aria-pressed="' + (p === id) + '">' + (id === 'anual' ? '<span class="ribbon">Economize 24%</span>' : '') + '<span class="pl-l"><b>' + nome + '</b><small>' + det + '</small></span><span class="pl-p"><b class="tnum">' + v + '</b><small>' + per + '</small></span></button>';
@@ -2155,7 +2363,7 @@ function vPaywall() {
   return h;
 }
 function vConvite() {
-  return '<main class="screen"><div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Quem lê junto não para. Bora chamar o pessoal da igreja?</div></div><h1 class="h1">Estude com a sua igreja</h1>' + vGroupForms(true) + '<button class="btn ghost" data-a="finish">Agora não</button></main>';
+  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms(true) + '<button class="btn sec" data-a="finish">Agora não</button></main>';
 }
 
 /* ---------- Domingo ---------- */
@@ -2164,11 +2372,11 @@ function busyBtn(label) {
     (ui.aiErr ? '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>' : '');
 }
 function pageHead(title, sub) {
-  return '<header class="phead"><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</header>';
+  return capa(title, sub);
 }
 function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
+  let h = '<main class="screen sheet-top">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + (ui.domMode === 'culto' ? ART.mani('mani m-sm row', 'leitora', 'Como foi o culto? Me conta o tema.') : '') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
     h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
       '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
@@ -2208,7 +2416,7 @@ function vDuvidas() {
   const f = ui.filtro.toLowerCase();
   const list = DUVIDAS.filter(d => !f || (d.q + ' ' + d.cat).toLowerCase().includes(f));
   const cats = [...new Set(DUVIDAS.map(d => d.cat))];
-  let h = '<main class="screen">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
+  let h = '<main class="screen sheet-top">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
   h += '<form class="form ask" data-f="duvida"><label class="field" for="d-q">Pergunte sem vergonha. Só você vê.</label><textarea id="d-q" rows="2" maxlength="300" aria-label="Sua pergunta" placeholder="Ex.: Posso ser padrinho numa igreja católica?"></textarea>' +
     (SAMPLE ? busyBtn('Perguntar') : '<p class="fine">' + (aiChecked ? 'A pergunta livre usa IA e não está disponível aqui. A biblioteca abaixo funciona normalmente.' : 'Verificando a IA…') + '</p>') + '</form>';
   if (S.perguntas.length) {
@@ -2230,7 +2438,7 @@ function vDuvidas() {
 
 /* ---------- Liga e grupo ---------- */
 function vLiga() {
-  let h = '<main class="screen"><div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.ligaMode === 'liga') + '" data-a="ligaMode" data-m="liga">Liga semanal</button><button role="tab" aria-selected="' + (ui.ligaMode === 'grupo') + '" data-a="ligaMode" data-m="grupo">Meu grupo</button></div>';
+  let h = '<main class="screen sheet-top">' + capa(ui.ligaMode === 'grupo' ? (S.group ? esc(S.group.nome) : 'Seu grupo') : 'Liga da semana', ui.ligaMode === 'grupo' ? 'Leitura junto com a sua igreja.' : 'Quem mais estudou nesta semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.ligaMode === 'liga') + '" data-a="ligaMode" data-m="liga">Liga semanal</button><button role="tab" aria-selected="' + (ui.ligaMode === 'grupo') + '" data-a="ligaMode" data-m="grupo">Meu grupo</button></div>';
   if (ui.ligaMode === 'grupo') return h + vGrupoBody() + '</main>';
   const ws = weekStart(), di = diff(ws, todayK()), rows = leagueTable(ws, di), lg = LIGAS[S.league.div];
   const resta = 7 - di;
@@ -2261,7 +2469,8 @@ function vGrupoBody() {
   if (!g) return '<p class="lede">Leia junto com a sua célula: desafio com prazo, ranking e check-in todo dia.</p>' + vGroupForms(false);
   const d = desafio(g.desafio), dia = Math.min(d.dias, diff(g.start, todayK()) + 1), meus = S.chapters - g.chapAtStart;
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
-  let h = '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
+  const semana = weekChaps() + MEMBROS.reduce((a, m) => a + Math.round(m.rate * 7), 0);
+  let h = ART.mani('mani m-sm row', 'joinha', 'Sua célula leu ' + semana + ' capítulos esta semana.') + '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
   h += '<section class="card"><div class="sec-h"><h3>Seu progresso no desafio</h3><span class="tnum muted">' + meus + '/' + d.caps + '</span></div><span class="bar thick"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><p class="fine">O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' capítulos por dia.</p></section>';
   const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
   h += '<section class="sec"><h2>Você está em ' + mp + 'º no grupo</h2><ol class="league">';
@@ -2284,7 +2493,7 @@ function vGrupoBody() {
 function vPerfil() {
   const st = S.streak, lg = LIGAS[S.league.div];
   const resumo = 'Minha semana no Manna: ofensiva de ' + plural(st.count, 'dia', 'dias') + ', ' + plural(weekChaps(), 'capítulo lido', 'capítulos lidos') + ' e ' + weekXPFrom(weekStart()) + ' XP. Sua porção diária da Palavra.';
-  let h = '<main class="screen"><section class="prof"><span class="av xl me">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
+  let h = '<main class="screen sheet-top">' + capa('Perfil', '') + '<section class="prof"><span class="av xl me">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
   h += '<section class="stats2"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + S.xp + '</b><span>XP no total</span></div><div><b>' + lg.nome + '</b><span>liga atual</span></div><div><b class="tnum">' + S.chapters + '</b><span>capítulos lidos</span></div></section>';
   h += '<section class="sec"><h2>Você estudou ' + weekDays() + ' de 7 dias nesta semana</h2><div class="card">' + weekRow() + '<p class="fine">Recorde: ' + plural(st.best, 'dia', 'dias') + '. Protetores guardados: ' + S.protetores + ' de 2.</p></div></section>';
   h += '<section class="sec"><h2>' + plural(ACH.filter(a => achLevel(a) > 0).length, 'conquista', 'conquistas') + ' de ' + ACH.length + '</h2><ul class="medals">';
@@ -2372,7 +2581,7 @@ function vDuvida(id) {
   const order = minha ? [minha].concat(Object.keys(TRADICOES).filter(k => k !== minha)) : Object.keys(TRADICOES);
   order.forEach(k => { if (d.trad[k]) h += '<div class="trad' + (k === minha ? ' mine' : '') + '"><p class="who"><b>' + TRADICOES[k] + '</b>' + (k === minha ? ' <span class="muted">· sua tradição</span>' : '') + '</p><p>' + esc(d.trad[k]) + '</p></div>'; });
   if (!minha) h += '<p class="fine">Sua igreja pode ter uma posição própria sobre isso.</p>';
-  h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section><section class="pastor">' + ART.mani('mani xs', 'feliz') + '<div><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja.</p></div></section>';
+  h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section><section class="pastor"><div><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja.</p></div></section>';
   if (d.ia) h += '<p class="fine">Resposta gerada por IA. Confira os versículos.</p>';
   return h + '</main>';
 }
@@ -2446,6 +2655,11 @@ const A = {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
+  },
+  lrow(el) {
+    const i = Number(el.dataset.i), st = el.dataset.st;
+    if (st === 'lock') { toast('Esta lição abre depois da anterior.'); return; }
+    startLesson(curTrail(), i, st === 'done'); window.scrollTo(0, 0);
   },
   pop(el) {
     const i = Number(el.dataset.i);
