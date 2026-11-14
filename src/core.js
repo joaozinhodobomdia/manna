@@ -14,7 +14,7 @@ function fresh() {
     quests: null, league: { week: null, div: 0 },
     cultos: [], ebds: [], duvidasLidas: [], perguntas: [],
     group: null, ach: {}, offset: 0, sound: true, goal: 30,
-    objetivo: '', custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
+    objetivo: '', objSel: [], custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
 function load() {

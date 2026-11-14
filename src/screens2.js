@@ -8,7 +8,8 @@ const MAX_METAS = 12;
 
 /* ---------- Sugestões ---------- */
 function sugestoes() {
-  if (!ui.sug || ui.sug.txt !== S.objetivo) ui.sug = { txt: S.objetivo, ids: sugerirLocal(S.objetivo), frase: '', tema: null, ia: false };
+  const key = objTexto();
+  if (!ui.sug || ui.sug.txt !== key) ui.sug = { txt: key, ids: sugerirLocal(S.objetivo, S.objSel), frase: '', tema: null, ia: false };
   return ui.sug;
 }
 async function sugerirIA() {
@@ -16,53 +17,59 @@ async function sugerirIA() {
   const cat = catalogo().map(t => t.id + ' = ' + t.nome + ' (' + tipoDe(t) + ')').join('\n');
   ui.sugBusy = true; keep();
   try {
-    const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano, com as palavras dela: "' + S.objetivo + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
+    const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano: "' + objTexto() + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
     const ids = (r.ids || []).filter(id => trilha(id));
-    ui.sug = { txt: S.objetivo, ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
+    ui.sug = { txt: objTexto(), ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
   } catch (e) { if (e.code !== 'cancelled') toast(aiMsg(e)); }
   ui.sugBusy = false; keep();
 }
 function trailCard(t, opts) {
   const no = S.quiz.trilhas.includes(t.id), n = t.licoes.length;
-  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><span class="tc-tipo">' + tipoDe(t) + '</span><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
+  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + tipoDe(t) + ' · ' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
 }
 function vSugestoes(onb) {
   const sg = sugestoes();
   let h = '';
-  if (sg.frase) h += '<div class="speak small">' + ART.mani('mani xs', 'feliz') + '<div class="bubble">' + esc(sg.frase) + '</div></div>';
+  if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
   if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>O Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Pedir sugestões mais precisas ao Mani</button>';
   return h;
 }
 
-/* Etapa do quiz: objetivo em texto livre */
+/* Objetivo do ano: faixas com checkbox e um campo de texto */
+function vFaixas() {
+  const sel = S.objSel || [];
+  return '<div class="faixas" role="group" aria-label="Objetivos">' + OBJ_OPCOES.map(o => {
+    const on = sel.includes(o.id);
+    return '<button class="faixa' + (on ? ' on' : '') + '" role="checkbox" aria-checked="' + on + '" data-a="objToggle" data-id="' + o.id + '"><span class="cbox">' + (on ? icon('check', 'ic xs') : '') + '</span><span class="fx-t"><b>' + o.t + '</b><small>' + o.d + '</small></span></button>';
+  }).join('') + '</div>';
+}
+function objPronto() { return (S.objSel || []).length > 0 || S.objetivo.trim().length >= 3; }
 function vObjetivo(s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Agora a parte boa: o que você quer viver com a Bíblia este ano? Escreva do seu jeito.</div></div>' +
-    '<label class="sr" for="obj">Seu objetivo</label><textarea id="obj" class="obj" rows="4" maxlength="400" placeholder="Ex.: Quero ler a Bíblia toda e entender melhor a vida de Davi">' + esc(S.objetivo) + '</textarea>' +
-    '<h3 class="grp">Ideias para começar</h3><div class="chips">' + OBJ_SUGEST.map(o => '<button class="chip" data-a="objChip" data-t="' + esc(o) + '">' + esc(o) + '</button>').join('') + '</div>';
-  return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (S.objetivo.trim().length >= 3 ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">O que você quer viver com a Bíblia este ano? Marque quantos quiser.</div></div>' + vFaixas() +
+    '<label class="field">Quer contar com suas palavras?<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e a vida de Daniel">' + esc(S.objetivo) + '</textarea></label>';
+  return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (objPronto() ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
 }
 function vQuizSug(s) {
   const sg = sugestoes();
   if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para o seu objetivo. Escolha quantas quiser: você monta o seu ano e muda quando precisar.</div></div>';
-  h += '<p class="obj-echo">"' + esc(S.objetivo) + '"</p>' + vSugestoes(true);
-  h += '<p class="fine">Depois, em "Meu plano", você encontra os 66 livros, personagens, épocas, planos de leitura e pode criar trilhas novas.</p>';
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para você. Escolha quantas quiser e mude quando precisar.</div></div>';
+  h += vSugestoes(true);
   return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
 }
 
 /* ---------- Meu plano ---------- */
 function vPlano() {
   let h = ovHead('Meu plano') + '<main class="screen"><h1 class="h1">Seu ano na Palavra</h1>';
-  h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div><p class="obj-echo">' + (S.objetivo ? '"' + esc(S.objetivo) + '"' : 'Você ainda não escreveu um objetivo.') + '</p></section>';
-  h += '<section class="sec"><div class="sec-h"><h2>Etapas</h2><span class="muted">na ordem do seu ano</span></div><ol class="etapas">';
+  h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div>' + (objTexto() ? '<ul class="dots">' + objTexto().split('. ').map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="muted">Você ainda não definiu um objetivo.</p>') + '</section>';
+  h += '<section class="sec"><div class="sec-h"><h2>' + plural(S.quiz.trilhas.length, 'etapa', 'etapas') + ' no seu ano</h2></div><ol class="etapas">';
   S.quiz.trilhas.forEach((id, i) => {
     const t = trilha(id), d = doneCount(id), n = t.licoes.length;
     h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover">Remover</button></div></div></li>';
   });
   h += '</ol></section><button class="btn" data-a="open" data-ov="explorar" data-id="Sugestões">Adicionar ao plano</button>';
-  return h + '<p class="fine">Você pode quebrar o ano em etapas: termine uma trilha e a próxima vira a sua jornada. Toque no nome para ir direto para ela.</p></main>';
+  return h + '</main>';
 }
 
 /* ---------- Explorar catálogo ---------- */
@@ -70,9 +77,9 @@ function vExplorar(tab) {
   const aba = ui.expl = tab && ['Sugestões', 'Criar', ...TIPOS].includes(tab) ? (ui.ov.id = tab) : ui.expl;
   let h = ovHead('Explorar') + '<main class="screen"><h1 class="h1">Monte o seu ano</h1><div class="tabs-h" role="tablist">' + ['Sugestões', ...TIPOS, 'Criar'].map(x => '<button role="tab" aria-selected="' + (aba === x ? 'true' : 'false') + '" data-a="expl" data-t="' + x + '">' + ({ Plano: 'Planos', Livro: 'Livros', Personagem: 'Personagens', Época: 'Épocas', Tema: 'Temas' }[x] || x) + '</button>').join('') + '</div>';
   if (aba === 'Sugestões') {
-    h += '<form class="form" data-f="objetivo"><label>Seu objetivo para o ano<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form>' + vSugestoes(false);
+    h += vFaixas() + '<form class="form" data-f="objetivo"><label class="field">Com suas palavras<textarea id="obj" rows="2" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form><h2 class="h2">Sugestões para você</h2>' + vSugestoes(false);
   } else if (aba === 'Criar') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Quer estudar algo que não está na lista? Me diga o assunto e eu monto uma trilha com textos bíblicos.</div></div>';
+    h += '<p class="lede">Escreva um assunto e o Manna monta uma trilha com textos bíblicos.</p>';
     h += SAMPLE ? '<form class="form card" data-f="criarTrilha"><label>Sobre o que você quer aprender?<input id="cr-tema" maxlength="120" placeholder="Ex.: perdão, os profetas menores, a volta de Jesus"></label>' + busyBtn('Criar trilha') + '</form>'
       : '<p class="note">Criar trilhas novas usa IA, que não está disponível aqui. Os planos, livros, personagens, épocas e temas prontos funcionam normalmente.</p>';
     const minhas = Object.values(S.custom || {});
@@ -113,7 +120,7 @@ function saveTrail(t, add) {
 
 /* ---------- Bíblia Livre e hinário ---------- */
 function vBiblia() {
-  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', ART.deco.tabuas) +
+  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
     '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.bibMode === 'biblia') + '" data-a="bibMode" data-m="biblia">Bíblia</button><button role="tab" aria-selected="' + (ui.bibMode === 'hinario') + '" data-a="bibMode" data-m="hinario">Hinário</button></div>';
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {
@@ -148,7 +155,7 @@ function vBiblia() {
   }
   h += S.lidos[key] ? '<p class="lido-ok">' + icon('check', 'ic sm') + ' Você leu este capítulo em ' + fmt(S.lidos[key], { day: 'numeric', month: 'short' }) + '.</p>' + (B.c < k ? '<button class="btn sec" data-a="bibChap" data-d="1">Próximo: ' + n + ' ' + (B.c + 1) + '</button>' : '')
     : '<button class="btn" data-a="bibRead">Marcar como lido · +5 XP</button>';
-  return h + '<p class="fine center-t">Bíblia Livre (BLIVRE), CC BY 3.0 Brasil.</p></main>';
+  return h + '</main>';
 }
 function selText() {
   const sel = (ui.sel || []).map(k => k.split(':').map(Number)).sort((a, b) => a[2] - b[2]);
@@ -165,7 +172,7 @@ function vHinario() {
   h += '<section class="sec"><div class="sec-h"><h2>Meus hinos</h2><span class="muted tnum">' + meus.length + '</span></div>';
   if (!meus.length) h += '<p class="empty">Guarde os hinos que você mais canta. Eles ficam aqui com um atalho para ouvir.</p>';
   else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener">Ouvir no YouTube</a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">Favorito</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover">×</button></li>').join('') + '</ul>';
-  return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). O Manna guarda número e título e vai pedir licença para mostrar as letras.</p>';
+  return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). Por isso o Manna guarda só número e título.</p>';
 }
 
 /* ---------- Ditado de anotações durante o culto ---------- */

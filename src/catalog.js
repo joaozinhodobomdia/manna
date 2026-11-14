@@ -136,10 +136,23 @@ function catalogo() {
 const tipoDe = t => t.tipo === 'Livro' && (t.id.startsWith('livro:') || TRILHAS.includes(t)) ? 'Livro' : t.tipo;
 
 /* Sugestões a partir do objetivo, sem IA */
-const OBJ_SUGEST = ['Ler a Bíblia toda em um ano', 'Conhecer a vida de um personagem', 'Estudar um livro da Bíblia', 'Entender uma época da história bíblica', 'Aprender sobre um tema da vida cristã', 'Voltar a ler a Bíblia todo dia', 'Me preparar melhor para a EBD ou Escola Sabatina'];
-function sugerirLocal(texto) {
+const OBJ_OPCOES = [
+  { id: 'biblia', t: 'Ler a Bíblia toda', d: 'De Gênesis a Apocalipse, em um ano', ids: ['plano:biblia1ano'] },
+  { id: 'nt', t: 'Ler o Novo Testamento', d: 'A vida de Jesus e da igreja em 90 dias', ids: ['plano:nt90', 'plano:evangelhos'] },
+  { id: 'at', t: 'Ler o Antigo Testamento', d: 'A história do povo de Deus e os profetas', ids: ['plano:at1ano'] },
+  { id: 'personagem', t: 'Conhecer a vida de um personagem', d: 'Davi, Moisés, Daniel, Ester, Paulo e outros', ids: ['davi', 'per:moises', 'per:daniel', 'per:ester', 'paulo'] },
+  { id: 'livro', t: 'Estudar um livro a fundo', d: 'Capítulo por capítulo, com exercícios', ids: ['romanos', 'joao', 'livro:0', 'salmos'] },
+  { id: 'epoca', t: 'Entender uma época da história bíblica', d: 'Da criação à igreja primitiva', ids: ['ep:origens', 'ep:exodo', 'ep:reino', 'ep:jesus'] },
+  { id: 'tema', t: 'Aprender sobre um tema', d: 'Oração, família, finanças, ansiedade', ids: ['oracao', 'familia', 'ansiedade', 'financas'] },
+  { id: 'habito', t: 'Criar o hábito de ler todo dia', d: 'Leituras curtas para não parar', ids: ['salmos', 'proverbios', 'plano:salmos'] },
+  { id: 'escola', t: 'Me preparar para a EBD ou Escola Sabatina', d: 'Contexto e perguntas antes da aula', ids: ['ep:jesus', 'romanos'] },
+  { id: 'pregacao', t: 'Aprofundar as pregações do culto', d: 'Transformar cada pregação em estudo', ids: [] },
+];
+const objTexto = () => OBJ_OPCOES.filter(o => (S.objSel || []).includes(o.id)).map(o => o.t).concat(S.objetivo ? [S.objetivo] : []).join('. ');
+function sugerirLocal(texto, sel) {
   const t = norm(texto || ''), out = [];
   const add = id => { if (!out.includes(id) && trilha(id)) out.push(id); };
+  (sel || []).forEach(x => { const o = OBJ_OPCOES.find(y => y.id === x); if (o && o.ids[0]) add(o.ids[0]); });
   if (/(biblia|palavra).*(toda|inteira|completa)|(toda|inteira).*biblia|1 ano|um ano|365/.test(t)) add('plano:biblia1ano');
   if (/novo testamento/.test(t)) add('plano:nt90');
   if (/antigo testamento|velho testamento/.test(t)) add('plano:at1ano');
@@ -156,8 +169,10 @@ function sugerirLocal(texto) {
   if (/tema|vida crista|assunto/.test(t)) ['oracao', 'familia', 'ansiedade', 'financas'].forEach(add);
   if (/todo dia|habito|voltar|parei|constancia/.test(t)) ['salmos', 'proverbios', 'plano:evangelhos'].forEach(add);
   if (/ebd|escola sabatina|escola dominical|aula|professor/.test(t)) ['romanos', 'ep:jesus'].forEach(add);
+  (sel || []).forEach(k => { const o = OBJ_OPCOES.find(x => x.id === k); if (o) o.ids.slice(0, 2).forEach(add); });
+  (sel || []).forEach(k => { const o = OBJ_OPCOES.find(x => x.id === k); if (o) o.ids.slice(2).forEach(add); });
   if (out.length < 3) ['plano:biblia1ano', 'joao', 'oracao', 'per:moises'].forEach(add);
-  return out.slice(0, 8);
+  return out.slice(0, 10);
 }
 
 /* Hinários (o Manna não reproduz letras protegidas por direitos autorais) */

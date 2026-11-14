@@ -15,7 +15,8 @@
   --nuvem: #D5E3F3; --pedra: #E9E2D2; --pedra-dk: #A99E86; --fogo: #E0703F;
   --vaso: #F2C14E; --vaso-tampa: #C9952B; --vaso-tr: #0F1B3D;
   --pomba: #FFFFFF; --pomba-asa: #E3EAF5; --pomba-peito: #F1F5FB; --pomba-tr: #0F1B3D;
-  --f-brand: 'Sora', 'Inter', system-ui, sans-serif;
+  --f-brand: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-logo: 'Sora', 'Inter', system-ui, sans-serif;
   --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --f-book: 'Literata', Georgia, 'Times New Roman', serif;
 }
@@ -484,6 +485,74 @@ textarea.obj { width: 100%; padding: 14px 16px; border: 2px solid var(--line); b
 .form .file input { padding: 10px; font-size: 14px; }
 .bubble.bt-in { font-family: var(--f-book); }
 @media (max-width: 380px) { .tgrid { grid-template-columns: 1fr; } .tabs button span { font-size: 10px; } }
+
+/* v4: regras de design do Manna (sem cara de app gerado) */
+.brand { font-family: var(--f-logo); font-weight: 700; }
+.h1 { font: 800 28px/1.15 var(--f-body); letter-spacing: -0.025em; }
+.qt { font: 800 26px/1.2 var(--f-body); letter-spacing: -0.02em; }
+.h2 { font: 800 19px/1.25 var(--f-body); margin-top: 6px; }
+.lead { font: 500 18px/1.35 var(--f-body); font-style: normal; color: var(--muted); }
+.lede { font-size: 16px; color: var(--muted); }
+.phead { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.card, .daily, .list, .etapas li, .feed li, .trad, .medals, .hinos, .shop-h, .days li, .bible, .week, .ask, .stats3 > div, .stats2 > div { border-width: 1px; border-radius: 16px; }
+.list li + li, .medals li + li, .hinos li + li { border-top-width: 1px; }
+.tcard, .book, .culto-row, .shop li, .mt-b, .chip, .hud-trail, .pill { border-width: 1px; border-bottom-width: 1px; }
+.tcard:active, .chip:active { transform: none; border-bottom-width: 1px; }
+.tcard.on, .mt-b.on, .pick.on { border-color: var(--fg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--fg); }
+.tc-add { color: var(--fg); }
+.tcard.on .tc-add { color: var(--fg); }
+.trad.mine, .lr.me, .etapas li.cur, .rank li.me { border-width: 1px; border-color: var(--fg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--fg); }
+.daily { gap: 12px; }
+.daily-h h2 { font: 700 17px/1.3 var(--f-body); }
+.quests { border-top: 1px solid var(--line); }
+.bubble { border-width: 1px; }
+.bubble::before { border-left-width: 1px; border-bottom-width: 1px; }
+.intro { display: flex; flex-direction: column; gap: 6px; }
+.sc-t { font: 800 26px/1.2 var(--f-body); letter-spacing: -0.02em; }
+.sc-q { font: 700 21px/1.35 var(--f-body); font-style: normal; }
+.sc-ctx, .ai-out { font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.intro textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; margin-top: 8px; }
+.quote { border-left: 0; border-radius: 14px; background: var(--soft); }
+.ref { color: var(--muted); font-weight: 600; }
+.bt-cap { color: var(--fg); font-family: var(--f-body); }
+.bt sup { color: var(--muted); }
+.share > p:last-child { font: 400 14px/1.4 var(--f-body); }
+.banner h3 { font: 800 19px/1.2 var(--f-body); }
+.banner small { opacity: .8; }
+.tiles.answer { background-image: none; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.tabs { border-top-width: 1px; background: var(--surface); }
+.tabs button { border: 0; background: none; border-radius: 0; }
+.tabs button[aria-current] { background: none; border: 0; color: var(--fg); }
+.tabs button[aria-current] span { font-weight: 800; }
+.hud { border-bottom-width: 1px; }
+.seg { border-radius: 12px; }
+.seg button[aria-selected="true"], .seg button[aria-checked="true"] { border: 1px solid var(--line); border-bottom-width: 1px; }
+.av { background: var(--soft); color: var(--fg); border: 1px solid var(--line); font-family: var(--f-body); }
+.av.me { background: var(--ouro); color: var(--noite); border-color: var(--ouro-dk); }
+.medals li { padding-block: 12px; }
+.medalha { width: 48px; height: 54px; }
+.stats3 b, .stats2 b, .big-n, .big-streak b, .res b, .share-n b, .md-t b, .rank b, .pl-p b, .pick b, .tcard b, .et-t b, .chap, .h-n, .reader-h .link, .ex-q, .sheet-t h3, .modal h2, .sheet-panel h2, .pp-n, .lr b, .hud-i, .streak b { font-family: var(--f-body); }
+.sec > h2, .sec-h h2 { font: 800 18px/1.3 var(--f-body); }
+.card h3 { font: 700 16px/1.3 var(--f-body); }
+.choice { border-width: 1.5px; border-bottom-width: 4px; }
+.choice.sel { background: var(--surface); border-color: var(--fg); }
+.choice.sel .key { border-color: var(--fg); }
+.choice.rich { align-items: flex-start; padding-block: 14px; }
+.choice.rich small { line-height: 1.4; margin-top: 2px; }
+.tag-in { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 6px; background: var(--noite); color: var(--ouro); font-size: 12px; font-weight: 700; vertical-align: 1px; }
+.faixas { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; }
+.faixa { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px; border: 0; background: none; text-align: left; min-height: 64px; }
+.faixa + .faixa { border-top: 1px solid var(--line); }
+.faixa.on { background: var(--mine); }
+.cbox { width: 24px; height: 24px; flex: none; border: 2px solid var(--line-dk); border-radius: 7px; display: grid; place-items: center; background: var(--bg); }
+.faixa.on .cbox { background: var(--noite); border-color: var(--noite); color: var(--ouro); }
+.fx-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fx-t b { font-weight: 700; font-size: 16px; }
+.fx-t small { color: var(--muted); font-size: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700; }
+.field textarea, .ask textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; }
+.ask { gap: 10px; }
+.scroll textarea, .form textarea, .form input, .form select, .search { border-width: 1px; }
 </style>
 <div id="app"></div>
 <script>
@@ -1005,7 +1074,7 @@ function fresh() {
     quests: null, league: { week: null, div: 0 },
     cultos: [], ebds: [], duvidasLidas: [], perguntas: [],
     group: null, ach: {}, offset: 0, sound: true, goal: 30,
-    objetivo: '', custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
+    objetivo: '', objSel: [], custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
 function load() {
@@ -1374,10 +1443,23 @@ function catalogo() {
 const tipoDe = t => t.tipo === 'Livro' && (t.id.startsWith('livro:') || TRILHAS.includes(t)) ? 'Livro' : t.tipo;
 
 /* Sugestões a partir do objetivo, sem IA */
-const OBJ_SUGEST = ['Ler a Bíblia toda em um ano', 'Conhecer a vida de um personagem', 'Estudar um livro da Bíblia', 'Entender uma época da história bíblica', 'Aprender sobre um tema da vida cristã', 'Voltar a ler a Bíblia todo dia', 'Me preparar melhor para a EBD ou Escola Sabatina'];
-function sugerirLocal(texto) {
+const OBJ_OPCOES = [
+  { id: 'biblia', t: 'Ler a Bíblia toda', d: 'De Gênesis a Apocalipse, em um ano', ids: ['plano:biblia1ano'] },
+  { id: 'nt', t: 'Ler o Novo Testamento', d: 'A vida de Jesus e da igreja em 90 dias', ids: ['plano:nt90', 'plano:evangelhos'] },
+  { id: 'at', t: 'Ler o Antigo Testamento', d: 'A história do povo de Deus e os profetas', ids: ['plano:at1ano'] },
+  { id: 'personagem', t: 'Conhecer a vida de um personagem', d: 'Davi, Moisés, Daniel, Ester, Paulo e outros', ids: ['davi', 'per:moises', 'per:daniel', 'per:ester', 'paulo'] },
+  { id: 'livro', t: 'Estudar um livro a fundo', d: 'Capítulo por capítulo, com exercícios', ids: ['romanos', 'joao', 'livro:0', 'salmos'] },
+  { id: 'epoca', t: 'Entender uma época da história bíblica', d: 'Da criação à igreja primitiva', ids: ['ep:origens', 'ep:exodo', 'ep:reino', 'ep:jesus'] },
+  { id: 'tema', t: 'Aprender sobre um tema', d: 'Oração, família, finanças, ansiedade', ids: ['oracao', 'familia', 'ansiedade', 'financas'] },
+  { id: 'habito', t: 'Criar o hábito de ler todo dia', d: 'Leituras curtas para não parar', ids: ['salmos', 'proverbios', 'plano:salmos'] },
+  { id: 'escola', t: 'Me preparar para a EBD ou Escola Sabatina', d: 'Contexto e perguntas antes da aula', ids: ['ep:jesus', 'romanos'] },
+  { id: 'pregacao', t: 'Aprofundar as pregações do culto', d: 'Transformar cada pregação em estudo', ids: [] },
+];
+const objTexto = () => OBJ_OPCOES.filter(o => (S.objSel || []).includes(o.id)).map(o => o.t).concat(S.objetivo ? [S.objetivo] : []).join('. ');
+function sugerirLocal(texto, sel) {
   const t = norm(texto || ''), out = [];
   const add = id => { if (!out.includes(id) && trilha(id)) out.push(id); };
+  (sel || []).forEach(x => { const o = OBJ_OPCOES.find(y => y.id === x); if (o && o.ids[0]) add(o.ids[0]); });
   if (/(biblia|palavra).*(toda|inteira|completa)|(toda|inteira).*biblia|1 ano|um ano|365/.test(t)) add('plano:biblia1ano');
   if (/novo testamento/.test(t)) add('plano:nt90');
   if (/antigo testamento|velho testamento/.test(t)) add('plano:at1ano');
@@ -1394,8 +1476,10 @@ function sugerirLocal(texto) {
   if (/tema|vida crista|assunto/.test(t)) ['oracao', 'familia', 'ansiedade', 'financas'].forEach(add);
   if (/todo dia|habito|voltar|parei|constancia/.test(t)) ['salmos', 'proverbios', 'plano:evangelhos'].forEach(add);
   if (/ebd|escola sabatina|escola dominical|aula|professor/.test(t)) ['romanos', 'ep:jesus'].forEach(add);
+  (sel || []).forEach(k => { const o = OBJ_OPCOES.find(x => x.id === k); if (o) o.ids.slice(0, 2).forEach(add); });
+  (sel || []).forEach(k => { const o = OBJ_OPCOES.find(x => x.id === k); if (o) o.ids.slice(2).forEach(add); });
   if (out.length < 3) ['plano:biblia1ano', 'joao', 'oracao', 'per:moises'].forEach(add);
-  return out.slice(0, 8);
+  return out.slice(0, 10);
 }
 
 /* Hinários (o Manna não reproduz letras protegidas por direitos autorais) */
@@ -1528,7 +1612,7 @@ function vJornada() {
   if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="risk">' + ART.mani('mani xs', 'triste') + '<p>Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite. Uma lição resolve.</p></div>';
 
   /* Meta do dia e missões */
-  h += '<section class="daily"><div class="daily-h"><h2>Meta do dia</h2><span class="tnum"><b>' + Math.min(xpd, S.goal) + '</b> de ' + S.goal + ' XP</span></div><span class="bar thick"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span>';
+  h += '<section class="daily"><div class="daily-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida: ' + xpd + ' XP' : 'Hoje você fez ' + xpd + ' de ' + S.goal + ' XP') + '</h2></div><span class="bar thick"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span>';
   if (boostOn()) h += '<p class="boost">' + icon('raio') + ' XP em dobro por mais ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</p>';
   h += '<ul class="quests">';
   S.quests.list.forEach((q, i) => {
@@ -1552,7 +1636,7 @@ function vJornada() {
   for (let u = u0; u < u1; u++) {
     const a = u * US, b = Math.min(t.licoes.length, a + US);
     const unitDone = d >= b;
-    h += '<section class="unit"><div class="banner"><div><p>' + (US === 7 ? 'Semana ' : 'Unidade ') + (u + 1) + ' · ' + esc(t.nome) + '</p><h3>' + esc(US === 7 ? chunkRef(t.licoes.slice(a, b).flatMap(l => parseRef(l.ref))).replace(/;.*$/, '') + (b - a > 1 ? ' em diante' : '') : t.licoes[a].titulo) + '</h3><small>' + (US === 7 ? 'Leituras ' : 'Lições ') + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
+    h += '<section class="unit"><div class="banner"><div><h3>' + esc(US === 7 ? chunkRef(t.licoes.slice(a, b).flatMap(l => parseRef(l.ref))).replace(/;.*$/, '') + (b - a > 1 ? ' em diante' : '') : t.licoes[a].titulo) + '</h3><small>' + (US === 7 ? 'Semana ' : 'Unidade ') + (u + 1) + ' · ' + (US === 7 ? 'leituras ' : 'lições ') + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
     const deco = ART.deco[ART.decoOrder[(u + hash(id)) % ART.decoOrder.length]];
     h += '<div class="deco-wrap ' + (u % 2 ? 'left' : 'right') + '">' + deco + '</div>';
     for (let i = a; i < b; i++) {
@@ -1688,7 +1772,7 @@ function vLessonScreen() {
     const ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? S.quiz.versao : '';
     const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
     h += '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">' + (L.vs.length ? 'Leia <b>' + esc(l.ref) + '</b> com calma. Depois a gente pratica.' : 'Abra a sua Bíblia em <b>' + esc(l.ref) + '</b> e leia com calma.') + '</div></div>' +
-      '<article class="scroll"><p class="sc-ref">' + esc(l.ref) + '</p><h2 class="sc-t">' + esc(l.titulo) + '</h2>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
+      '<article class="intro"><h2 class="sc-t">' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref && !l.plano ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
     if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre (BLIVRE), CC BY.' + (ver && ver !== 'BLIVRE' ? ' Se preferir, leia também na ' + ver + '.' : '') + '</p></article>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
@@ -1701,7 +1785,7 @@ function vLessonScreen() {
     return h;
   }
   if (s.k === 'reflita') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="scroll"><p class="sc-ref">Para refletir</p><h2 class="sc-q">' + esc(s.q) + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="intro"><h2 class="sc-q">' + esc(s.q) + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
     h += '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir lição</button></footer></div>';
     return h;
   }
@@ -1716,7 +1800,7 @@ function vLessonScreen() {
     h += '</div>';
   } else if (s.k === 'fill') {
     const shown = L.pick ? '<span class="blank filled">' + esc(L.pick) + '</span>' : '<span class="blank">&nbsp;</span>';
-    h += '<h2 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h2>' + (s.hint ? '<p class="sc-ref">' + esc(s.hint) + '</p>' : '') + '<p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
+    h += '<h2 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h2>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
     s.opts.forEach(o => { h += '<button class="tile' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
     h += '</div>';
   } else if (s.k === 'tiles') {
@@ -1796,7 +1880,8 @@ const MAX_METAS = 12;
 
 /* ---------- Sugestões ---------- */
 function sugestoes() {
-  if (!ui.sug || ui.sug.txt !== S.objetivo) ui.sug = { txt: S.objetivo, ids: sugerirLocal(S.objetivo), frase: '', tema: null, ia: false };
+  const key = objTexto();
+  if (!ui.sug || ui.sug.txt !== key) ui.sug = { txt: key, ids: sugerirLocal(S.objetivo, S.objSel), frase: '', tema: null, ia: false };
   return ui.sug;
 }
 async function sugerirIA() {
@@ -1804,53 +1889,59 @@ async function sugerirIA() {
   const cat = catalogo().map(t => t.id + ' = ' + t.nome + ' (' + tipoDe(t) + ')').join('\n');
   ui.sugBusy = true; keep();
   try {
-    const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano, com as palavras dela: "' + S.objetivo + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
+    const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano: "' + objTexto() + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
     const ids = (r.ids || []).filter(id => trilha(id));
-    ui.sug = { txt: S.objetivo, ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
+    ui.sug = { txt: objTexto(), ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
   } catch (e) { if (e.code !== 'cancelled') toast(aiMsg(e)); }
   ui.sugBusy = false; keep();
 }
 function trailCard(t, opts) {
   const no = S.quiz.trilhas.includes(t.id), n = t.licoes.length;
-  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><span class="tc-tipo">' + tipoDe(t) + '</span><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
+  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + tipoDe(t) + ' · ' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
 }
 function vSugestoes(onb) {
   const sg = sugestoes();
   let h = '';
-  if (sg.frase) h += '<div class="speak small">' + ART.mani('mani xs', 'feliz') + '<div class="bubble">' + esc(sg.frase) + '</div></div>';
+  if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
   if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>O Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Pedir sugestões mais precisas ao Mani</button>';
   return h;
 }
 
-/* Etapa do quiz: objetivo em texto livre */
+/* Objetivo do ano: faixas com checkbox e um campo de texto */
+function vFaixas() {
+  const sel = S.objSel || [];
+  return '<div class="faixas" role="group" aria-label="Objetivos">' + OBJ_OPCOES.map(o => {
+    const on = sel.includes(o.id);
+    return '<button class="faixa' + (on ? ' on' : '') + '" role="checkbox" aria-checked="' + on + '" data-a="objToggle" data-id="' + o.id + '"><span class="cbox">' + (on ? icon('check', 'ic xs') : '') + '</span><span class="fx-t"><b>' + o.t + '</b><small>' + o.d + '</small></span></button>';
+  }).join('') + '</div>';
+}
+function objPronto() { return (S.objSel || []).length > 0 || S.objetivo.trim().length >= 3; }
 function vObjetivo(s) {
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Agora a parte boa: o que você quer viver com a Bíblia este ano? Escreva do seu jeito.</div></div>' +
-    '<label class="sr" for="obj">Seu objetivo</label><textarea id="obj" class="obj" rows="4" maxlength="400" placeholder="Ex.: Quero ler a Bíblia toda e entender melhor a vida de Davi">' + esc(S.objetivo) + '</textarea>' +
-    '<h3 class="grp">Ideias para começar</h3><div class="chips">' + OBJ_SUGEST.map(o => '<button class="chip" data-a="objChip" data-t="' + esc(o) + '">' + esc(o) + '</button>').join('') + '</div>';
-  return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (S.objetivo.trim().length >= 3 ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">O que você quer viver com a Bíblia este ano? Marque quantos quiser.</div></div>' + vFaixas() +
+    '<label class="field">Quer contar com suas palavras?<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e a vida de Daniel">' + esc(S.objetivo) + '</textarea></label>';
+  return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (objPronto() ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
 }
 function vQuizSug(s) {
   const sg = sugestoes();
   if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
-  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para o seu objetivo. Escolha quantas quiser: você monta o seu ano e muda quando precisar.</div></div>';
-  h += '<p class="obj-echo">"' + esc(S.objetivo) + '"</p>' + vSugestoes(true);
-  h += '<p class="fine">Depois, em "Meu plano", você encontra os 66 livros, personagens, épocas, planos de leitura e pode criar trilhas novas.</p>';
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para você. Escolha quantas quiser e mude quando precisar.</div></div>';
+  h += vSugestoes(true);
   return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
 }
 
 /* ---------- Meu plano ---------- */
 function vPlano() {
   let h = ovHead('Meu plano') + '<main class="screen"><h1 class="h1">Seu ano na Palavra</h1>';
-  h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div><p class="obj-echo">' + (S.objetivo ? '"' + esc(S.objetivo) + '"' : 'Você ainda não escreveu um objetivo.') + '</p></section>';
-  h += '<section class="sec"><div class="sec-h"><h2>Etapas</h2><span class="muted">na ordem do seu ano</span></div><ol class="etapas">';
+  h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div>' + (objTexto() ? '<ul class="dots">' + objTexto().split('. ').map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="muted">Você ainda não definiu um objetivo.</p>') + '</section>';
+  h += '<section class="sec"><div class="sec-h"><h2>' + plural(S.quiz.trilhas.length, 'etapa', 'etapas') + ' no seu ano</h2></div><ol class="etapas">';
   S.quiz.trilhas.forEach((id, i) => {
     const t = trilha(id), d = doneCount(id), n = t.licoes.length;
     h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover">Remover</button></div></div></li>';
   });
   h += '</ol></section><button class="btn" data-a="open" data-ov="explorar" data-id="Sugestões">Adicionar ao plano</button>';
-  return h + '<p class="fine">Você pode quebrar o ano em etapas: termine uma trilha e a próxima vira a sua jornada. Toque no nome para ir direto para ela.</p></main>';
+  return h + '</main>';
 }
 
 /* ---------- Explorar catálogo ---------- */
@@ -1858,9 +1949,9 @@ function vExplorar(tab) {
   const aba = ui.expl = tab && ['Sugestões', 'Criar', ...TIPOS].includes(tab) ? (ui.ov.id = tab) : ui.expl;
   let h = ovHead('Explorar') + '<main class="screen"><h1 class="h1">Monte o seu ano</h1><div class="tabs-h" role="tablist">' + ['Sugestões', ...TIPOS, 'Criar'].map(x => '<button role="tab" aria-selected="' + (aba === x ? 'true' : 'false') + '" data-a="expl" data-t="' + x + '">' + ({ Plano: 'Planos', Livro: 'Livros', Personagem: 'Personagens', Época: 'Épocas', Tema: 'Temas' }[x] || x) + '</button>').join('') + '</div>';
   if (aba === 'Sugestões') {
-    h += '<form class="form" data-f="objetivo"><label>Seu objetivo para o ano<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form>' + vSugestoes(false);
+    h += vFaixas() + '<form class="form" data-f="objetivo"><label class="field">Com suas palavras<textarea id="obj" rows="2" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form><h2 class="h2">Sugestões para você</h2>' + vSugestoes(false);
   } else if (aba === 'Criar') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Quer estudar algo que não está na lista? Me diga o assunto e eu monto uma trilha com textos bíblicos.</div></div>';
+    h += '<p class="lede">Escreva um assunto e o Manna monta uma trilha com textos bíblicos.</p>';
     h += SAMPLE ? '<form class="form card" data-f="criarTrilha"><label>Sobre o que você quer aprender?<input id="cr-tema" maxlength="120" placeholder="Ex.: perdão, os profetas menores, a volta de Jesus"></label>' + busyBtn('Criar trilha') + '</form>'
       : '<p class="note">Criar trilhas novas usa IA, que não está disponível aqui. Os planos, livros, personagens, épocas e temas prontos funcionam normalmente.</p>';
     const minhas = Object.values(S.custom || {});
@@ -1901,7 +1992,7 @@ function saveTrail(t, add) {
 
 /* ---------- Bíblia Livre e hinário ---------- */
 function vBiblia() {
-  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', ART.deco.tabuas) +
+  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', '') +
     '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.bibMode === 'biblia') + '" data-a="bibMode" data-m="biblia">Bíblia</button><button role="tab" aria-selected="' + (ui.bibMode === 'hinario') + '" data-a="bibMode" data-m="hinario">Hinário</button></div>';
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {
@@ -1936,7 +2027,7 @@ function vBiblia() {
   }
   h += S.lidos[key] ? '<p class="lido-ok">' + icon('check', 'ic sm') + ' Você leu este capítulo em ' + fmt(S.lidos[key], { day: 'numeric', month: 'short' }) + '.</p>' + (B.c < k ? '<button class="btn sec" data-a="bibChap" data-d="1">Próximo: ' + n + ' ' + (B.c + 1) + '</button>' : '')
     : '<button class="btn" data-a="bibRead">Marcar como lido · +5 XP</button>';
-  return h + '<p class="fine center-t">Bíblia Livre (BLIVRE), CC BY 3.0 Brasil.</p></main>';
+  return h + '</main>';
 }
 function selText() {
   const sel = (ui.sel || []).map(k => k.split(':').map(Number)).sort((a, b) => a[2] - b[2]);
@@ -1953,7 +2044,7 @@ function vHinario() {
   h += '<section class="sec"><div class="sec-h"><h2>Meus hinos</h2><span class="muted tnum">' + meus.length + '</span></div>';
   if (!meus.length) h += '<p class="empty">Guarde os hinos que você mais canta. Eles ficam aqui com um atalho para ouvir.</p>';
   else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener">Ouvir no YouTube</a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">Favorito</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover">×</button></li>').join('') + '</ul>';
-  return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). O Manna guarda número e título e vai pedir licença para mostrar as letras.</p>';
+  return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). Por isso o Manna guarda só número e título.</p>';
 }
 
 /* ---------- Ditado de anotações durante o culto ---------- */
@@ -1978,7 +2069,16 @@ const QUIZ = [
   { k: 'objetivo', t: 'Qual é o seu objetivo para este ano?' },
   { k: 'sugestoes', t: 'Sugestões para o seu objetivo' },
   { k: 'celula', t: 'Você participa de célula ou EBD?', fala: 'Você participa de célula ou de EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
-  { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual Bíblia você usa? Eu indico o texto e você lê nela.', opts: ['ARA', 'ARC', 'NVI', 'NAA', 'NTLH', 'Outra ou não sei'] },
+  { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual versão da Bíblia você usa? O Manna já vem com a Bíblia Livre completa para ler aqui. Se na igreja você usa outra, dá para acompanhar nela também.', opts: [
+    { v: 'BLIVRE', l: 'Bíblia Livre', tag: 'Já vem no app', d: 'Tradução brasileira de 2018, feita a partir do hebraico e do grego. Você lê o texto completo aqui no Manna, sem precisar abrir outra Bíblia.' },
+    { v: 'ARA', l: 'Almeida Revista e Atualizada (ARA)', d: 'Linguagem formal e muito fiel ao original. Comum em igrejas batistas, presbiterianas e adventistas.' },
+    { v: 'ARC', l: 'Almeida Revista e Corrigida (ARC)', d: 'A mais tradicional, com português clássico ("vós", "porventura"). Muito usada nas Assembleias de Deus.' },
+    { v: 'ACF', l: 'Almeida Corrigida Fiel (ACF)', d: 'Almeida tradicional baseada no Textus Receptus. Preferida por quem valoriza esse texto grego.' },
+    { v: 'NAA', l: 'Nova Almeida Atualizada (NAA)', d: 'Revisão de 2017 da Almeida: mantém a precisão da ARA com um português mais fluente.' },
+    { v: 'NVI', l: 'Nova Versão Internacional (NVI)', d: 'Português atual e claro, equilibrando fidelidade e facilidade de leitura.' },
+    { v: 'NTLH', l: 'Nova Tradução na Linguagem de Hoje (NTLH)', d: 'Linguagem simples do dia a dia. Boa para quem está começando ou lê com crianças.' },
+    { v: 'Outra ou não sei', l: 'Outra ou não sei', d: 'Sem problema. Você lê na Bíblia Livre do app.' },
+  ] },
   { k: 'horario', t: 'Qual horário você prefere para o lembrete?', fala: 'Que horas eu te lembro da sua porção?', opts: ['6h', '7h', '12h', '19h', '21h'] },
 ];
 const goalFor = m => ({ 5: 20, 10: 30, 20: 50 }[m] || 30);
@@ -1987,7 +2087,7 @@ function vOnboarding() {
   const s = S.step;
   if (s === 0) return '<main class="onb-hero"><div class="sky">' + ART.banner() + '</div>' + ART.mani('mani hero', 'feliz') +
     '<div class="onb-c"><h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p><p class="body-l">Uma jornada pela Bíblia com lições curtas, ofensiva, liga semanal e os amigos da sua igreja.</p>' +
-    '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto. Versão de teste: nada é cobrado.</p></div></main>';
+    '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto.</p></div></main>';
   if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
   if (s === QUIZ.length + 2) return vPaywall();
@@ -2012,6 +2112,10 @@ function vQuiz(q, s) {
   } else {
     h += '<div class="choices">';
     q.opts.forEach(o => {
+      if (o && o.v) {
+        h += '<button class="choice rich' + (S.quiz[q.k] === o.v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(o.v) + '"><span class="pl-l"><b>' + esc(o.l) + (o.tag ? ' <span class="tag-in">' + o.tag + '</span>' : '') + '</b><small>' + esc(o.d) + '</small></span></button>';
+        return;
+      }
       const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
       h += '<button class="choice' + (S.quiz[q.k] === v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
     });
@@ -2059,12 +2163,12 @@ function busyBtn(label) {
   return (ui.busy ? '<div class="busy"><button class="btn" disabled>Montando… pode levar até um minuto</button><button type="button" class="btn ghost" data-a="stopAi">Cancelar</button></div>' : '<button class="btn" type="submit">' + label + '</button>') +
     (ui.aiErr ? '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>' : '');
 }
-function pageHead(title, sub, art) {
-  return '<header class="phead"><div><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</div>' + (art || '') + '</header>';
+function pageHead(title, sub) {
+  return '<header class="phead"><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</header>';
 }
 function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen">' + pageHead(nomeCulto(), 'O culto e a ' + nomeEscola() + ' viram o estudo da sua semana.', ART.deco.tenda) + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
+  let h = '<main class="screen">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
     h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
       '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
@@ -2077,7 +2181,7 @@ function vDomingo() {
       '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você?">' + dv('c-notas') + '</textarea></label>' +
       (DICT ? '<button type="button" class="btn sec" data-a="dict">' + (ui.dictOn ? 'Parar de ditar' : 'Ditar anotações') + '</button>' : '') +
       '<label class="check"><input type="checkbox" id="c-trilha"' + (ui.draft && ui.draft['c-trilha'] === false ? '' : ' checked') + '> Criar também uma trilha para aprender mais sobre este tema</label>' +
-      '<p class="fine">' + (SAMPLE ? 'O estudo e a trilha são montados com IA a partir do tema, da transcrição e das suas anotações.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão e a trilha usa os versículos citados.' : 'Verificando a IA…')) + ' Envio de áudio com transcrição automática chega numa próxima versão.</p>' +
+
       busyBtn('Montar estudo da semana') + '</form>';
     if (S.cultos.length) {
       h += '<section class="sec"><h2>Biblioteca de pregações</h2><ul class="list">';
@@ -2104,8 +2208,8 @@ function vDuvidas() {
   const f = ui.filtro.toLowerCase();
   const list = DUVIDAS.filter(d => !f || (d.q + ' ' + d.cat).toLowerCase().includes(f));
   const cats = [...new Set(DUVIDAS.map(d => d.cat))];
-  let h = '<main class="screen">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, com versículos e as visões das tradições.', ART.deco.tabuas);
-  h += '<form class="form ask" data-f="duvida"><div class="speak small">' + ART.mani('mani xs', 'pensa') + '<div class="bubble">Pode perguntar. Ninguém vai ficar sabendo.</div></div><textarea id="d-q" rows="2" maxlength="300" aria-label="Sua pergunta" placeholder="Ex.: Posso ser padrinho numa igreja católica?"></textarea>' +
+  let h = '<main class="screen">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
+  h += '<form class="form ask" data-f="duvida"><label class="field" for="d-q">Pergunte sem vergonha. Só você vê.</label><textarea id="d-q" rows="2" maxlength="300" aria-label="Sua pergunta" placeholder="Ex.: Posso ser padrinho numa igreja católica?"></textarea>' +
     (SAMPLE ? busyBtn('Perguntar') : '<p class="fine">' + (aiChecked ? 'A pergunta livre usa IA e não está disponível aqui. A biblioteca abaixo funciona normalmente.' : 'Verificando a IA…') + '</p>') + '</form>';
   if (S.perguntas.length) {
     h += '<section class="sec"><h2>Suas perguntas</h2><ul class="list">';
@@ -2130,14 +2234,14 @@ function vLiga() {
   if (ui.ligaMode === 'grupo') return h + vGrupoBody() + '</main>';
   const ws = weekStart(), di = diff(ws, todayK()), rows = leagueTable(ws, di), lg = LIGAS[S.league.div];
   const resta = 7 - di;
-  h += '<section class="liga-h"><div class="shields">' + LIGAS.map((l, i) => '<span class="sh' + (i === S.league.div ? ' cur' : i > S.league.div ? ' next' : '') + '">' + ART.escudo(i <= S.league.div ? l.cor : 'var(--bloq)', 'escudo' + (i === S.league.div ? ' big' : '')) + '</span>').join('') + '</div>' +
-    '<h1 class="h1">Liga ' + lg.nome + '</h1><p class="muted">Os 3 primeiros sobem de liga. Termina em ' + plural(resta, 'dia', 'dias') + '.</p></section><ol class="league">';
+  h += '<section class="liga-h"><div class="shields">' + LIGAS.map((l, i) => '<span class="sh' + (i === S.league.div ? ' cur' : i > S.league.div ? ' next' : '') + '">' + ART.escudo(i <= S.league.div ? 'var(--ouro)' : 'var(--bloq)', 'escudo' + (i === S.league.div ? ' big' : '')) + '</span>').join('') + '</div>' +
+    '<h1 class="h1">Você está em ' + (rows.findIndex(r => r.me) + 1) + 'º na Liga ' + lg.nome + '</h1><p class="muted">Os 3 primeiros sobem de liga. Termina em ' + plural(resta, 'dia', 'dias') + '.</p></section><ol class="league">';
   rows.forEach((r, i) => {
     if (i === 3) h += '<li class="zone up">' + icon('voltar', 'ic xs up-ic') + 'Zona de promoção</li>';
     if (i === 8 && S.league.div > 0) h += '<li class="zone down">Zona de rebaixamento</li>';
-    h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av" style="--h:' + (hash(r.nome) % 360) + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.me ? '' : '') + '</span><b class="tnum">' + r.xp + ' XP</b></li>';
+    h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.me ? '' : '') + '</span><b class="tnum">' + r.xp + ' XP</b></li>';
   });
-  h += '</ol><p class="fine center-t">Versão de teste: os outros participantes são de exemplo.</p>';
+  h += '</ol>';
   return h + '</main>';
 }
 function vGroupForms(onb) {
@@ -2150,28 +2254,29 @@ function vGroupForms(onb) {
   } else if (m === 'entrar') {
     h += '<form class="form card" data-f="gentrar"><label>Código do convite<input id="g-code" required maxlength="8" placeholder="Ex.: K7Q2MD" autocapitalize="characters"></label><label>Seu nome no grupo<input id="g-eu" maxlength="30" value="' + esc(S.nome) + '"></label><button class="btn" type="submit">Entrar no grupo</button></form>';
   }
-  return h + (onb ? '' : '<p class="fine">No teste, o grupo funciona neste aparelho, com membros de exemplo.</p>');
+  return h;
 }
 function vGrupoBody() {
   const g = S.group;
-  if (!g) return '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Crie um grupo com a sua célula: desafio com prazo, ranking e check-in todo dia.</div></div>' + vGroupForms(false);
+  if (!g) return '<p class="lede">Leia junto com a sua célula: desafio com prazo, ranking e check-in todo dia.</p>' + vGroupForms(false);
   const d = desafio(g.desafio), dia = Math.min(d.dias, diff(g.start, todayK()) + 1), meus = S.chapters - g.chapAtStart;
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
-  let h = '<section class="banner group-b"><div><p>Desafio · dia ' + dia + ' de ' + d.dias + '</p><h3>' + esc(g.nome) + '</h3><small>' + d.nome + '</small></div>' + ART.banner() + '</section>';
+  let h = '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
   h += '<section class="card"><div class="sec-h"><h3>Seu progresso no desafio</h3><span class="tnum muted">' + meus + '/' + d.caps + '</span></div><span class="bar thick"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><p class="fine">O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' capítulos por dia.</p></section>';
-  h += '<section class="sec"><h2>Ranking por capítulos</h2><ol class="league">';
-  ranking().forEach((r, i) => { h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av" style="--h:' + (hash(r.nome) % 360) + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.ex ? ' <small class="muted">exemplo</small>' : '') + '</span><b class="tnum">' + r.caps + '</b></li>'; });
+  const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
+  h += '<section class="sec"><h2>Você está em ' + mp + 'º no grupo</h2><ol class="league">';
+  rk.forEach((r, i) => { h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.ex ? ' <small class="muted">exemplo</small>' : '') + '</span><b class="tnum">' + r.caps + '</b></li>'; });
   h += '</ol></section>';
   h += '<section class="sec"><h2>Check-in de hoje</h2><form class="form card" data-f="checkin"><div class="two"><label>Capítulos lidos fora do app<input id="ck-caps" type="number" min="0" max="50" value="1" inputmode="numeric"></label><label>Versículo<input id="ck-ref" maxlength="40" placeholder="Ex.: Salmos 23:1"></label></div><label>Reflexão curta<textarea id="ck-txt" rows="2" maxlength="280" placeholder="O que Deus falou com você hoje? (opcional)"></textarea></label><button class="btn" type="submit">Marcar leitura · +10 XP por capítulo</button></form></section>';
   h += '<section class="sec"><h2>Feed do grupo</h2><ul class="feed">';
   g.feed.forEach(p => {
-    h += '<li><div class="who"><span class="av sm" style="--h:' + (hash(p.who) % 360) + '">' + esc((p.who.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><b>' + esc(p.who) + '</b><span class="muted"> · ' + fmt(p.d, { day: 'numeric', month: 'short' }) + '</span></div>' + (p.ref ? '<p class="ref">' + esc(p.ref) + '</p>' : '') + '<p>' + esc(p.text) + '</p>' +
+    h += '<li><div class="who"><span class="av sm' + (p.me ? ' me' : '') + '">' + esc((p.who.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><b>' + esc(p.who) + '</b><span class="muted"> · ' + fmt(p.d, { day: 'numeric', month: 'short' }) + '</span></div>' + (p.ref ? '<p class="ref">' + esc(p.ref) + '</p>' : '') + '<p>' + esc(p.text) + '</p>' +
       '<div class="acts"><button class="pill' + (p.amei ? ' on' : '') + '" data-a="amem" data-id="' + p.id + '" aria-pressed="' + !!p.amei + '">Amém <span class="tnum">' + p.amem + '</span></button><button class="link" data-a="cmt" data-id="' + p.id + '">Comentar</button></div>';
     if (p.comments.length) h += '<ul class="cmts">' + p.comments.map(c => '<li><b>' + esc(c.who) + '</b> ' + esc(c.text) + '</li>').join('') + '</ul>';
     if (ui.cmt === p.id) h += '<form class="form inline" data-f="cmt" data-id="' + p.id + '"><input id="cmt-txt" maxlength="200" placeholder="Escreva um comentário" aria-label="Comentário"><button class="btn mini" type="submit">Enviar</button></form>';
     h += '</li>';
   });
-  h += '</ul></section><section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + g.code + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener">Abrir WhatsApp</a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div><p class="fine">No teste, o grupo funciona só neste aparelho e os outros membros são exemplos.</p></section>';
+  h += '</ul></section><section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + g.code + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener">Abrir WhatsApp</a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div></section>';
   return h + '<button class="link danger" data-a="leaveGroup">Sair do grupo</button>';
 }
 
@@ -2179,13 +2284,13 @@ function vGrupoBody() {
 function vPerfil() {
   const st = S.streak, lg = LIGAS[S.league.div];
   const resumo = 'Minha semana no Manna: ofensiva de ' + plural(st.count, 'dia', 'dias') + ', ' + plural(weekChaps(), 'capítulo lido', 'capítulos lidos') + ' e ' + weekXPFrom(weekStart()) + ' XP. Sua porção diária da Palavra.';
-  let h = '<main class="screen"><section class="prof"><span class="av xl" style="--h:' + (hash(S.nome || 'Você') % 360) + '">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
-  h += '<section class="stats2 four"><div>' + ART.grao() + '<b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div>' + icon('raio', 'ic st') + '<b class="tnum">' + S.xp + '</b><span>XP no total</span></div><div>' + ART.escudo(lg.cor, 'escudo st') + '<b>' + lg.nome + '</b><span>liga atual</span></div><div>' + icon('livro', 'ic st') + '<b class="tnum">' + S.chapters + '</b><span>capítulos</span></div></section>';
-  h += '<section class="sec"><h2>Ofensiva</h2><div class="card">' + weekRow() + '<p class="fine">Recorde: ' + plural(st.best, 'dia', 'dias') + '. Protetores guardados: ' + S.protetores + ' de 2.</p></div></section>';
-  h += '<section class="sec"><h2>Conquistas</h2><ul class="medals">';
+  let h = '<main class="screen"><section class="prof"><span class="av xl me">' + esc(((S.nome || 'V')[0]).toUpperCase()) + '</span><div><h1 class="h1">' + esc(S.nome || 'Você') + '</h1><p class="muted">' + esc(S.quiz.denom || '') + (S.trialStart ? ' · desde ' + fmt(S.trialStart, { month: 'short', year: 'numeric' }) : '') + '</p></div></section>';
+  h += '<section class="stats2"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + S.xp + '</b><span>XP no total</span></div><div><b>' + lg.nome + '</b><span>liga atual</span></div><div><b class="tnum">' + S.chapters + '</b><span>capítulos lidos</span></div></section>';
+  h += '<section class="sec"><h2>Você estudou ' + weekDays() + ' de 7 dias nesta semana</h2><div class="card">' + weekRow() + '<p class="fine">Recorde: ' + plural(st.best, 'dia', 'dias') + '. Protetores guardados: ' + S.protetores + ' de 2.</p></div></section>';
+  h += '<section class="sec"><h2>' + plural(ACH.filter(a => achLevel(a) > 0).length, 'conquista', 'conquistas') + ' de ' + ACH.length + '</h2><ul class="medals">';
   ACH.forEach(a => {
     const l = achLevel(a), v = a.v(S), next = a.n[l], prev = l ? a.n[l - 1] : 0;
-    h += '<li>' + '<div class="md">' + ART.medalha(l, a.cor, ART.simb[a.id]) + (l ? '<span class="md-l tnum">' + l + '</span>' : '') + '</div><div class="md-t"><b>' + a.nome + '</b><small class="muted">' + (next ? Math.min(v, next) + ' de ' + next + ' ' + a.desc : 'Nível máximo') + '</small><span class="bar"><i style="width:' + (next ? Math.min(100, (v - prev) / (next - prev) * 100) : 100) + '%"></i></span></div></li>';
+    h += '<li>' + '<div class="md">' + ART.medalha(l, 'var(--ouro)', ART.simb[a.id]) + (l ? '<span class="md-l tnum">' + l + '</span>' : '') + '</div><div class="md-t"><b>' + a.nome + '</b><small class="muted">' + (next ? Math.min(v, next) + ' de ' + next + ' ' + a.desc : 'Nível máximo') + '</small><span class="bar"><i style="width:' + (next ? Math.min(100, (v - prev) / (next - prev) * 100) : 100) + '%"></i></span></div></li>';
   });
   h += '</ul></section>';
   h += '<section class="share"><div class="share-top">' + ART.logo('logo sm') + '<span class="brand sm">manna</span></div><h2>Minha semana</h2><div class="share-n"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + weekChaps() + '</b><span>capítulos</span></div><div><b class="tnum">' + weekXPFrom(weekStart()) + '</b><span>XP</span></div></div><p>Sua porção diária da Palavra</p></section>';
@@ -2194,7 +2299,7 @@ function vPerfil() {
   h += '<section class="card"><h3>Assinatura</h3><p>' + ({ anual: 'Anual', mensal: 'Mensal', familia: 'Família ou célula' }[S.plano] || 'Anual') + ', em teste grátis até ' + fmt(addDays(S.trialStart || todayK(), 7)) + '. Nada é cobrado nesta versão.</p></section>';
   h += '<section class="card test"><h3>Ferramentas de teste</h3><p class="muted">Data simulada: ' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><div class="row"><button class="btn sec" data-a="nextDay">Avançar um dia</button><button class="btn sec" data-a="giveGrains">+100 grãos</button><button class="btn sec" data-a="redoQuiz">Refazer o quiz</button></div>' +
     (ui.confirmReset ? '<div class="row"><button class="btn badbtn" data-a="reset">Apagar tudo</button><button class="btn ghost" data-a="cancelReset">Cancelar</button></div>' : '<button class="link danger" data-a="askReset">Apagar meus dados deste aparelho</button>') + '</section>';
-  h += '<p class="fine center-t">Textos bíblicos indicados por referência. Bíblia Livre: Diego Santos, Mario Sérgio e Marco Teles, licença CC BY 4.0.</p>';
+  h += '<section class="card"><h3>Sobre esta versão</h3><p class="muted">Versão de teste: nada é cobrado, e a liga e o grupo usam participantes de exemplo. Bíblia Livre (BLIVRE), © Diego Santos, Mario Sérgio e Marco Teles, licença Creative Commons Atribuição 3.0 Brasil.</p></section>';
   return h + '</main>';
 }
 
@@ -2207,7 +2312,7 @@ function vLoja() {
     { id: 'dobro', nome: 'XP em dobro · 15 minutos', desc: 'Todo XP que você ganhar nos próximos 15 minutos vale o dobro.', preco: 60, ok: !boostOn(), motivo: 'Já está ativo.', art: '<span class="shop-ic">' + icon('raio', 'ic lg') + '</span>' },
     { id: 'recuperar', nome: 'Recuperar ofensiva', desc: S.lost ? 'Traz de volta sua ofensiva de ' + plural(S.lost.count, 'dia', 'dias') + '.' : 'Disponível no dia em que uma ofensiva acabar.', preco: 150, ok: !!(S.lost && diff(S.lost.d, todayK()) <= 1 && S.streak.count <= 1), motivo: 'Nenhuma ofensiva para recuperar.', art: '<span class="shop-ic">' + ART.grao('grao lg') + '</span>' },
   ];
-  let h = ovHead('Loja') + '<main class="screen"><section class="shop-h">' + ART.deco.vasoGrande + '<div><p class="muted">Seus grãos de maná</p><b class="big-n tnum">' + S.grains + '</b><p class="fine">Ganhe grãos em lições, missões e vasos da jornada.</p></div></section><ul class="shop">';
+  let h = ovHead('Loja') + '<main class="screen"><section class="shop-h"><div><p class="muted">Seus grãos de maná</p><b class="big-n tnum">' + S.grains + '</b><p class="fine">Ganhe grãos em lições, missões e vasos da jornada.</p></div></section><ul class="shop">';
   itens.forEach(it => {
     const pode = it.ok && S.grains >= it.preco;
     h += '<li>' + it.art + '<div><b>' + it.nome + '</b><p class="muted">' + it.desc + '</p>' + (!it.ok ? '<p class="fine">' + it.motivo + '</p>' : '') + '</div><button class="btn mini' + (pode ? '' : ' off') + '" data-a="buy" data-id="' + it.id + '"' + (pode ? '' : ' disabled') + '>' + ART.vaso('vaso xs') + ' ' + it.preco + '</button></li>';
@@ -2236,14 +2341,14 @@ function vCulto(id) {
   let h = ovHead('Culto de ' + fmt(c.data, { day: 'numeric', month: 'short' })) + '<main class="screen"><h1 class="h1">' + esc(c.tema) + '</h1><p class="muted">' + [c.pregador, c.igreja].filter(Boolean).map(esc).join(' · ') + '</p>';
   if (c.link) h += '<p><a class="link" href="' + esc(c.link) + '" target="_blank" rel="noopener">Abrir a live</a></p>';
   if (!s.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
-  h += '<article class="scroll"><p class="sc-ref">Resumo</p><p class="sc-ctx">' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
+  h += '<article class="card"><h3>Resumo</h3><p>' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   if (s.meta && trilha(s.meta)) h += '<p class="insight">Este tema combina com a meta ' + trilha(s.meta).nome + '. ' + (S.quiz.trilhas.includes(s.meta) ? '' : '<button class="link" data-a="addMeta" data-id="' + s.meta + '">Adicionar às metas</button>') + '</p>';
   const tr = c.trilha && trilha(c.trilha);
-  if (tr) h += '<section class="banner"><div><p>Trilha criada a partir da pregação</p><h3>' + esc(tr.nome) + '</h3><small>' + plural(tr.licoes.length, 'lição', 'lições') + '</small></div>' + ART.banner() + '</section><div class="row">' + (S.quiz.trilhas.includes(tr.id) ? '' : '<button class="btn sec" data-a="toggleMeta" data-id="' + tr.id + '">Adicionar ao plano</button>') + '<button class="btn" data-a="goTrail" data-id="' + tr.id + '">Estudar agora</button></div>';
+  if (tr) h += '<section class="banner"><div><h3>' + esc(tr.nome) + '</h3><small>Trilha da pregação · ' + plural(tr.licoes.length, 'lição', 'lições') + '</small></div>' + ART.banner() + '</section><div class="row">' + (S.quiz.trilhas.includes(tr.id) ? '' : '<button class="btn sec" data-a="toggleMeta" data-id="' + tr.id + '">Adicionar ao plano</button>') + '<button class="btn" data-a="goTrail" data-id="' + tr.id + '">Estudar agora</button></div>';
   h += '<section class="sec"><h2>Estudo da semana</h2><ol class="days">';
   s.dias.forEach((d, i) => {
     const f = c.feitos.includes(i);
-    h += '<li class="' + (f ? 'feita' : '') + '"><span class="day-n">' + (f ? icon('check', 'ic sm') : i + 1) + '</span><div><p class="muted">' + nomes[i] + '</p><h3>' + esc(d.titulo) + '</h3><p class="ref">' + esc(d.referencia) + '</p><p>' + esc(d.pergunta) + '</p>' + (f ? '' : '<button class="btn mini" data-a="cultoDia" data-id="' + c.id + '" data-i="' + i + '">Feito · +10 XP</button>') + '</div></li>';
+    h += '<li class="' + (f ? 'feita' : '') + '"><span class="day-n">' + (f ? icon('check', 'ic sm') : i + 1) + '</span><div><h3>' + esc(d.titulo) + '</h3><p class="muted">' + nomes[i] + '</p><p class="ref">' + esc(d.referencia) + '</p><p>' + esc(d.pergunta) + '</p>' + (f ? '' : '<button class="btn mini" data-a="cultoDia" data-id="' + c.id + '" data-i="' + i + '">Feito · +10 XP</button>') + '</div></li>';
   });
   h += '</ol></section>';
   if (S.group) h += '<button class="btn sec" data-a="shareCulto" data-id="' + c.id + '">Compartilhar com ' + esc(S.group.nome) + '</button>';
@@ -2254,7 +2359,7 @@ function vEbd(id) {
   const p = e.prep;
   let h = ovHead('EBD · ' + e.modo) + '<main class="screen"><h1 class="h1">' + esc(e.tema) + '</h1>' + (e.textos ? '<p class="ref">' + esc(e.textos) + '</p>' : '');
   if (!p.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
-  h += '<article class="scroll"><p class="sc-ref">Contexto</p><p class="sc-ctx">' + esc(p.contexto) + '</p>' + (p.versiculos.length ? '<p class="ref">' + p.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
+  h += '<article class="card"><h3>Contexto</h3><p>' + esc(p.contexto) + '</p>' + (p.versiculos.length ? '<p class="ref">' + p.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   h += '<section class="card"><h3>Perguntas para discussão</h3><ol class="dots">' + p.perguntas.map(q => '<li>' + esc(q) + '</li>').join('') + '</ol></section><section class="card"><h3>Aplicação</h3><p>' + esc(p.aplicacao) + '</p></section>';
   if (p.roteiro && p.roteiro.length) h += '<section class="card"><h3>Roteiro da aula</h3><ol class="roteiro">' + p.roteiro.map(r => '<li><b>' + esc(r.etapa) + '</b> <span class="muted tnum">' + esc(r.minutos) + ' min</span><p>' + esc(r.descricao) + '</p></li>').join('') + '</ol></section>';
   return h + '<button class="link danger" data-a="delEbd" data-id="' + e.id + '">Apagar esta lição</button></main>';
@@ -2263,12 +2368,12 @@ function vDuvida(id) {
   const d = DUVIDAS.find(x => x.id === id) || S.perguntas.find(x => x.id === id); if (!d) return '';
   const minha = tradicao();
   let h = ovHead(d.cat) + '<main class="screen"><h1 class="h1">' + esc(d.q) + '</h1>';
-  h += '<article class="scroll"><p class="sc-ref">O que a Bíblia diz</p><p class="sc-ctx">' + esc(d.biblia) + '</p><p class="ref">' + esc(d.refs) + '</p></article><section class="sec"><h2>Como as tradições interpretam</h2>';
+  h += '<article class="card"><h3>O que a Bíblia diz</h3><p>' + esc(d.biblia) + '</p><p class="ref">' + esc(d.refs) + '</p></article><section class="sec"><h2>Como as tradições interpretam</h2>';
   const order = minha ? [minha].concat(Object.keys(TRADICOES).filter(k => k !== minha)) : Object.keys(TRADICOES);
   order.forEach(k => { if (d.trad[k]) h += '<div class="trad' + (k === minha ? ' mine' : '') + '"><p class="who"><b>' + TRADICOES[k] + '</b>' + (k === minha ? ' <span class="muted">· sua tradição</span>' : '') + '</p><p>' + esc(d.trad[k]) + '</p></div>'; });
   if (!minha) h += '<p class="fine">Sua igreja pode ter uma posição própria sobre isso.</p>';
   h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section><section class="pastor">' + ART.mani('mani xs', 'feliz') + '<div><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja.</p></div></section>';
-  if (d.ia) h += '<p class="fine">Resposta gerada por IA. Confira os versículos na sua Bíblia.</p>';
+  if (d.ia) h += '<p class="fine">Resposta gerada por IA. Confira os versículos.</p>';
   return h + '</main>';
 }
 function vModal() {
@@ -2380,8 +2485,9 @@ const A = {
     if (i < 0 || j < 0 || j >= a.length) return;
     [a[i], a[j]] = [a[j], a[i]]; save(); keep();
   },
+  objToggle(el) { S.objSel = S.objSel || []; const i = S.objSel.indexOf(el.dataset.id); if (i > -1) S.objSel.splice(i, 1); else S.objSel.push(el.dataset.id); ui.sug = null; save(); keep(); },
   objChip(el) { S.objetivo = (S.objetivo.trim() ? S.objetivo.trim().replace(/[.]$/, '') + '. ' : '') + el.dataset.t + '.'; save(); keep(); },
-  objNext() { S.objetivo = val('obj') || S.objetivo; ui.sug = null; ui.sugInit = false; S.quiz.trilhas = []; save(); A.next(); },
+  objNext() { if ($('obj')) S.objetivo = val('obj'); ui.sug = null; ui.sugInit = false; S.quiz.trilhas = []; save(); A.next(); },
   sugIA() { sugerirIA(); },
   async genTema(el) {
     const tema = el.dataset.t; if (!SAMPLE) return;
@@ -2575,7 +2681,7 @@ document.addEventListener('input', e => {
   }
   if (e.target.id === 'l-nota' && ui.L) { S.notes[ui.L.id + ui.L.idx] = e.target.value; save(); }
   if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
-  if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = S.objetivo.trim().length < 3; }
+  if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = !objPronto(); }
   if (e.target.id === 'expl-f' || e.target.id === 'bib-f') {
     ui[e.target.id === 'expl-f' ? 'explF' : 'bibF'] = e.target.value; const id = e.target.id, pos = e.target.selectionStart; keep();
     const n = $(id); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }

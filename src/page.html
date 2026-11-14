@@ -15,7 +15,8 @@
   --nuvem: #D5E3F3; --pedra: #E9E2D2; --pedra-dk: #A99E86; --fogo: #E0703F;
   --vaso: #F2C14E; --vaso-tampa: #C9952B; --vaso-tr: #0F1B3D;
   --pomba: #FFFFFF; --pomba-asa: #E3EAF5; --pomba-peito: #F1F5FB; --pomba-tr: #0F1B3D;
-  --f-brand: 'Sora', 'Inter', system-ui, sans-serif;
+  --f-brand: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --f-logo: 'Sora', 'Inter', system-ui, sans-serif;
   --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --f-book: 'Literata', Georgia, 'Times New Roman', serif;
 }
@@ -484,6 +485,74 @@ textarea.obj { width: 100%; padding: 14px 16px; border: 2px solid var(--line); b
 .form .file input { padding: 10px; font-size: 14px; }
 .bubble.bt-in { font-family: var(--f-book); }
 @media (max-width: 380px) { .tgrid { grid-template-columns: 1fr; } .tabs button span { font-size: 10px; } }
+
+/* v4: regras de design do Manna (sem cara de app gerado) */
+.brand { font-family: var(--f-logo); font-weight: 700; }
+.h1 { font: 800 28px/1.15 var(--f-body); letter-spacing: -0.025em; }
+.qt { font: 800 26px/1.2 var(--f-body); letter-spacing: -0.02em; }
+.h2 { font: 800 19px/1.25 var(--f-body); margin-top: 6px; }
+.lead { font: 500 18px/1.35 var(--f-body); font-style: normal; color: var(--muted); }
+.lede { font-size: 16px; color: var(--muted); }
+.phead { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.card, .daily, .list, .etapas li, .feed li, .trad, .medals, .hinos, .shop-h, .days li, .bible, .week, .ask, .stats3 > div, .stats2 > div { border-width: 1px; border-radius: 16px; }
+.list li + li, .medals li + li, .hinos li + li { border-top-width: 1px; }
+.tcard, .book, .culto-row, .shop li, .mt-b, .chip, .hud-trail, .pill { border-width: 1px; border-bottom-width: 1px; }
+.tcard:active, .chip:active { transform: none; border-bottom-width: 1px; }
+.tcard.on, .mt-b.on, .pick.on { border-color: var(--fg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--fg); }
+.tc-add { color: var(--fg); }
+.tcard.on .tc-add { color: var(--fg); }
+.trad.mine, .lr.me, .etapas li.cur, .rank li.me { border-width: 1px; border-color: var(--fg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--fg); }
+.daily { gap: 12px; }
+.daily-h h2 { font: 700 17px/1.3 var(--f-body); }
+.quests { border-top: 1px solid var(--line); }
+.bubble { border-width: 1px; }
+.bubble::before { border-left-width: 1px; border-bottom-width: 1px; }
+.intro { display: flex; flex-direction: column; gap: 6px; }
+.sc-t { font: 800 26px/1.2 var(--f-body); letter-spacing: -0.02em; }
+.sc-q { font: 700 21px/1.35 var(--f-body); font-style: normal; }
+.sc-ctx, .ai-out { font-family: var(--f-body); font-size: 16px; line-height: 1.55; }
+.intro textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; margin-top: 8px; }
+.quote { border-left: 0; border-radius: 14px; background: var(--soft); }
+.ref { color: var(--muted); font-weight: 600; }
+.bt-cap { color: var(--fg); font-family: var(--f-body); }
+.bt sup { color: var(--muted); }
+.share > p:last-child { font: 400 14px/1.4 var(--f-body); }
+.banner h3 { font: 800 19px/1.2 var(--f-body); }
+.banner small { opacity: .8; }
+.tiles.answer { background-image: none; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.tabs { border-top-width: 1px; background: var(--surface); }
+.tabs button { border: 0; background: none; border-radius: 0; }
+.tabs button[aria-current] { background: none; border: 0; color: var(--fg); }
+.tabs button[aria-current] span { font-weight: 800; }
+.hud { border-bottom-width: 1px; }
+.seg { border-radius: 12px; }
+.seg button[aria-selected="true"], .seg button[aria-checked="true"] { border: 1px solid var(--line); border-bottom-width: 1px; }
+.av { background: var(--soft); color: var(--fg); border: 1px solid var(--line); font-family: var(--f-body); }
+.av.me { background: var(--ouro); color: var(--noite); border-color: var(--ouro-dk); }
+.medals li { padding-block: 12px; }
+.medalha { width: 48px; height: 54px; }
+.stats3 b, .stats2 b, .big-n, .big-streak b, .res b, .share-n b, .md-t b, .rank b, .pl-p b, .pick b, .tcard b, .et-t b, .chap, .h-n, .reader-h .link, .ex-q, .sheet-t h3, .modal h2, .sheet-panel h2, .pp-n, .lr b, .hud-i, .streak b { font-family: var(--f-body); }
+.sec > h2, .sec-h h2 { font: 800 18px/1.3 var(--f-body); }
+.card h3 { font: 700 16px/1.3 var(--f-body); }
+.choice { border-width: 1.5px; border-bottom-width: 4px; }
+.choice.sel { background: var(--surface); border-color: var(--fg); }
+.choice.sel .key { border-color: var(--fg); }
+.choice.rich { align-items: flex-start; padding-block: 14px; }
+.choice.rich small { line-height: 1.4; margin-top: 2px; }
+.tag-in { display: inline-block; margin-left: 6px; padding: 2px 8px; border-radius: 6px; background: var(--noite); color: var(--ouro); font-size: 12px; font-weight: 700; vertical-align: 1px; }
+.faixas { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: hidden; }
+.faixa { display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px; border: 0; background: none; text-align: left; min-height: 64px; }
+.faixa + .faixa { border-top: 1px solid var(--line); }
+.faixa.on { background: var(--mine); }
+.cbox { width: 24px; height: 24px; flex: none; border: 2px solid var(--line-dk); border-radius: 7px; display: grid; place-items: center; background: var(--bg); }
+.faixa.on .cbox { background: var(--noite); border-color: var(--noite); color: var(--ouro); }
+.fx-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fx-t b { font-weight: 700; font-size: 16px; }
+.fx-t small { color: var(--muted); font-size: 14px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700; }
+.field textarea, .ask textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; }
+.ask { gap: 10px; }
+.scroll textarea, .form textarea, .form input, .form select, .search { border-width: 1px; }
 </style>
 <div id="app"></div>
 <script>
