@@ -199,8 +199,15 @@ O João abriu a branch num iPhone de cerca de 390 px, dentro de um navegador com
 ### 31. Topo das telas e a área segura
 - Gravidade: média
 - Onde: jornada, boas-vindas, quiz, capas e lição
-- Problema: o primeiro conteúdo podia encostar na barra do aparelho. A barra flutuante do navegador do teste fica por cima da página. O que rola ainda passa por baixo dela, como em qualquer página. O começo de cada tela respeita a área segura que o aparelho informa.
-- Correção: o topo da jornada, das capas, das boas-vindas, do quiz e da lição usa `env(safe-area-inset-top)`. A barra de abas e o fim da página usam `env(safe-area-inset-bottom)`.
+- Problema: o primeiro conteúdo podia encostar na barra do aparelho.
+- Correção: o navegador já guarda o notch e a barra flutuante. O app só deixa 16 px de respiro no topo. A barra de abas de baixo continua com a área segura de baixo, para o conteúdo não ficar escondido atrás dela.
+- Situação: feito. Ajustado de novo no item 34, porque somar o safe-area no topo dobrava o vão no WhatsApp.
+
+### 34. Vão grande entre a barra do navegador e o conteúdo
+- Gravidade: alta
+- Onde: todas as telas, no iPhone aberto pelo WhatsApp
+- Problema: havia cerca de 120 px vazios entre a barra flutuante (X, chat, compartilhar) e o primeiro conteúdo, como o seletor "Bíblia em 1 ano". O topo somava `env(safe-area-inset-top)` em cima de um espaço que o navegador embutido já reserva. No Safari com notch, `viewport-fit=cover` pedia essa medida de novo.
+- Correção: saiu o `viewport-fit=cover`. O topo de cada tela ficou com 16 px, sem somar a área segura outra vez. A barra de abas e o cartão Destino não foram mexidos.
 - Situação: feito
 
 ### 32. Mani e o balão no celular

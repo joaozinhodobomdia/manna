@@ -36,7 +36,7 @@
 
 /* Base */
 * { box-sizing: border-box; }
-html { scroll-padding-top: calc(12px + env(safe-area-inset-top, 0px)); scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+html { scroll-padding-top: 16px; scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
 html, body { min-height: 100%; }
 body.ov-open { overflow: hidden; }
 body { background: var(--bg); color: var(--fg); font: 400 16px/1.5 var(--f-body); -webkit-font-smoothing: antialiased; }
@@ -63,7 +63,7 @@ img { max-width: 100%; }
 .grp { font-size: 14px; font-weight: 700; color: var(--muted); margin-top: 4px; }
 .ref { font-weight: 600; color: var(--muted); }
 .code { font-family: ui-monospace, monospace; letter-spacing: .08em; }
-.screen { display: flex; flex-direction: column; gap: 18px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 28px; }
+.screen { display: flex; flex-direction: column; gap: 18px; padding: 16px 0 28px; }
 .sheet-top { padding-top: 0; }
 .center-col { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -160,9 +160,12 @@ textarea { resize: vertical; }
 .seg.small button { min-height: 36px; font-size: 14px; }
 
 /* Topo das abas (faixa Noite) */
-.capa { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutr) 22px var(--gut); border-radius: 0 0 24px 24px; }
+.capa { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: 16px var(--gutr) 22px var(--gut); border-radius: 0 0 24px 24px; }
 .capa-in { display: flex; flex-direction: column; gap: 4px; }
-.capa-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.capa-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+@media (max-width: 420px) {
+  .capa .pills { width: 100%; justify-content: flex-end; }
+}
 .capa .brand { color: var(--ouro); }
 .capa-t { font: 800 26px/1.15 var(--f-body); letter-spacing: -0.02em; }
 .capa-s { color: rgba(245,241,230,.72); font-size: 15px; }
@@ -173,7 +176,7 @@ textarea { resize: vertical; }
 .spill.lit .grao { fill: var(--ouro); }
 
 /* Jornada: topo curto */
-.topo-j { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gutr) 14px var(--gut); border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+.topo-j { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: 16px var(--gutr) 14px var(--gut); border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
 .tj-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 420px) {
   .trail-chip { flex: 1 1 100%; }
@@ -261,7 +264,7 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 .mani.row .m-fala { text-align: left; }
 
 /* Abertura e quiz */
-.onb-hero { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); margin-bottom: calc(-84px - env(safe-area-inset-bottom, 0px)); min-height: 100vh; min-height: 100dvh; padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gutr) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gut); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; }
+.onb-hero { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); margin-bottom: calc(-84px - env(safe-area-inset-bottom, 0px)); min-height: 100vh; min-height: 100dvh; padding: 16px var(--gutr) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gut); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; }
 .onb-top { display: flex; align-items: center; gap: 10px; }
 .onb-top .brand { color: var(--pergaminho); }
 .onb-mid { margin-block: auto; padding-block: 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
@@ -324,7 +327,7 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 
 /* Lição */
 .lesson { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
-.ltop { position: sticky; top: 0; z-index: 4; display: flex; flex-direction: column; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) 0 10px; background: var(--bg); }
+.ltop { position: sticky; top: 0; z-index: 4; display: flex; flex-direction: column; gap: 10px; padding: 12px 0 10px; background: var(--bg); }
 .lt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .lt-t { display: flex; flex-direction: column; min-width: 0; }
 .lt-t small { color: var(--muted); font-size: 13px; }
@@ -488,7 +491,7 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
 .modal .deco { width: 100px; height: 100px; }
 .modal h2 { font: 800 21px/1.2 var(--f-body); }
 .ov { min-height: 100vh; }
-.ovh { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 6px; padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: 8px; background: var(--bg); font-weight: 700; color: var(--muted); font-size: 15px; }
+.ovh { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 6px; padding-top: 12px; padding-bottom: 8px; background: var(--bg); font-weight: 700; color: var(--muted); font-size: 15px; }
 .ovh .iconbtn { margin-left: -12px; }
 #toast { position: fixed; left: 50%; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translateX(-50%); max-width: min(440px, calc(100% - 32px)); padding: 11px 18px; border-radius: var(--pill); background: var(--noite); color: var(--pergaminho); font-size: 15px; font-weight: 700; text-align: center; }
 body.in-lesson #toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
