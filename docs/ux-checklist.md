@@ -185,6 +185,31 @@ Regras do manual aplicadas: uma Mani por tela, perto da ação, balão de até 6
 - Correção: não foi criada tela nova. As imagens dessas três poses não foram copiadas.
 - Situação: pendente. Precisa de decisão do João se esses momentos devem existir.
 
+## Teste no iPhone
+
+O João abriu a branch num iPhone de cerca de 390 px, dentro de um navegador com uma barra flutuante no topo.
+
+### 30. Cartão do destino cobria os desafios
+- Gravidade: alta
+- Onde: fim do mapa da jornada, em qualquer largura. No print, "Destino: Novo Testamento em 90 dias" ficava em cima do título "Desafios de hoje".
+- Problema: o cartão era solto dentro do mapa, com uma altura chutada. Quando o nome da trilha quebrava em duas linhas, o cartão vazava e escondia o que vinha abaixo.
+- Correção: o cartão saiu do mapa e entrou na sequência normal da página. O desenho da igreja continua no fim da estrada. O título dos desafios fica sempre abaixo do cartão, inteiro.
+- Situação: feito
+
+### 31. Topo das telas e a área segura
+- Gravidade: média
+- Onde: jornada, boas-vindas, quiz, capas e lição
+- Problema: o primeiro conteúdo podia encostar na barra do aparelho. A barra flutuante do navegador do teste fica por cima da página. O que rola ainda passa por baixo dela, como em qualquer página. O começo de cada tela respeita a área segura que o aparelho informa.
+- Correção: o topo da jornada, das capas, das boas-vindas, do quiz e da lição usa `env(safe-area-inset-top)`. A barra de abas e o fim da página usam `env(safe-area-inset-bottom)`.
+- Situação: feito
+
+### 32. Mani e o balão no celular
+- Gravidade: baixa
+- Onde: topo da jornada e boas-vindas, nos prints
+- Problema: no print a Mani e o balão já estavam legíveis, sem cobrir o botão Colher nem o título.
+- Correção: nada a mudar nesse encaixe. A Leitora continua ao lado do balão, no fundo noite, sem espelhar a Bíblia.
+- Situação: feito
+
 ## Pendências que não são do mascote
 
 ### 26. Título "Seu plano para 2027"

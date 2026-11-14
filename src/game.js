@@ -106,7 +106,7 @@ function vMapa(t, id, d) {
   }
   const resto = n - u1 * US;
   if (resto > 0) { items.push({ k: 'depois', y: y + 6, resto }); y += 48; }
-  const yDest = y + 40; items.push({ k: 'destino', x: W / 2, y: yDest }); y = yDest + 210;
+  const yDest = y + 40; items.push({ k: 'destino', x: W / 2, y: yDest }); y = yDest + 96;
   const H = y; if (bands.length) bands[bands.length - 1].y1 = H;
   const road = items.filter(it => it.k === 'lic' || it.k === 'vaso' || it.k === 'destino').map(it => [it.x, it.y]);
   road.unshift([xOf(u0 * US - 1), 0]);
@@ -128,6 +128,7 @@ function vMapa(t, id, d) {
   if (roadIdx > 0) g += '<path class="estrada-feita" d="' + catmull(road.slice(0, roadIdx + 1)) + '"/>';
   g += ART.cena('destino', W / 2, yDest + 34, 'destino');
   let h = '<section class="mapa" style="height:' + H + 'px;width:' + W + 'px" aria-label="Mapa da caminhada de ' + esc(t.nome) + '"><svg class="mapa-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">' + g + '</svg>';
+  let destino = '';
   const lbl = (x, yy, cls, inner) => '<span class="m-lbl ' + cls + (x > W / 2 ? ' esq" style="right:' + (W - x) : ' dir" style="left:' + x) + 'px;top:' + yy + 'px">' + inner + '</span>';
   items.forEach(it => {
     if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição já percorrida', 'lições já percorridas') + '</p>';
@@ -146,10 +147,10 @@ function vMapa(t, id, d) {
       h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
         lbl(it.x, it.y, it.done && !opened ? 'cur' : 'lock', '<b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small>');
     } else if (it.k === 'destino') {
-      h += '<div class="destino" style="top:' + (it.y + 96) + 'px"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn mini sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
+      destino = '<section class="destino"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></section>';
     }
   });
-  return h + '</section>';
+  return h + '</section>' + destino;
 }
 
 /* ---------- Construção dos exercícios ---------- */

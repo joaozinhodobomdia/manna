@@ -36,7 +36,7 @@
 
 /* Base */
 * { box-sizing: border-box; }
-html { scroll-padding-top: 12px; scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+html { scroll-padding-top: calc(12px + env(safe-area-inset-top, 0px)); scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
 html, body { min-height: 100%; }
 body.ov-open { overflow: hidden; }
 body { background: var(--bg); color: var(--fg); font: 400 16px/1.5 var(--f-body); -webkit-font-smoothing: antialiased; }
@@ -63,7 +63,7 @@ img { max-width: 100%; }
 .grp { font-size: 14px; font-weight: 700; color: var(--muted); margin-top: 4px; }
 .ref { font-weight: 600; color: var(--muted); }
 .code { font-family: ui-monospace, monospace; letter-spacing: .08em; }
-.screen { display: flex; flex-direction: column; gap: 18px; padding-block: 16px 28px; }
+.screen { display: flex; flex-direction: column; gap: 18px; padding: calc(16px + env(safe-area-inset-top, 0px)) 0 28px; }
 .sheet-top { padding-top: 0; }
 .center-col { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 14px; }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -160,7 +160,7 @@ textarea { resize: vertical; }
 .seg.small button { min-height: 36px; font-size: 14px; }
 
 /* Topo das abas (faixa Noite) */
-.capa { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: 14px var(--gutr) 22px var(--gut); border-radius: 0 0 24px 24px; }
+.capa { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutr) 22px var(--gut); border-radius: 0 0 24px 24px; }
 .capa-in { display: flex; flex-direction: column; gap: 4px; }
 .capa-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .capa .brand { color: var(--ouro); }
@@ -173,7 +173,7 @@ textarea { resize: vertical; }
 .spill.lit .grao { fill: var(--ouro); }
 
 /* Jornada: topo curto */
-.topo-j { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: 12px var(--gutr) 14px var(--gut); border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+.topo-j { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: calc(12px + env(safe-area-inset-top, 0px)) var(--gutr) 14px var(--gut); border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
 .tj-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 420px) {
   .trail-chip { flex: 1 1 100%; }
@@ -194,7 +194,7 @@ textarea { resize: vertical; }
 .screen.jornada { padding-top: 8px; gap: 14px; }
 
 /* Mapa da caminhada */
-.mapa { position: relative; margin: 0 auto; max-width: 100%; }
+.mapa { position: relative; margin: 0 auto; max-width: 100%; overflow: hidden; }
 .mapa-svg { position: absolute; inset: 0; display: block; }
 .rg.deserto { fill: var(--deserto); } .rg.reino { fill: var(--reino); } .rg.galileia { fill: var(--galileia); } .rg.cidades { fill: var(--cidades); } .rg.ceu { fill: var(--ceu-r); }
 .estrada-borda { fill: none; stroke: var(--estrada-borda); stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; }
@@ -227,8 +227,8 @@ textarea { resize: vertical; }
 .marco.vasoM.ready { border-color: var(--ouro-dk); background: var(--mine); }
 .marco.vasoM.lock .m-vaso { opacity: .45; filter: grayscale(1); }
 .marco.vasoM.opened { opacity: .6; }
-.destino { position: absolute; z-index: 2; left: 50%; transform: translateX(-50%); width: min(300px, 90%); display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 16px; text-align: center; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
-.destino b { font-size: 17px; } .destino small { color: var(--muted); }
+.destino { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; width: 100%; margin: 16px 0 6px; padding: 16px; text-align: center; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+.destino b { font-size: 17px; overflow-wrap: anywhere; } .destino small { color: var(--muted); }
 .destino .btn { margin-top: 8px; }
 
 /* Desafios de hoje */
@@ -258,7 +258,7 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 .mani.row .m-fala { text-align: left; }
 
 /* Abertura e quiz */
-.onb-hero { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); margin-bottom: calc(-84px - env(safe-area-inset-bottom, 0px)); min-height: 100vh; min-height: 100dvh; padding: 16px var(--gutr) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gut); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; }
+.onb-hero { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); margin-bottom: calc(-84px - env(safe-area-inset-bottom, 0px)); min-height: 100vh; min-height: 100dvh; padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gutr) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gut); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; }
 .onb-top { display: flex; align-items: center; gap: 10px; }
 .onb-top .brand { color: var(--pergaminho); }
 .onb-mid { margin-block: auto; padding-block: 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
@@ -321,7 +321,7 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 
 /* Lição */
 .lesson { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
-.ltop { position: sticky; top: 0; z-index: 4; display: flex; flex-direction: column; gap: 10px; padding-block: 12px 10px; background: var(--bg); }
+.ltop { position: sticky; top: 0; z-index: 4; display: flex; flex-direction: column; gap: 10px; padding: calc(12px + env(safe-area-inset-top, 0px)) 0 10px; background: var(--bg); }
 .lt-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .lt-t { display: flex; flex-direction: column; min-width: 0; }
 .lt-t small { color: var(--muted); font-size: 13px; }
@@ -485,7 +485,7 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
 .modal .deco { width: 100px; height: 100px; }
 .modal h2 { font: 800 21px/1.2 var(--f-body); }
 .ov { min-height: 100vh; }
-.ovh { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 6px; padding-block: 8px; background: var(--bg); font-weight: 700; color: var(--muted); font-size: 15px; }
+.ovh { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 6px; padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: 8px; background: var(--bg); font-weight: 700; color: var(--muted); font-size: 15px; }
 .ovh .iconbtn { margin-left: -12px; }
 #toast { position: fixed; left: 50%; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translateX(-50%); max-width: min(440px, calc(100% - 32px)); padding: 11px 18px; border-radius: var(--pill); background: var(--noite); color: var(--pergaminho); font-size: 15px; font-weight: 700; text-align: center; }
 body.in-lesson #toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
@@ -1812,7 +1812,7 @@ function vMapa(t, id, d) {
   }
   const resto = n - u1 * US;
   if (resto > 0) { items.push({ k: 'depois', y: y + 6, resto }); y += 48; }
-  const yDest = y + 40; items.push({ k: 'destino', x: W / 2, y: yDest }); y = yDest + 210;
+  const yDest = y + 40; items.push({ k: 'destino', x: W / 2, y: yDest }); y = yDest + 96;
   const H = y; if (bands.length) bands[bands.length - 1].y1 = H;
   const road = items.filter(it => it.k === 'lic' || it.k === 'vaso' || it.k === 'destino').map(it => [it.x, it.y]);
   road.unshift([xOf(u0 * US - 1), 0]);
@@ -1834,6 +1834,7 @@ function vMapa(t, id, d) {
   if (roadIdx > 0) g += '<path class="estrada-feita" d="' + catmull(road.slice(0, roadIdx + 1)) + '"/>';
   g += ART.cena('destino', W / 2, yDest + 34, 'destino');
   let h = '<section class="mapa" style="height:' + H + 'px;width:' + W + 'px" aria-label="Mapa da caminhada de ' + esc(t.nome) + '"><svg class="mapa-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">' + g + '</svg>';
+  let destino = '';
   const lbl = (x, yy, cls, inner) => '<span class="m-lbl ' + cls + (x > W / 2 ? ' esq" style="right:' + (W - x) : ' dir" style="left:' + x) + 'px;top:' + yy + 'px">' + inner + '</span>';
   items.forEach(it => {
     if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição já percorrida', 'lições já percorridas') + '</p>';
@@ -1852,10 +1853,10 @@ function vMapa(t, id, d) {
       h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
         lbl(it.x, it.y, it.done && !opened ? 'cur' : 'lock', '<b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small>');
     } else if (it.k === 'destino') {
-      h += '<div class="destino" style="top:' + (it.y + 96) + 'px"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn mini sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
+      destino = '<section class="destino"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></section>';
     }
   });
-  return h + '</section>';
+  return h + '</section>' + destino;
 }
 
 /* ---------- Construção dos exercícios ---------- */
