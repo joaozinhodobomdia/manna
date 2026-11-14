@@ -19,8 +19,7 @@ function parseRef(ref) {
     const m = part.match(/^((?:[123]\s*)?[A-Za-zÀ-ÿ.\s]+?)\s*(\d+)(?:\s*[:.]\s*(\d+)(?:\s*-\s*(\d+))?)?(?:\s*-\s*(\d+))?\s*$/);
     let b, c, v1, v2, c2;
     if (m) {
-      const name = norm(m[1].replace(/\./g, '')).replace(/^([123])\s*/, '$1 ');
-      b = BOOK_IX[name]; if (b == null) return;
+      b = bookIndex(m[1]); if (b == null) return;
       c = +m[2]; v1 = m[3] ? +m[3] : null; v2 = m[4] ? +m[4] : v1; c2 = m[5] ? +m[5] : null;
       lastBook = b;
     } else if (lastBook != null && /^\d+(:\d+(-\d+)?)?$/.test(part)) {
@@ -32,6 +31,15 @@ function parseRef(ref) {
     else out.push({ b, c, v1, v2 });
   });
   return out;
+}
+function bookIndex(raw) {
+  const trimmed = String(raw || '').trim().replace(/\s+/g, ' ');
+  const tidy = s => norm(s).replace(/^([123])\s*/, '$1 ');
+  const withDots = tidy(trimmed);
+  const noDots = tidy(trimmed.replace(/\./g, ''));
+  if (BOOK_IX[withDots] != null) return BOOK_IX[withDots];
+  if (BOOK_IX[noDots] != null) return BOOK_IX[noDots];
+  return null;
 }
 const refLabel = s => LIVROS[s.b][0] + ' ' + s.c + (s.v1 ? ':' + s.v1 + (s.v2 && s.v2 !== s.v1 ? '-' + s.v2 : '') : '');
 function findRefs(text) {
@@ -47,8 +55,12 @@ function loadBiblia() {
   if (BIBLIA) return Promise.resolve(BIBLIA);
   if (!bibliaP) bibliaP = new Promise((ok, no) => {
     const s = document.createElement('script'); s.src = 'blivre.js'; s.async = true;
-    s.onload = () => { BIBLIA = window.BLIVRE || null; BIBLIA ? ok(BIBLIA) : no(new Error('vazio')); };
-    s.onerror = () => { bibliaP = null; no(new Error('falhou')); };
+    s.onload = () => {
+      BIBLIA = window.BLIVRE || null;
+      if (BIBLIA) ok(BIBLIA);
+      else { bibliaP = null; s.remove(); no(new Error('vazio')); }
+    };
+    s.onerror = () => { s.remove(); bibliaP = null; no(new Error('falhou')); };
     document.head.appendChild(s);
   });
   return bibliaP;

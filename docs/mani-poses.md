@@ -1,14 +1,18 @@
-# Mani: poses que faltam
+# Mani: poses
 
-Prompts montados a partir do manual do mascote (texto-base + emoção). Gere 4 opções de cada, usando a pose Leitora (`public/mani/leitora.jpg`) como imagem de referência, escolha a mais parecida e confira as regras de uso do manual.
+As poses que o app usa estão em `public/mani/`, em PNG transparente, nos tamanhos @2x e @3x. O app escolhe o arquivo com `srcset`. A pose Leitora, que segura a Bíblia, não é espelhada.
 
-## Como colocar no app
+Sonolento, determinado e acolhedor não entram no app nesta versão, porque ainda não existe a tela correspondente (lembrete da noite, começo de desafio e recomeço depois de dias parado).
 
-1. Salve a imagem escolhida em `public/mani/` com o nome da pose, por exemplo `public/mani/triste.png`. Use fundo creme liso (#FDEFE2) ou transparente.
-2. Rode `python3 build.py`. O build detecta a pose sozinho e o app passa a usá-la no momento certo.
-3. Enquanto uma pose não existe, o app usa uma pose aprovada parecida. Nos momentos de dor, risco ou erro (triste, ansioso, bravinho, sonolento), Mani não aparece, porque o manual proíbe pose alegre nesses casos.
+Os prompts abaixo servem se for preciso gerar de novo uma pose. Use a Leitora como referência e confira o manual.
 
-Poses já no app: Leitora, Grata e Joinha.
+## Como colocar uma pose nova
+
+1. Salve `public/mani/mani-NOME@2x.png` e `public/mani/mani-NOME@3x.png`, com fundo transparente.
+2. Rode `python3 build.py`. O build lê o arquivo @2x e o app passa a usar a pose, se o código pedir esse nome.
+3. Pose que o código não pede não aparece. O app não troca uma pose de dor por uma pose alegre.
+
+Poses no app: leitora, grata, joinha, oliveira, feliz, animado, curioso, pensativo, surpreso, ansioso, triste, bravinho e orando.
 
 ## Onde cada pose entra no app
 

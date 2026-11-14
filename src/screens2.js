@@ -18,6 +18,7 @@ async function sugerirIA() {
   ui.sugBusy = true; keep();
   try {
     const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano: "' + objTexto() + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
+    if (!r || typeof r !== 'object') throw new Error('vazio');
     const ids = (r.ids || []).filter(id => trilha(id));
     ui.sug = { txt: objTexto(), ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
   } catch (e) { if (e.code !== 'cancelled') toast(aiMsg(e)); }
@@ -33,6 +34,7 @@ function vSugestoes(onb) {
   if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
+  if (ui.sugBusy) h += ART.mani('mani m-sm row', 'pensativo', 'Estou preparando as sugestões.');
   if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Refinar as sugestões com IA</button>';
   return h;
 }
@@ -65,8 +67,10 @@ function vPlano() {
   h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div>' + (objTexto() ? '<ul class="dots">' + objTexto().split('. ').map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="muted">Você ainda não definiu um objetivo.</p>') + '</section>';
   h += '<section class="sec"><div class="sec-h"><h2>' + plural(S.quiz.trilhas.length, 'etapa', 'etapas') + ' no seu ano</h2></div><ol class="etapas">';
   S.quiz.trilhas.forEach((id, i) => {
-    const t = trilha(id), d = doneCount(id), n = t.licoes.length;
-    h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover">Remover</button></div></div></li>';
+    const t = trilha(id);
+    if (!t || !t.licoes.length) return;
+    const d = doneCount(id), n = t.licoes.length;
+    h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir esta etapa"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer esta etapa"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover do plano">Remover</button></div></div></li>';
   });
   h += '</ol></section><button class="btn" data-a="open" data-ov="explorar" data-id="Sugestões">Adicionar ao plano</button>';
   return h + '</main>';
@@ -102,6 +106,7 @@ async function genTrail(tema, fonte) {
   const prompt = REGRAS + '\n\nMonte uma trilha de estudo bíblico ' + (fonte ? 'a partir desta pregação ou anotação:\n"""\n' + fonte.slice(0, 12000) + '\n"""\n' : '') + 'Tema: ' + tema + '.\nCrie de 5 a 8 lições curtas em sequência lógica. Cada lição tem um texto bíblico principal com referência exata no formato "Livro capítulo" ou "Livro capítulo:versículo-versículo", com nomes dos livros em português (ex.: "1 Coríntios 13", "Salmos 23", "Mateus 6:25-34"), um título curto, 1 ou 2 frases de contexto e uma pergunta de reflexão.\nResponda só com JSON: {"nome": "nome curto da trilha", "desc": "1 frase", "licoes": [{"titulo": "...", "ref": "...", "contexto": "...", "pergunta": "..."}]}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw { code: 'vazio' };
   const licoes = (r.licoes || []).filter(x => x && x.ref && parseRef(String(x.ref)).length).slice(0, 10)
     .map(x => ({ ref: String(x.ref), titulo: String(x.titulo || x.ref), ctx: String(x.contexto || ''), q: String(x.pergunta || ''), caps: new Set(parseRef(String(x.ref)).map(s => s.b + ':' + s.c)).size }));
   if (!licoes.length) throw { code: 'vazio' };
@@ -125,7 +130,7 @@ function vBiblia() {
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {
     loadBiblia().then(() => { if (ui.tab === 'biblia' && !ui.ov) keep(); }).catch(() => { ui.bibErr = true; if (ui.tab === 'biblia') keep(); });
-    return h + (ui.bibErr ? '<p class="note">Não foi possível abrir a Bíblia agora. Verifique a conexão e tente de novo.</p><button class="btn sec" data-a="bibRetry">Tentar de novo</button>' : '<div class="center-col">' + ART.mani('mani md', 'pensa') + '<p class="muted">Abrindo a Bíblia Livre…</p></div>') + '</main>';
+    return h + (ui.bibErr ? ART.mani('mani m-md', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') + '<p class="note" role="alert">Não foi possível abrir a Bíblia agora. Verifique a conexão e tente de novo.</p><button class="btn sec" data-a="bibRetry">Tentar de novo</button>' : '<div class="center-col"><p class="muted">Abrindo a Bíblia Livre…</p></div>') + '</main>';
   }
   const B = ui.bib;
   if (!B) {
@@ -147,7 +152,7 @@ function vBiblia() {
   }
   const [n, k] = LIVROS[B.b], key = B.b + ':' + B.c, vs = versesOf(n + ' ' + B.c), sel = ui.sel || [];
   h += '<div class="reader-h"><button class="iconbtn" data-a="bibChap" data-d="-1" aria-label="Capítulo anterior"' + (B.c > 1 ? '' : ' disabled') + '>' + icon('voltar') + '</button><button class="link" data-a="bibBook" data-b="' + B.b + '"><b>' + n + ' ' + B.c + '</b></button><button class="iconbtn flip" data-a="bibChap" data-d="1" aria-label="Próximo capítulo"' + (B.c < k ? '' : ' disabled') + '>' + icon('voltar') + '</button></div>' +
-    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted">Toque nos versículos para selecionar</span></div>';
+    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted hint">Toque nos versículos para selecionar</span></div>';
   h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(vs, { tap: true, sel }) + '</article>';
   if (sel.length) {
     const txt = selText();
@@ -171,7 +176,7 @@ function vHinario() {
     '<div class="two"><label>Número<input id="h-n" type="number" min="1" max="999" inputmode="numeric" placeholder="Ex.: 12"></label><label>Título<input id="h-t" maxlength="80" placeholder="Nome do hino"></label></div><button class="btn sec" type="submit">Guardar hino</button></form>';
   h += '<section class="sec"><div class="sec-h"><h2>Meus hinos</h2><span class="muted tnum">' + meus.length + '</span></div>';
   if (!meus.length) h += '<p class="empty">Guarde os hinos que você mais canta. Eles ficam aqui com um atalho para ouvir.</p>';
-  else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener">Ouvir no YouTube</a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">Favorito</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover">×</button></li>').join('') + '</ul>';
+  else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener noreferrer">Ouvir no YouTube<span class="sr-only"> (abre outra página)</span></a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">' + (x.fav ? 'Favorito' : 'Favoritar') + '</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover hino ' + esc(x.t || String(x.n)) + '">Remover</button></li>').join('') + '</ul>';
   return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). Por isso o Manna guarda só número e título.</p>';
 }
 

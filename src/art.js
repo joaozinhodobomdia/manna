@@ -2,22 +2,40 @@
 
 const ART = {};
 
-/* Mani: a pombinha 3D do manual do mascote. Poses aprovadas em public/mani/; as que faltam caem para uma pose próxima,
-   e emoções de dor ou erro ficam sem Mani até a pose própria existir (o manual proíbe pose alegre nesses momentos). */
-const MANI_ALIAS = { feliz: 'grata', festa: 'grata', acolhedor: 'grata', orando: 'grata', animado: 'joinha', surpreso: 'joinha', determinado: 'joinha', curioso: 'leitora', pensativo: 'leitora', pensa: 'leitora' };
-const MANI_SEM = ['triste', 'ansioso', 'bravinho', 'sonolento'];
-function maniFile(pose) {
-  const F = typeof MANI_FILES !== 'undefined' ? MANI_FILES : {};
-  if (F[pose]) return F[pose];
-  if (MANI_SEM.includes(pose)) return null;
-  const alt = MANI_ALIAS[pose];
-  return alt && F[alt] ? F[alt] : (F.leitora || null);
+/* Mani: PNGs transparentes em public/mani/mani-<pose>@2x.png e @3x.png.
+   Uma figura por tela. A pose com a Bíblia (leitora) nunca é espelhada.
+   Se a pose não está no app, não aparece: pose alegre não substitui dor ou erro. */
+const MANI_ALT = {
+  leitora: 'Mani lendo a Bíblia',
+  grata: 'Mani em gratidão, de olhos fechados',
+  joinha: 'Mani com o polegar levantado',
+  oliveira: 'Mani com um ramo de oliveira',
+  feliz: 'Mani sorrindo de olhos fechados',
+  animado: 'Mani com as asas abertas, comemorando',
+  curioso: 'Mani olhando uma interrogação',
+  pensativo: 'Mani pensativo, com a asa no queixo',
+  surpreso: 'Mani surpreso, de bico aberto',
+  ansioso: 'Mani preocupado',
+  triste: 'Mani triste',
+  bravinho: 'Mani bravinho por um erro do aplicativo',
+  orando: 'Mani de olhos fechados, em oração',
+};
+function clampFala(s) {
+  const t = String(s || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= 60) return t;
+  const cut = t.slice(0, 60);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > 24 ? cut.slice(0, sp) : cut).trim();
 }
 ART.mani = (cls, pose, fala) => {
-  const f = maniFile(pose || 'leitora');
-  if (!f) return '';
-  const [arq, w, h] = Array.isArray(f) ? f : [f, 1, 1];
-  return '<figure class="' + (cls || 'mani') + '"><span class="m-tile"><img src="mani/' + arq + '" width="' + w + '" height="' + h + '" alt="Mani"></span>' + (fala ? '<figcaption class="m-fala">' + String(fala).replace(/[<>&]/g, '') + '</figcaption>' : '') + '</figure>';
+  const p = pose || 'leitora';
+  const F = typeof MANI_FILES !== 'undefined' ? MANI_FILES : {};
+  if (!F[p]) return '';
+  const w = Number(F[p][0]) || 256, h = Number(F[p][1]) || 512;
+  const base = 'mani/mani-' + p;
+  const texto = fala ? clampFala(fala) : '';
+  const falaHtml = texto ? '<figcaption class="m-fala">' + esc(texto) + '</figcaption>' : '';
+  return '<figure class="' + (cls || 'mani') + '"><span class="m-tile"><img src="' + base + '@2x.png" srcset="' + base + '@2x.png 2x, ' + base + '@3x.png 3x" width="' + w + '" height="' + h + '" alt="' + esc(MANI_ALT[p] || 'Mani') + '"></span>' + falaHtml + '</figure>';
 };
 
 ART.grao = cls => '<svg class="' + (cls || 'grao') + '" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4.2" ry="6.4" transform="rotate(-22 6 8)"/></svg>';

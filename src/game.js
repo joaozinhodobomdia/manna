@@ -27,9 +27,24 @@ function vTarefas() {
 }
 
 /* Jornada: topo curto (até 2/5 da tela), mapa logo abaixo, desafios depois do mapa */
+function falaTrilha(nome) {
+  const fala = 'Glória a Deus! Você terminou ' + nome;
+  return fala.length <= 60 ? fala : 'Glória a Deus! Você terminou.';
+}
+function maniJornada(t, d, n) {
+  if (d >= n) return ART.mani('mani m-sm row', 'oliveira', falaTrilha(t.nome));
+  if (S.lost && S.lost.d && diff(S.lost.d, todayK()) <= 1 && !studiedToday()) return ART.mani('mani m-sm row', 'triste', 'Tudo bem. Amanhã a gente recomeça.');
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) return ART.mani('mani m-sm row', 'ansioso', 'Ainda dá tempo de ler hoje.');
+  if (!studiedToday()) return ART.mani('mani m-sm row', 'leitora', 'Sua porção de hoje está pronta.');
+  return '';
+}
 function vJornada() {
-  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length, xpd = todayXP();
+  const id = curTrail(), t = trilha(id);
+  if (!t) return '<main class="screen"><p class="note">Não encontrei uma trilha no seu plano.</p><button class="btn" data-a="open" data-ov="plano">Abrir o plano</button></main>';
+  const d = doneCount(id), n = t.licoes.length, xpd = todayXP();
   let h = '<header class="topo-j"><div class="tj-row"><button class="trail-chip" data-a="open" data-ov="plano" aria-label="Meu plano: ' + esc(t.nome) + '">' + ART.logo('logo sm') + '<span><b>' + esc(t.nome) + '</b><small class="tnum">' + d + ' de ' + n + '</small></span>' + icon('voltar', 'ic xs down') + '</button>' + statusPills() + '</div>';
+  const figura = maniJornada(t, d, n);
+  if (figura) h += '<div class="mani-slot">' + figura + '</div>';
   if (d < n) {
     const l = t.licoes[d];
     h += studiedToday()
@@ -39,7 +54,7 @@ function vJornada() {
   h += '<div class="xp-row"><span class="line on-dark"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><small class="tnum">' + Math.min(xpd, S.goal) + '/' + S.goal + ' XP hoje</small></div></header>';
   h += '<main class="screen jornada">';
   if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
-  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva acaba à meia-noite.</p></div>';
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19 && !(S.lost && S.lost.d && diff(S.lost.d, todayK()) <= 1)) h += '<div class="note warn" role="status"><p>Sua ofensiva acaba à meia-noite.</p></div>';
   h += vMapa(t, id, d);
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
@@ -124,7 +139,7 @@ function vMapa(t, id, d) {
       const l = t.licoes[it.i], st = it.i < d ? 'done' : it.i === d ? 'cur' : 'lock';
       const nome = l.plano ? 'Dia ' + (it.i + 1) : l.titulo, sub = l.plano || l.titulo !== l.ref ? l.ref : '';
       h += '<button class="marco ' + st + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="' + (it.i + 1) + ': ' + esc(nome) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
-        (st === 'cur' ? ART.mani('mani m-pin', 'leitora') : '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span>') + '</button>' +
+        '<span class="m-dot' + (st === 'cur' ? ' aqui' : '') + '">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span></button>' +
         lbl(it.x, it.y, st, (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(nome) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : ''));
     } else if (it.k === 'vaso') {
       const opened = S.chests[id + ':' + it.u];
@@ -143,6 +158,12 @@ function pickOthers(arr, exclude, n) {
   return shuffle(arr).filter(x => { if (seen.has(x)) return false; seen.add(x); return true; }).slice(0, n);
 }
 const words = s => s.replace(/[.,;:"()?!]/g, '').split(/\s+/).filter(Boolean);
+const escapeRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function findWord(text, word) {
+  const re = new RegExp('(^|[^\\p{L}\\p{N}])(' + escapeRe(word) + ')(?![\\p{L}\\p{N}])', 'u');
+  const m = re.exec(String(text || ''));
+  return m ? m.index + m[1].length : -1;
+}
 const vref = x => LIVROS[x.b][0] + ' ' + x.c + ':' + x.v;
 const GENQ = ['O que este texto mostra sobre quem Deus é?', 'Que versículo daqui você quer guardar hoje, e por quê?', 'Que atitude este texto pede de você esta semana?', 'O que mais chamou sua atenção nesta leitura?', 'Por quem você pode orar a partir deste texto?'];
 function buildSteps(t, i, vs) {
@@ -155,9 +176,9 @@ function buildSteps(t, i, vs) {
   /* Complete o versículo */
   const vf = pool[0];
   if (vf) {
-    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && vf.t.indexOf(w) > -1);
+    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && findWord(vf.t, w) >= 0);
     if (cand.length) {
-      const w = cand[Math.floor(Math.random() * cand.length)], at = vf.t.indexOf(w);
+      const w = cand[Math.floor(Math.random() * cand.length)], at = findWord(vf.t, w);
       const outros = allWords.concat(TRILHAS.flatMap(x => x.licoes.flatMap(y => words(y.ctx || '')))).filter(x => x.length >= 5 && x.toLowerCase() !== w.toLowerCase() && !vf.t.includes(x));
       const ops = pickOthers(outros, w, 3);
       if (ops.length === 3) steps.push({ k: 'fill', q: 'Complete o versículo', hint: vref(vf), before: vf.t.slice(0, at), after: vf.t.slice(at + w.length), opts: shuffle([w, ...ops]), ans: w });
@@ -194,6 +215,7 @@ async function aiQuestions(L) {
     if (!r) return;
     if (r.contexto && !l.ctx) { S.gen[l.ref] = { contexto: String(r.contexto), pergunta: r.pergunta ? String(r.pergunta) : '' }; save(); }
     if (ui.L !== L || L.phase !== 'steps') return;
+    if (L.steps[L.i] && L.steps[L.i].k === 'reflita') return;
     const last = L.steps[L.steps.length - 1];
     if (last.k === 'reflita' && !l.q && r.pergunta) last.q = String(r.pergunta);
     const qs = (Array.isArray(r.questoes) ? r.questoes : []).filter(q => q && q.pergunta && Array.isArray(q.opcoes) && q.opcoes.length >= 3 && q.opcoes[q.correta]).slice(0, 2)
@@ -202,8 +224,8 @@ async function aiQuestions(L) {
       L.steps.splice(Math.min(Math.max(L.i + 1, 2), L.steps.length - 1), 0, qs[0]);
       if (qs[1]) L.steps.splice(L.steps.length - 1, 0, qs[1]);
       L.total += qs.length;
+      if (L.i === 0) renderLesson();
     }
-    renderLesson();
   } catch (e) { /* sem IA, segue com os exercícios prontos */ }
 }
 
@@ -246,20 +268,20 @@ function vLessonScreen() {
   if (s.k === 'leia') {
     const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
     const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + t.nota + '</p>' : '') + '</article>';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
     if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>';
     else h += '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
       if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
       else if (!ui.aiText) h += '<button class="btn sec" data-a="explain">Explicar este texto</button>';
-      if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
+      if (ui.aiErr) h += ART.mani('mani m-sm row', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') + '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>';
     }
-    h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label></main>';
-    return h + '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
+    h += '</main>';
+    return h + '<footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
   if (s.k === 'reflita') {
-    h += '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    h += ART.mani('mani m-md', 'orando', 'Vamos guardar isso no coração.') + '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><label class="field" for="l-nota">Sua resposta fica só neste aparelho</label><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(lessonNote(L.id, L.idx)) + '</textarea></article></main>';
     return h + '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
   }
   const ck = L.checked;
@@ -278,7 +300,7 @@ function vLessonScreen() {
     h += '</div>';
   } else if (s.k === 'tiles') {
     const parts = String(s.hint).split(': ');
-    h += '<h1 class="ex-q">' + s.prompt + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
+    h += '<h1 class="ex-q">' + esc(s.prompt) + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
     L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="gap filled" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button> '; });
     if (!ck && L.built.length < s.target.length) h += '<span class="gap">&nbsp;</span>';
     h += '</p><div class="words">';
@@ -300,7 +322,11 @@ function vLessonScreen() {
 function vFim(L) {
   const r = L.result, l = trilha(L.id).licoes[L.idx];
   const linha = (k, v) => '<li><span>' + k + '</span><i></i><b class="tnum">' + v + '</b></li>';
-  return '<div class="lesson"><main class="lz fim">' + ART.mani('mani m-lg', 'grata', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.') +
+  const tFim = trilha(L.id);
+  const figuraFim = (!L.review && tFim && isDone(L.id)) ? ART.mani('mani m-lg', 'oliveira', falaTrilha(tFim.nome))
+    : (!L.review && todayXP() >= S.goal) ? ART.mani('mani m-lg', 'grata', 'Glória a Deus! Meta de hoje cumprida.')
+    : ART.mani('mani m-lg', 'feliz', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.');
+  return '<div class="lesson"><main class="lz fim">' + figuraFim +
     '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(l.ref) + '</h1><ul>' +
     linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Acertos', '<span data-count="' + r.acc + '">0</span>%') + linha('Tempo', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
     '</ul>' + (r.perfect && !L.review ? '<p class="muted">Sem nenhum erro.</p>' : '') + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
@@ -308,22 +334,24 @@ function vFim(L) {
 }
 
 function weekRow() {
-  const ws = weekStart(), nm = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-  return '<div class="week">' + nm.map((n, i) => {
+  const ws = weekStart();
+  const nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  return '<div class="week">' + nomes.map((n, i) => {
     const k = addDays(ws, i), on = S.days.includes(k), hoje = k === todayK();
     return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '">' + grainMark(on ? 'done' : hoje ? 'cur' : 'lock', '') + '<small>' + n + '</small></div>';
   }).join('') + '</div>';
 }
 function vOfensivaUp() {
   const n = S.streak.count;
-  const fala = n === 1 ? 'Primeiro dia colhido!' : n + ' dias seguidos! Continue firme.';
-  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', 'joinha', fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">' + n + '</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
+  const pose = ui.novoRecorde ? 'animado' : 'joinha';
+  const fala = ui.novoRecorde ? 'Recorde novo! Continue firme.' : (n === 1 ? 'Primeiro dia! Continue firme.' : n + ' dias seguidos! Continue firme.');
+  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', pose, fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">0</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
     '<p class="muted">' + (S.protetores ? 'Você tem ' + plural(S.protetores, 'protetor', 'protetores') + ' para um dia difícil.' : 'Sem protetor guardado: dá para comprar na loja.') + '</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function finishLesson() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
-  const nota = val('l-nota'); if (nota) S.notes[L.id + L.idx] = nota;
+  const nota = val('l-nota'); if (nota) setLessonNote(L.id, L.idx, nota);
   const perfect = L.wrong === 0, acc = Math.round(L.right / Math.max(1, L.right + L.wrong) * 100);
   const secs = Math.round((Date.now() - L.t0) / 1000), tempo = Math.floor(secs / 60) + ':' + pad(secs % 60);
   let base = L.review ? 5 : 15;
@@ -336,7 +364,7 @@ function finishLesson() {
     S.lessons++; if (perfect) { S.perfect++; bump('perfeita', 1); }
     bump('licoes', 1); grains = perfect ? 8 : 5; S.grains += grains;
     up = study(l.caps);
-    if (S.group) postFeed(nota ? nota.slice(0, 280) : 'Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
+    if (S.group) postFeed('Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
     if (isDone(L.id)) setTimeout(() => toast('Meta concluída: ' + t.nome), 1500);
   } else { up = study(0); }
   S.bestCombo = Math.max(S.bestCombo, L.best);

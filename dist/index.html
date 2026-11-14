@@ -22,7 +22,7 @@
   --tenda: #C98F55; --tenda-dk: #9C6634; --tronco: #8A6A44; --folha: #6E9A5A; --folha-dk: #557E45;
   --agua: #B9D5EC; --agua-dk: #7FA9CF; --areia: #E7DCBF; --nuvem: #DCE7F3; --fogo: #E0703F; --pedra: #E9E2D2; --pedra-dk: #A99E86; --parede: #FBF6EA; --telha: #B8643E;
   --monte: #CFAE84; --monte-dk: #B08E64; --ovelha: #FFFDF8; --pele: #E2B48D; --manto: #6F86B5; --manto2: #C98F55;
-  --vaso: #F2C14E; --vaso-tampa: #C9952B; --vaso-tr: #0F1B3D; --bloq: #E2DBC9; --bloq-dk: #BFB497;
+  --vaso: #F2C14E; --vaso-tampa: #C9952B; --vaso-tr: #0F1B3D; --bloq: #E2DBC9; --bloq-dk: #BFB497; --ouro-ink: #7A5A10;
   --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --f-logo: 'Sora', 'Inter', system-ui, sans-serif;
   --f-book: 'Literata', Georgia, 'Times New Roman', serif;
@@ -33,19 +33,21 @@
     --bg: #0F1B3D; --surface: #16244B; --fg: #F5F1E6; --muted: #A8B2CA; --line: #283A66; --line-dk: #34487A; --soft: #1D2D58; --mine: #273A6E;
     --link: #A9C6E8; --ok: #8FD3A1; --bad: #F5A28C; --chao: rgba(0,0,0,.28);
     --deserto: #1F2C55; --reino: #1E3050; --galileia: #1B3249; --cidades: #222B4D; --ceu-r: #2B3152; --estrada: #3A4C7A; --estrada-borda: #2C3B66;
-    --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; color-scheme: dark;
+    --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; --ouro-ink: #F2C14E; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0F1B3D; --surface: #16244B; --fg: #F5F1E6; --muted: #A8B2CA; --line: #283A66; --line-dk: #34487A; --soft: #1D2D58; --mine: #273A6E;
   --link: #A9C6E8; --ok: #8FD3A1; --bad: #F5A28C; --chao: rgba(0,0,0,.28);
   --deserto: #1F2C55; --reino: #1E3050; --galileia: #1B3249; --cidades: #222B4D; --ceu-r: #2B3152; --estrada: #3A4C7A; --estrada-borda: #2C3B66;
-  --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; color-scheme: dark;
+  --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; --ouro-ink: #F2C14E; color-scheme: dark;
 }
 
 /* Base */
 * { box-sizing: border-box; }
+html { scroll-padding-top: 12px; scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
 html, body { min-height: 100%; }
+body.ov-open { overflow: hidden; }
 body { background: var(--bg); color: var(--fg); font: 400 16px/1.5 var(--f-body); -webkit-font-smoothing: antialiased; }
 #app { max-width: 520px; margin: 0 auto; padding-left: var(--gut); padding-right: var(--gutr); padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 body.in-lesson #app { padding-bottom: 0; }
@@ -91,24 +93,24 @@ img { max-width: 100%; }
 .deco { display: block; width: 100%; height: 100%; }
 
 /* Botões */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; padding: 13px 22px; border: 0; border-radius: var(--pill); background: var(--ouro); color: var(--noite); font: 700 16px/1.2 var(--f-body); text-decoration: none; text-align: center; transition: transform .12s ease; }
+.btn { display: inline-flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; padding: 13px 22px; border: 0; border-radius: var(--pill); background: var(--ouro); color: var(--noite); font: 700 16px/1.2 var(--f-body); text-decoration: none; text-align: center; transition: transform .12s ease; }
 .btn .ic { width: 18px; height: 18px; }
 .btn:active:not(:disabled) { transform: scale(.98); }
 .btn:disabled { background: var(--soft); color: var(--muted); cursor: default; }
 .btn.sec { background: transparent; color: var(--fg); border: 1.5px solid var(--fg); }
 .btn.ghost { background: transparent; color: var(--fg); }
-.btn.mini { width: auto; min-height: 36px; padding: 7px 16px; font-size: 14px; }
+.btn.mini { width: auto; min-height: 44px; padding: 8px 16px; font-size: 14px; }
 .btn.mini.off { background: var(--soft); color: var(--muted); }
 .btn.badbtn { background: var(--bad); color: var(--bg); }
 .btn.sec-dark { background: transparent; color: var(--pergaminho); border: 1.5px solid rgba(245,241,230,.5); }
 .link { background: none; border: 0; padding: 0; color: var(--link); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
-.link.danger { color: var(--bad); align-self: center; padding: 8px; }
+.link.danger { color: var(--bad); align-self: center; display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; }
 .iconbtn { width: 44px; height: 44px; display: inline-grid; place-items: center; border: 0; border-radius: 12px; background: transparent; color: var(--muted); flex: none; }
 .busy { display: flex; flex-direction: column; gap: 8px; }
 .sticky-cta { position: sticky; bottom: 0; z-index: 3; display: flex; flex-direction: column; gap: 8px; padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); }
-.pill { border: 1px solid var(--line); border-radius: var(--pill); background: var(--surface); padding: 5px 14px; font-size: 14px; font-weight: 600; }
+.pill { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border: 1px solid var(--line); border-radius: var(--pill); background: var(--surface); padding: 8px 14px; font-size: 14px; font-weight: 600; }
 .pill.on { background: var(--noite); color: var(--ouro); border-color: var(--noite); }
-.mini-i { min-width: 34px; height: 32px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); font-weight: 700; font-size: 13px; color: var(--muted); }
+.mini-i { min-width: 44px; height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); font-weight: 700; font-size: 13px; color: var(--muted); }
 .mini-i:disabled { opacity: .4; }
 
 /* Progresso */
@@ -119,7 +121,7 @@ img { max-width: 100%; }
 .bar i { display: block; height: 100%; background: var(--fg); border-radius: 6px; }
 .segs { display: flex; gap: 4px; }
 .segs i { flex: 1; height: 4px; border-radius: 4px; background: var(--soft); }
-.segs i.on { background: var(--fg); } .segs i.now { background: var(--ouro-dk); }
+.segs i.on { background: var(--fg); } .segs i.now { background: var(--ouro-ink); }
 @media (prefers-reduced-motion: no-preference) { .bar i, .line i { transition: width .5s ease; } }
 
 /* Cartões, listas e notas */
@@ -128,7 +130,7 @@ img { max-width: 100%; }
 .card.test { border-style: dashed; }
 .note { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: var(--soft); font-size: 15px; }
 .note.warn { background: var(--mine); }
-.sec { display: flex; flex-direction: column; gap: 10px; }
+.sec:not(.btn) { display: flex; flex-direction: column; gap: 10px; }
 .sec > h2, .sec-h h2 { font: 800 18px/1.3 var(--f-body); }
 .sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .list { list-style: none; padding: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); overflow: hidden; }
@@ -174,14 +176,18 @@ textarea { resize: vertical; }
 .capa-t { font: 800 26px/1.15 var(--f-body); letter-spacing: -0.02em; }
 .capa-s { color: rgba(245,241,230,.72); font-size: 15px; }
 .pills { display: flex; gap: 6px; flex: none; }
-.spill { display: inline-flex; align-items: center; gap: 5px; padding: 6px 11px; border-radius: var(--pill); border: 1px solid rgba(245,241,230,.22); background: transparent; color: var(--pergaminho); font-size: 13px; }
+.spill { display: inline-flex; align-items: center; gap: 5px; min-height: 44px; padding: 8px 12px; border-radius: var(--pill); border: 1px solid rgba(245,241,230,.22); background: transparent; color: var(--pergaminho); font-size: 13px; }
 .spill b { font-weight: 800; font-size: 15px; }
 .spill .grao { width: 11px; height: 15px; fill: rgba(245,241,230,.45); }
 .spill.lit .grao { fill: var(--ouro); }
 
 /* Jornada: topo curto */
 .topo-j { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--noite); color: var(--pergaminho); padding: 12px var(--gutr) 14px var(--gut); border-radius: 0 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
-.tj-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tj-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 420px) {
+  .trail-chip { flex: 1 1 100%; }
+  .pills { width: 100%; justify-content: flex-end; }
+}
 .trail-chip { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 4px 12px 4px 4px; border: 0; border-radius: var(--pill); background: rgba(245,241,230,.08); color: var(--pergaminho); text-align: left; }
 .trail-chip span { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
 .trail-chip b { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -190,7 +196,7 @@ textarea { resize: vertical; }
 .hoje { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 18px; background: rgba(245,241,230,.08); }
 .hoje > div { display: flex; flex-direction: column; min-width: 0; }
 .hoje small { color: rgba(245,241,230,.7); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hoje b { font-size: 17px; line-height: 1.25; }
+.hoje b { font-size: 17px; line-height: 1.25; overflow-wrap: anywhere; }
 .hoje .btn { flex: none; }
 .xp-row { display: flex; align-items: center; gap: 10px; }
 .xp-row small { font-size: 12px; color: rgba(245,241,230,.7); white-space: nowrap; }
@@ -205,9 +211,9 @@ textarea { resize: vertical; }
 .estrada-meio { fill: none; stroke: var(--surface); stroke-width: 2.5; stroke-dasharray: 2 10; stroke-linecap: round; opacity: .9; }
 .estrada-feita { fill: none; stroke: var(--ouro); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
 .marco { position: absolute; z-index: 2; transform: translate(-50%, -50%); border: 0; background: none; padding: 0; display: grid; place-items: center; }
-.m-dot { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); border: 2px solid var(--estrada-borda); color: var(--muted); }
+.m-dot { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); border: 2px solid var(--estrada-borda); color: var(--muted); }
 .m-dot i { font: 700 14px/1 var(--f-body); font-style: normal; }
-.marco.done .m-dot { background: var(--ouro); border-color: var(--ouro-dk); color: var(--noite); }
+.marco.done .m-dot, .m-dot.aqui { background: var(--ouro); border-color: var(--ouro-dk); color: var(--noite); }
 .marco.done .m-dot .ic { width: 16px; height: 16px; stroke-width: 3.5; }
 .marco.cur { z-index: 3; }
 .m-pin .m-tile { width: 62px; padding: 6px; border-radius: 18px; border: 3px solid var(--ouro); }
@@ -219,7 +225,7 @@ textarea { resize: vertical; }
 .m-lbl.cur.dir { transform: translate(42px, -50%); } .m-lbl.cur.esq { transform: translate(-42px, -50%); }
 .m-lbl b { font-weight: 700; font-size: 14px; }
 .m-lbl small { color: var(--muted); font-size: 12px; }
-.m-lbl em { font-style: normal; font-weight: 800; font-size: 12px; color: var(--ouro-dk); }
+.m-lbl em { font-style: normal; font-weight: 800; font-size: 12px; color: var(--ouro-ink); }
 .m-lbl.lock { background: transparent; } .m-lbl.lock b { color: var(--muted); font-weight: 600; }
 .camp { position: absolute; z-index: 2; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; max-width: 78%; padding: 6px 16px; border-radius: 14px; background: var(--noite); color: var(--pergaminho); text-align: center; }
 .camp b { font-size: 13px; font-weight: 800; color: var(--ouro); }
@@ -246,14 +252,18 @@ textarea { resize: vertical; }
 
 /* Mani */
 .mani { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; flex: none; }
-.m-tile { display: block; background: var(--creme); border-radius: 22px; padding: 12px; line-height: 0; overflow: hidden; }
-.m-tile img { display: block; width: 100%; height: auto; }
-.m-sm .m-tile { width: 72px; padding: 6px; border-radius: 18px; }
-.m-md .m-tile { width: 108px; }
-.m-lg .m-tile { width: 160px; padding: 16px; border-radius: 28px; }
-.m-hero .m-tile { width: min(176px, 46vw); padding: 14px; border-radius: 30px; }
-.m-fala { font-size: 15px; font-weight: 600; text-align: center; max-width: 32ch; }
-.mani.row { flex-direction: row; gap: 14px; }
+.m-tile { display: block; background: transparent; padding: 0; line-height: 0; }
+.m-tile img { display: block; width: auto; height: 72px; min-height: 48px; max-width: 100%; transform: none; }
+.m-sm .m-tile img { height: 72px; }
+.m-md .m-tile img { height: 112px; }
+.m-lg .m-tile img { height: 160px; }
+.m-hero .m-tile img { height: min(180px, 42vw); min-height: 96px; }
+.m-fala { position: relative; margin: 0; padding: 8px 12px; border-radius: 16px; background: #fff; color: #0F1B3D; border: 1px solid #E2DAC6; font-size: 15px; font-weight: 600; line-height: 1.35; text-align: center; max-width: 34ch; }
+.mani.row .m-fala { text-align: left; }
+.mani-slot { display: flex; justify-content: flex-start; }
+body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .mani { visibility: hidden; }
+.mani.row { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 14px; max-width: 100%; }
+.topo-j .m-fala { max-width: 24ch; }
 .mani.row .m-fala { text-align: left; }
 
 /* Abertura e quiz */
@@ -261,11 +271,11 @@ textarea { resize: vertical; }
 .onb-top { display: flex; align-items: center; gap: 10px; }
 .onb-top .brand { color: var(--pergaminho); }
 .onb-mid { margin-block: auto; padding-block: 20px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-.onb-mid .m-fala { color: var(--pergaminho); }
+.onb-mid .m-fala { color: #0F1B3D; background: #fff; border-color: transparent; }
 .onb-mid h1 { margin-top: 10px; font: 800 28px/1.15 var(--f-body); letter-spacing: -0.02em; }
 .onb-mid > p { color: rgba(245,241,230,.75); max-width: 34ch; }
 .onb-mid .btn { margin-top: 6px; max-width: 420px; }
-.onb-mid .fine { color: rgba(245,241,230,.55); }
+.onb-mid .fine { color: rgba(245,241,230,.85); }
 .qhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: -6px; }
 .qhead .iconbtn { margin-left: -12px; }
 .choices, .opts { display: flex; flex-direction: column; gap: 8px; }
@@ -313,8 +323,8 @@ textarea { resize: vertical; }
 .tl li:first-child::before { background: var(--ouro); border-color: var(--ouro-dk); }
 
 /* Abas */
-.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 7; display: flex; justify-content: center; background: var(--noite); padding: 8px var(--gutr) calc(8px + env(safe-area-inset-bottom, 0px)) var(--gut); }
-.tabs button { flex: 1; max-width: 84px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; border: 0; background: none; color: rgba(245,241,230,.6); font-size: 11px; font-weight: 600; }
+.tabs { position: fixed; left: 50%; right: auto; bottom: 0; z-index: 7; display: flex; justify-content: center; width: min(520px, 100%); transform: translateX(-50%); background: var(--noite); padding: 6px var(--gutr) calc(6px + env(safe-area-inset-bottom, 0px)) var(--gut); }
+.tabs button { flex: 1; max-width: none; min-height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px 0; border: 0; background: none; color: rgba(245,241,230,.78); font-size: 11px; font-weight: 600; }
 .tabs button[aria-current] { color: var(--ouro); }
 .tabs button[aria-current] span { font-weight: 800; }
 
@@ -348,12 +358,12 @@ textarea { resize: vertical; }
 .opt.right .rd, .opt.wrong .rd { color: var(--surface); }
 .opt.right .rd { background: var(--ok); border-color: var(--ok); }
 .opt.wrong { border-color: var(--bad); } .opt.wrong .rd { background: var(--bad); border-color: var(--bad); }
-.opt.dim { opacity: .5; }
+.opt.dim { opacity: 1; color: var(--muted); }
 .verse { font: 400 21px/1.75 var(--f-book); }
 .gap { display: inline-block; min-width: 84px; margin: 0 2px; padding: 0 4px; border: 0; border-bottom: 2px solid var(--fg); background: none; font: inherit; line-height: 1.3; text-align: center; }
 .gap.filled { min-width: 0; background: var(--mine); border-bottom-color: var(--ouro-dk); border-radius: 6px 6px 0 0; }
 .words { display: flex; flex-wrap: wrap; gap: 8px; }
-.word { padding: 9px 14px; border: 1px solid var(--line-dk); border-radius: 10px; background: var(--surface); font: 400 17px/1.2 var(--f-book); }
+.word { min-height: 44px; padding: 10px 14px; border: 1px solid var(--line-dk); border-radius: 10px; background: var(--surface); font: 400 17px/1.2 var(--f-book); }
 .word.used { visibility: hidden; }
 .word.right { border-color: var(--ok); color: var(--ok); }
 .fb { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
@@ -373,7 +383,7 @@ textarea { resize: vertical; }
 .streak-n span { font-weight: 600; color: var(--muted); }
 .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; width: 100%; max-width: 380px; padding: 12px 8px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .wd { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.wd small { font-size: 12px; font-weight: 700; color: var(--muted); }
+.wd small { font-size: 11px; font-weight: 700; color: var(--muted); }
 .wd.today small { color: var(--fg); }
 .gm { position: relative; width: 24px; height: 30px; display: grid; place-items: center; }
 .gm svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -486,7 +496,19 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
 .ov { min-height: 100vh; }
 .ovh { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; gap: 6px; padding-block: 8px; background: var(--bg); font-weight: 700; color: var(--muted); font-size: 15px; }
 .ovh .iconbtn { margin-left: -12px; }
-#toast { position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translateX(-50%); max-width: min(440px, calc(100% - 32px)); padding: 11px 18px; border-radius: var(--pill); background: var(--noite); color: var(--pergaminho); font-size: 15px; font-weight: 700; text-align: center; }
+#toast { position: fixed; left: 50%; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); z-index: 60; transform: translateX(-50%); max-width: min(440px, calc(100% - 32px)); padding: 11px 18px; border-radius: var(--pill); background: var(--noite); color: var(--pergaminho); font-size: 15px; font-weight: 700; text-align: center; }
+body.in-lesson #toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
+.grao.huge { width: 48px; height: 64px; }
+.choices { padding-top: 12px; }
+.row.fsz { align-items: center; }
+.row.fsz .hint { flex: 1 1 160px; }
+.file { position: relative; }
+.file input[type="file"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+.file-ui { display: flex; align-items: center; gap: 10px; min-height: 44px; font-weight: 600; }
+.file-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: var(--pill); border: 1.5px solid var(--fg); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+::placeholder { color: var(--muted); opacity: 1; }
+.list button b { overflow-wrap: anywhere; }
 
 @media (max-width: 380px) {
   .two, .tgrid { grid-template-columns: 1fr; }
@@ -496,7 +518,7 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
 </style>
 <div id="app"></div>
 <script>
-const MANI_FILES = {"grata": ["grata.jpg", 440, 500], "joinha": ["joinha.jpg", 267, 265], "leitora": ["leitora.jpg", 480, 502]};
+const MANI_FILES = {"animado": [514, 512], "ansioso": [432, 512], "bravinho": [365, 512], "curioso": [428, 512], "feliz": [419, 512], "grata": [454, 512], "joinha": [395, 512], "leitora": [492, 512], "oliveira": [481, 512], "orando": [339, 512], "pensativo": [349, 512], "surpreso": [430, 512], "triste": [359, 512]};
 /* Manna: conteúdo da V1 de teste (trilhas, desafios, dúvidas). */
 
 const L = (ref, titulo, ctx, q, caps) => ({ ref, titulo, ctx, q, caps: caps || 1 });
@@ -907,22 +929,40 @@ DUVIDAS[DUVIDAS.length - 1].trad.adventista = 'Guarda o sábado, do pôr do sol 
 
 const ART = {};
 
-/* Mani: a pombinha 3D do manual do mascote. Poses aprovadas em public/mani/; as que faltam caem para uma pose próxima,
-   e emoções de dor ou erro ficam sem Mani até a pose própria existir (o manual proíbe pose alegre nesses momentos). */
-const MANI_ALIAS = { feliz: 'grata', festa: 'grata', acolhedor: 'grata', orando: 'grata', animado: 'joinha', surpreso: 'joinha', determinado: 'joinha', curioso: 'leitora', pensativo: 'leitora', pensa: 'leitora' };
-const MANI_SEM = ['triste', 'ansioso', 'bravinho', 'sonolento'];
-function maniFile(pose) {
-  const F = typeof MANI_FILES !== 'undefined' ? MANI_FILES : {};
-  if (F[pose]) return F[pose];
-  if (MANI_SEM.includes(pose)) return null;
-  const alt = MANI_ALIAS[pose];
-  return alt && F[alt] ? F[alt] : (F.leitora || null);
+/* Mani: PNGs transparentes em public/mani/mani-<pose>@2x.png e @3x.png.
+   Uma figura por tela. A pose com a Bíblia (leitora) nunca é espelhada.
+   Se a pose não está no app, não aparece: pose alegre não substitui dor ou erro. */
+const MANI_ALT = {
+  leitora: 'Mani lendo a Bíblia',
+  grata: 'Mani em gratidão, de olhos fechados',
+  joinha: 'Mani com o polegar levantado',
+  oliveira: 'Mani com um ramo de oliveira',
+  feliz: 'Mani sorrindo de olhos fechados',
+  animado: 'Mani com as asas abertas, comemorando',
+  curioso: 'Mani olhando uma interrogação',
+  pensativo: 'Mani pensativo, com a asa no queixo',
+  surpreso: 'Mani surpreso, de bico aberto',
+  ansioso: 'Mani preocupado',
+  triste: 'Mani triste',
+  bravinho: 'Mani bravinho por um erro do aplicativo',
+  orando: 'Mani de olhos fechados, em oração',
+};
+function clampFala(s) {
+  const t = String(s || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= 60) return t;
+  const cut = t.slice(0, 60);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > 24 ? cut.slice(0, sp) : cut).trim();
 }
 ART.mani = (cls, pose, fala) => {
-  const f = maniFile(pose || 'leitora');
-  if (!f) return '';
-  const [arq, w, h] = Array.isArray(f) ? f : [f, 1, 1];
-  return '<figure class="' + (cls || 'mani') + '"><span class="m-tile"><img src="mani/' + arq + '" width="' + w + '" height="' + h + '" alt="Mani"></span>' + (fala ? '<figcaption class="m-fala">' + String(fala).replace(/[<>&]/g, '') + '</figcaption>' : '') + '</figure>';
+  const p = pose || 'leitora';
+  const F = typeof MANI_FILES !== 'undefined' ? MANI_FILES : {};
+  if (!F[p]) return '';
+  const w = Number(F[p][0]) || 256, h = Number(F[p][1]) || 512;
+  const base = 'mani/mani-' + p;
+  const texto = fala ? clampFala(fala) : '';
+  const falaHtml = texto ? '<figcaption class="m-fala">' + esc(texto) + '</figcaption>' : '';
+  return '<figure class="' + (cls || 'mani') + '"><span class="m-tile"><img src="' + base + '@2x.png" srcset="' + base + '@2x.png 2x, ' + base + '@3x.png 3x" width="' + w + '" height="' + h + '" alt="' + esc(MANI_ALT[p] || 'Mani') + '"></span>' + falaHtml + '</figure>';
 };
 
 ART.grao = cls => '<svg class="' + (cls || 'grao') + '" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4.2" ry="6.4" transform="rotate(-22 6 8)"/></svg>';
@@ -1053,15 +1093,62 @@ function fresh() {
     objetivo: '', objSel: [], custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
+function asArr(v) { return Array.isArray(v) ? v : []; }
+function asObj(v) { return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function num(v, d, min, max) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return d;
+  return Math.min(max, Math.max(min, n));
+}
 function load() {
   try {
     const r = localStorage.getItem(KEY);
-    if (r) { const o = Object.assign(fresh(), JSON.parse(r)); if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; } return o; }
+    if (!r) return fresh();
+    const parsed = JSON.parse(r);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return fresh();
+    const clean = {};
+    Object.keys(parsed).forEach(k => {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return;
+      clean[k] = parsed[k];
+    });
+    const o = Object.assign(fresh(), clean);
+    o.quiz = asObj(o.quiz);
+    o.quiz.trilhas = asArr(o.quiz.trilhas).filter(id => typeof id === 'string' && id.length < 80);
+    o.streak = Object.assign({ count: 0, last: null, best: 0 }, asObj(o.streak));
+    o.league = Object.assign({ week: null, div: 0 }, asObj(o.league));
+    o.league.div = num(o.league.div, 0, 0, 5);
+    ['days', 'xpLog', 'chapLog', 'cultos', 'ebds', 'duvidasLidas', 'perguntas', 'hinos', 'objSel'].forEach(k => { o[k] = asArr(o[k]); });
+    ['progress', 'notes', 'chests', 'custom', 'lidos', 'ach', 'gen'].forEach(k => { o[k] = asObj(o[k]); });
+    if (o.group && !Array.isArray(asObj(o.group).feed)) o.group = null;
+    if (typeof o.nome !== 'string') o.nome = '';
+    if (typeof o.objetivo !== 'string') o.objetivo = '';
+    o.grains = num(o.grains, 0, 0, 1000000);
+    o.xp = num(o.xp, 0, 0, 10000000);
+    o.protetores = num(o.protetores, 0, 0, 2);
+    o.fonte = num(o.fonte, 18, 14, 26);
+    o.goal = [20, 30, 50].includes(Number(o.goal)) ? Number(o.goal) : 30;
+    o.offset = num(o.offset, 0, -3650, 3650);
+    if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; }
+    return o;
   } catch (e) {}
   return fresh();
 }
 let S = load();
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function pruneLogs() {
+  const cut = addDays(todayK(), -60);
+  if (S.xpLog.length > 300) S.xpLog = S.xpLog.filter(x => x.d >= cut);
+  if (S.chapLog.length > 300) S.chapLog = S.chapLog.filter(x => x.d >= cut);
+}
+function save() {
+  try {
+    pruneLogs();
+    localStorage.setItem(KEY, JSON.stringify(S));
+    save.failed = false;
+  } catch (e) {
+    if (!save.failed && typeof toast === 'function') toast('Não consegui salvar neste aparelho. O espaço do navegador pode ter acabado.');
+    save.failed = true;
+  }
+}
 
 /* Datas */
 const now = () => new Date(Date.now() + S.offset * DAY);
@@ -1077,6 +1164,26 @@ const lastSunday = weekStart;
 
 /* Utilidades */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function safeHref(u) {
+  const s = String(u || '').trim();
+  if (!/^https?:\/\//i.test(s) || /[\s<>"']/.test(s)) return '';
+  try {
+    const x = new URL(s);
+    if (x.protocol !== 'http:' && x.protocol !== 'https:') return '';
+    return esc(x.href);
+  } catch (e) { return ''; }
+}
+function noteKey(id, idx) { return id + ':' + idx; }
+function lessonNote(id, idx) {
+  const k = noteKey(id, idx);
+  if (S.notes[k] != null && S.notes[k] !== '') return S.notes[k];
+  return S.notes[id + idx] || '';
+}
+function setLessonNote(id, idx, text) {
+  S.notes[noteKey(id, idx)] = text;
+  const old = id + idx;
+  if (old !== noteKey(id, idx) && S.notes[old] != null) delete S.notes[old];
+}
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
 const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
@@ -1099,9 +1206,20 @@ const curTrail = () => {
 /* UI (não salvo) */
 const ui = { tab: 'jornada', bib: null, bibMode: 'biblia', expl: 'Sugestões', sug: null, sugBusy: false, ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
 
+const toastQ = [];
 function toast(msg) {
-  ui.toast = msg; renderToast();
-  clearTimeout(toast.t); toast.t = setTimeout(() => { ui.toast = ''; renderToast(); }, 3200);
+  if (!msg) return;
+  toastQ.push(String(msg));
+  if (toastQ.length > 6) toastQ.splice(0, toastQ.length - 6);
+  if (!toast.busy) nextToast();
+}
+function nextToast() {
+  if (!toastQ.length) { toast.busy = false; ui.toast = ''; if (typeof renderToast === 'function') renderToast(); return; }
+  toast.busy = true;
+  ui.toast = toastQ.shift();
+  if (typeof renderToast === 'function') renderToast();
+  clearTimeout(toast.t);
+  toast.t = setTimeout(nextToast, 2600);
 }
 
 /* XP e grãos */
@@ -1114,14 +1232,18 @@ function addXP(n) {
 }
 const todayXP = () => S.xpLog.filter(x => x.d === todayK()).reduce((a, x) => a + x.x, 0);
 const weekXPFrom = (start) => S.xpLog.filter(x => x.d >= start && diff(start, x.d) < 7).reduce((a, x) => a + x.x, 0);
-const weekChaps = () => S.chapLog.filter(x => diff(x.d, todayK()) < 7).reduce((a, x) => a + x.c, 0);
-const weekDays = () => S.days.filter(d => diff(d, todayK()) < 7).length;
+const inWeek = (d, start) => d >= start && diff(start, d) < 7;
+const weekChaps = () => { const start = weekStart(); return S.chapLog.filter(x => inWeek(x.d, start)).reduce((a, x) => a + x.c, 0); };
+const weekDays = () => { const start = weekStart(); return S.days.filter(d => inWeek(d, start)).length; };
 
 /* Ofensiva */
 function study(caps) {
   const t = todayK(), st = S.streak; let up = false;
+  ui.novoRecorde = false;
   if (st.last !== t) {
-    st.count = st.last && diff(st.last, t) === 1 ? st.count + 1 : 1;
+    const next = st.last && diff(st.last, t) === 1 ? st.count + 1 : 1;
+    ui.novoRecorde = st.best > 0 && next > st.best;
+    st.count = next;
     st.last = t; st.best = Math.max(st.best, st.count); up = true;
   }
   if (!S.days.includes(t)) S.days.push(t);
@@ -1177,6 +1299,7 @@ const LIGAS = [
   { nome: 'Semente', cor: '#C9A46A' }, { nome: 'Broto', cor: '#9CC28A' }, { nome: 'Ramo', cor: '#A9C6E8' },
   { nome: 'Videira', cor: '#C59BD0' }, { nome: 'Oliveira', cor: '#F2C14E' }, { nome: 'Cedro', cor: '#E8E2D0' },
 ];
+S.league.div = Math.max(0, Math.min(LIGAS.length - 1, Number(S.league.div) || 0));
 const RIVAIS = ['Débora', 'Pr. Samuel', 'Lucas', 'Raquel', 'Tiago', 'Ana Clara', 'Josué', 'Priscila', 'Mateus'];
 function leagueTable(week, dayIdx) {
   const div = S.league.div;
@@ -1187,7 +1310,7 @@ function leagueTable(week, dayIdx) {
     return { nome: n, xp };
   });
   rows.push({ nome: S.nome || 'Você', xp: weekXPFrom(week), me: true });
-  return rows.sort((a, b) => b.xp - a.xp || (a.me ? -1 : 1));
+  return rows.sort((a, b) => b.xp - a.xp || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
 }
 function checkLeague() {
   const w = weekStart();
@@ -1227,6 +1350,7 @@ function tone(notes) {
   if (!S.sound) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
     let t = actx.currentTime;
     notes.forEach(([f, d]) => {
       const o = actx.createOscillator(), g = actx.createGain();
@@ -1257,7 +1381,7 @@ function rain(n) {
       x.fillStyle = '#D9A63A'; x.beginPath(); x.ellipse(1.4 * g.s, 1 * g.s, 2 * g.s, 4.5 * g.s, 0, 0, Math.PI * 2); x.fill();
       x.restore();
     });
-    if (el < 2400) requestAnimationFrame(f); else c.remove();
+    if (el < 2400 && c.isConnected) requestAnimationFrame(f); else c.remove();
   })(t0);
 }
 function countUp() {
@@ -1302,8 +1426,7 @@ function parseRef(ref) {
     const m = part.match(/^((?:[123]\s*)?[A-Za-zÀ-ÿ.\s]+?)\s*(\d+)(?:\s*[:.]\s*(\d+)(?:\s*-\s*(\d+))?)?(?:\s*-\s*(\d+))?\s*$/);
     let b, c, v1, v2, c2;
     if (m) {
-      const name = norm(m[1].replace(/\./g, '')).replace(/^([123])\s*/, '$1 ');
-      b = BOOK_IX[name]; if (b == null) return;
+      b = bookIndex(m[1]); if (b == null) return;
       c = +m[2]; v1 = m[3] ? +m[3] : null; v2 = m[4] ? +m[4] : v1; c2 = m[5] ? +m[5] : null;
       lastBook = b;
     } else if (lastBook != null && /^\d+(:\d+(-\d+)?)?$/.test(part)) {
@@ -1315,6 +1438,15 @@ function parseRef(ref) {
     else out.push({ b, c, v1, v2 });
   });
   return out;
+}
+function bookIndex(raw) {
+  const trimmed = String(raw || '').trim().replace(/\s+/g, ' ');
+  const tidy = s => norm(s).replace(/^([123])\s*/, '$1 ');
+  const withDots = tidy(trimmed);
+  const noDots = tidy(trimmed.replace(/\./g, ''));
+  if (BOOK_IX[withDots] != null) return BOOK_IX[withDots];
+  if (BOOK_IX[noDots] != null) return BOOK_IX[noDots];
+  return null;
 }
 const refLabel = s => LIVROS[s.b][0] + ' ' + s.c + (s.v1 ? ':' + s.v1 + (s.v2 && s.v2 !== s.v1 ? '-' + s.v2 : '') : '');
 function findRefs(text) {
@@ -1330,8 +1462,12 @@ function loadBiblia() {
   if (BIBLIA) return Promise.resolve(BIBLIA);
   if (!bibliaP) bibliaP = new Promise((ok, no) => {
     const s = document.createElement('script'); s.src = 'blivre.js'; s.async = true;
-    s.onload = () => { BIBLIA = window.BLIVRE || null; BIBLIA ? ok(BIBLIA) : no(new Error('vazio')); };
-    s.onerror = () => { bibliaP = null; no(new Error('falhou')); };
+    s.onload = () => {
+      BIBLIA = window.BLIVRE || null;
+      if (BIBLIA) ok(BIBLIA);
+      else { bibliaP = null; s.remove(); no(new Error('vazio')); }
+    };
+    s.onerror = () => { s.remove(); bibliaP = null; no(new Error('falhou')); };
     document.head.appendChild(s);
   });
   return bibliaP;
@@ -1499,6 +1635,7 @@ async function genStudy(c) {
     'Responda só com JSON neste formato: {"resumo": "3 a 4 frases sobre o tema e os textos", "pontos": ["3 a 4 pontos principais curtos"], "versiculos": ["referências citadas e relacionadas"], "dias": [5 objetos {"titulo": "curto", "referencia": "texto bíblico do dia", "pergunta": "uma pergunta de reflexão"}], "meta": "id da trilha que combina com o tema, ou null. Opções: ' + metas + '"}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { resumo: r.resumo || '', pontos: r.pontos || [], versiculos: r.versiculos || [], dias: (r.dias || []).slice(0, 5), meta: trilha(r.meta) ? r.meta : null, ia: true };
 }
 
@@ -1525,6 +1662,7 @@ async function genEbd(e) {
     'Responda só com JSON: {"contexto": "3 a 5 frases de contexto histórico e literário", "versiculos": ["referências principais e de apoio"], "perguntas": ["4 perguntas de discussão"], "aplicacao": "2 frases de aplicação prática"' + (e.modo === 'professor' ? ', "roteiro": [5 objetos {"etapa": "nome", "minutos": número, "descricao": "o que fazer, com uma dinâmica simples quando couber"}] somando 50 minutos' : '') + '}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { contexto: r.contexto || '', versiculos: r.versiculos || [], perguntas: r.perguntas || [], aplicacao: r.aplicacao || '', roteiro: r.roteiro || [], ia: true };
 }
 
@@ -1535,6 +1673,7 @@ async function genDuvida(q) {
     'Responda só com JSON: {"biblia": "o que a Bíblia diz, 3 a 5 frases", "refs": "referências separadas por ponto e vírgula", "trad": {"pentecostal": "1 ou 2 frases", "batista": "1 ou 2 frases", "reformada": "1 ou 2 frases"}, "comum": "1 ou 2 frases sobre o que as tradições têm em comum ou onde divergem"}. Se as tradições concordam, diga isso.';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { id: 'p' + uid(), q, cat: 'Sua pergunta', biblia: r.biblia || '', refs: r.refs || '', trad: r.trad || {}, comum: r.comum || '', ia: true };
 }
 
@@ -1556,8 +1695,17 @@ function makeGroup(nome, des) {
 function ranking() {
   const g = S.group, days = Math.max(0, diff(g.start, todayK())) + 1;
   const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true }));
-  rows.push({ nome: S.nome || 'Você', caps: S.chapters - g.chapAtStart, me: true });
-  return rows.sort((a, b) => b.caps - a.caps);
+  rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true });
+  return rows.sort((a, b) => b.caps - a.caps || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
+}
+function capsDaSemanaGrupo() {
+  const g = S.group;
+  if (!g) return 0;
+  const ws = weekStart();
+  if (g.start >= ws) return ranking().reduce((a, r) => a + r.caps, 0);
+  const dias = diff(ws, todayK()) + 1;
+  const deles = MEMBROS.reduce((a, m) => a + Math.round(m.rate * dias), 0);
+  return weekChaps() + deles;
 }
 function postFeed(text, ref) {
   if (!S.group) return;
@@ -1594,9 +1742,24 @@ function vTarefas() {
 }
 
 /* Jornada: topo curto (até 2/5 da tela), mapa logo abaixo, desafios depois do mapa */
+function falaTrilha(nome) {
+  const fala = 'Glória a Deus! Você terminou ' + nome;
+  return fala.length <= 60 ? fala : 'Glória a Deus! Você terminou.';
+}
+function maniJornada(t, d, n) {
+  if (d >= n) return ART.mani('mani m-sm row', 'oliveira', falaTrilha(t.nome));
+  if (S.lost && S.lost.d && diff(S.lost.d, todayK()) <= 1 && !studiedToday()) return ART.mani('mani m-sm row', 'triste', 'Tudo bem. Amanhã a gente recomeça.');
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) return ART.mani('mani m-sm row', 'ansioso', 'Ainda dá tempo de ler hoje.');
+  if (!studiedToday()) return ART.mani('mani m-sm row', 'leitora', 'Sua porção de hoje está pronta.');
+  return '';
+}
 function vJornada() {
-  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length, xpd = todayXP();
+  const id = curTrail(), t = trilha(id);
+  if (!t) return '<main class="screen"><p class="note">Não encontrei uma trilha no seu plano.</p><button class="btn" data-a="open" data-ov="plano">Abrir o plano</button></main>';
+  const d = doneCount(id), n = t.licoes.length, xpd = todayXP();
   let h = '<header class="topo-j"><div class="tj-row"><button class="trail-chip" data-a="open" data-ov="plano" aria-label="Meu plano: ' + esc(t.nome) + '">' + ART.logo('logo sm') + '<span><b>' + esc(t.nome) + '</b><small class="tnum">' + d + ' de ' + n + '</small></span>' + icon('voltar', 'ic xs down') + '</button>' + statusPills() + '</div>';
+  const figura = maniJornada(t, d, n);
+  if (figura) h += '<div class="mani-slot">' + figura + '</div>';
   if (d < n) {
     const l = t.licoes[d];
     h += studiedToday()
@@ -1606,7 +1769,7 @@ function vJornada() {
   h += '<div class="xp-row"><span class="line on-dark"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><small class="tnum">' + Math.min(xpd, S.goal) + '/' + S.goal + ' XP hoje</small></div></header>';
   h += '<main class="screen jornada">';
   if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
-  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva acaba à meia-noite.</p></div>';
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19 && !(S.lost && S.lost.d && diff(S.lost.d, todayK()) <= 1)) h += '<div class="note warn" role="status"><p>Sua ofensiva acaba à meia-noite.</p></div>';
   h += vMapa(t, id, d);
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
@@ -1691,7 +1854,7 @@ function vMapa(t, id, d) {
       const l = t.licoes[it.i], st = it.i < d ? 'done' : it.i === d ? 'cur' : 'lock';
       const nome = l.plano ? 'Dia ' + (it.i + 1) : l.titulo, sub = l.plano || l.titulo !== l.ref ? l.ref : '';
       h += '<button class="marco ' + st + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="' + (it.i + 1) + ': ' + esc(nome) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
-        (st === 'cur' ? ART.mani('mani m-pin', 'leitora') : '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span>') + '</button>' +
+        '<span class="m-dot' + (st === 'cur' ? ' aqui' : '') + '">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span></button>' +
         lbl(it.x, it.y, st, (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(nome) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : ''));
     } else if (it.k === 'vaso') {
       const opened = S.chests[id + ':' + it.u];
@@ -1710,6 +1873,12 @@ function pickOthers(arr, exclude, n) {
   return shuffle(arr).filter(x => { if (seen.has(x)) return false; seen.add(x); return true; }).slice(0, n);
 }
 const words = s => s.replace(/[.,;:"()?!]/g, '').split(/\s+/).filter(Boolean);
+const escapeRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function findWord(text, word) {
+  const re = new RegExp('(^|[^\\p{L}\\p{N}])(' + escapeRe(word) + ')(?![\\p{L}\\p{N}])', 'u');
+  const m = re.exec(String(text || ''));
+  return m ? m.index + m[1].length : -1;
+}
 const vref = x => LIVROS[x.b][0] + ' ' + x.c + ':' + x.v;
 const GENQ = ['O que este texto mostra sobre quem Deus é?', 'Que versículo daqui você quer guardar hoje, e por quê?', 'Que atitude este texto pede de você esta semana?', 'O que mais chamou sua atenção nesta leitura?', 'Por quem você pode orar a partir deste texto?'];
 function buildSteps(t, i, vs) {
@@ -1722,9 +1891,9 @@ function buildSteps(t, i, vs) {
   /* Complete o versículo */
   const vf = pool[0];
   if (vf) {
-    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && vf.t.indexOf(w) > -1);
+    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && findWord(vf.t, w) >= 0);
     if (cand.length) {
-      const w = cand[Math.floor(Math.random() * cand.length)], at = vf.t.indexOf(w);
+      const w = cand[Math.floor(Math.random() * cand.length)], at = findWord(vf.t, w);
       const outros = allWords.concat(TRILHAS.flatMap(x => x.licoes.flatMap(y => words(y.ctx || '')))).filter(x => x.length >= 5 && x.toLowerCase() !== w.toLowerCase() && !vf.t.includes(x));
       const ops = pickOthers(outros, w, 3);
       if (ops.length === 3) steps.push({ k: 'fill', q: 'Complete o versículo', hint: vref(vf), before: vf.t.slice(0, at), after: vf.t.slice(at + w.length), opts: shuffle([w, ...ops]), ans: w });
@@ -1761,6 +1930,7 @@ async function aiQuestions(L) {
     if (!r) return;
     if (r.contexto && !l.ctx) { S.gen[l.ref] = { contexto: String(r.contexto), pergunta: r.pergunta ? String(r.pergunta) : '' }; save(); }
     if (ui.L !== L || L.phase !== 'steps') return;
+    if (L.steps[L.i] && L.steps[L.i].k === 'reflita') return;
     const last = L.steps[L.steps.length - 1];
     if (last.k === 'reflita' && !l.q && r.pergunta) last.q = String(r.pergunta);
     const qs = (Array.isArray(r.questoes) ? r.questoes : []).filter(q => q && q.pergunta && Array.isArray(q.opcoes) && q.opcoes.length >= 3 && q.opcoes[q.correta]).slice(0, 2)
@@ -1769,8 +1939,8 @@ async function aiQuestions(L) {
       L.steps.splice(Math.min(Math.max(L.i + 1, 2), L.steps.length - 1), 0, qs[0]);
       if (qs[1]) L.steps.splice(L.steps.length - 1, 0, qs[1]);
       L.total += qs.length;
+      if (L.i === 0) renderLesson();
     }
-    renderLesson();
   } catch (e) { /* sem IA, segue com os exercícios prontos */ }
 }
 
@@ -1813,20 +1983,20 @@ function vLessonScreen() {
   if (s.k === 'leia') {
     const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
     const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + t.nota + '</p>' : '') + '</article>';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
     if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>';
     else h += '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
       if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
       else if (!ui.aiText) h += '<button class="btn sec" data-a="explain">Explicar este texto</button>';
-      if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
+      if (ui.aiErr) h += ART.mani('mani m-sm row', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') + '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>';
     }
-    h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label></main>';
-    return h + '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
+    h += '</main>';
+    return h + '<footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
   if (s.k === 'reflita') {
-    h += '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    h += ART.mani('mani m-md', 'orando', 'Vamos guardar isso no coração.') + '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><label class="field" for="l-nota">Sua resposta fica só neste aparelho</label><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(lessonNote(L.id, L.idx)) + '</textarea></article></main>';
     return h + '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
   }
   const ck = L.checked;
@@ -1845,7 +2015,7 @@ function vLessonScreen() {
     h += '</div>';
   } else if (s.k === 'tiles') {
     const parts = String(s.hint).split(': ');
-    h += '<h1 class="ex-q">' + s.prompt + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
+    h += '<h1 class="ex-q">' + esc(s.prompt) + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
     L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="gap filled" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button> '; });
     if (!ck && L.built.length < s.target.length) h += '<span class="gap">&nbsp;</span>';
     h += '</p><div class="words">';
@@ -1867,7 +2037,11 @@ function vLessonScreen() {
 function vFim(L) {
   const r = L.result, l = trilha(L.id).licoes[L.idx];
   const linha = (k, v) => '<li><span>' + k + '</span><i></i><b class="tnum">' + v + '</b></li>';
-  return '<div class="lesson"><main class="lz fim">' + ART.mani('mani m-lg', 'grata', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.') +
+  const tFim = trilha(L.id);
+  const figuraFim = (!L.review && tFim && isDone(L.id)) ? ART.mani('mani m-lg', 'oliveira', falaTrilha(tFim.nome))
+    : (!L.review && todayXP() >= S.goal) ? ART.mani('mani m-lg', 'grata', 'Glória a Deus! Meta de hoje cumprida.')
+    : ART.mani('mani m-lg', 'feliz', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.');
+  return '<div class="lesson"><main class="lz fim">' + figuraFim +
     '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(l.ref) + '</h1><ul>' +
     linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Acertos', '<span data-count="' + r.acc + '">0</span>%') + linha('Tempo', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
     '</ul>' + (r.perfect && !L.review ? '<p class="muted">Sem nenhum erro.</p>' : '') + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
@@ -1875,22 +2049,24 @@ function vFim(L) {
 }
 
 function weekRow() {
-  const ws = weekStart(), nm = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-  return '<div class="week">' + nm.map((n, i) => {
+  const ws = weekStart();
+  const nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  return '<div class="week">' + nomes.map((n, i) => {
     const k = addDays(ws, i), on = S.days.includes(k), hoje = k === todayK();
     return '<div class="wd' + (on ? ' on' : '') + (hoje ? ' today' : '') + '">' + grainMark(on ? 'done' : hoje ? 'cur' : 'lock', '') + '<small>' + n + '</small></div>';
   }).join('') + '</div>';
 }
 function vOfensivaUp() {
   const n = S.streak.count;
-  const fala = n === 1 ? 'Primeiro dia colhido!' : n + ' dias seguidos! Continue firme.';
-  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', 'joinha', fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">' + n + '</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
+  const pose = ui.novoRecorde ? 'animado' : 'joinha';
+  const fala = ui.novoRecorde ? 'Recorde novo! Continue firme.' : (n === 1 ? 'Primeiro dia! Continue firme.' : n + ' dias seguidos! Continue firme.');
+  return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani m-lg', pose, fala) + '<h1 class="streak-n"><b class="tnum" data-count="' + n + '">0</b><span>' + (n === 1 ? 'dia de ofensiva' : 'dias de ofensiva') + '</span></h1>' + weekRow() +
     '<p class="muted">' + (S.protetores ? 'Você tem ' + plural(S.protetores, 'protetor', 'protetores') + ' para um dia difícil.' : 'Sem protetor guardado: dá para comprar na loja.') + '</p></main><footer class="lfoot"><button class="btn" data-a="closeLesson">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function finishLesson() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
-  const nota = val('l-nota'); if (nota) S.notes[L.id + L.idx] = nota;
+  const nota = val('l-nota'); if (nota) setLessonNote(L.id, L.idx, nota);
   const perfect = L.wrong === 0, acc = Math.round(L.right / Math.max(1, L.right + L.wrong) * 100);
   const secs = Math.round((Date.now() - L.t0) / 1000), tempo = Math.floor(secs / 60) + ':' + pad(secs % 60);
   let base = L.review ? 5 : 15;
@@ -1903,7 +2079,7 @@ function finishLesson() {
     S.lessons++; if (perfect) { S.perfect++; bump('perfeita', 1); }
     bump('licoes', 1); grains = perfect ? 8 : 5; S.grains += grains;
     up = study(l.caps);
-    if (S.group) postFeed(nota ? nota.slice(0, 280) : 'Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
+    if (S.group) postFeed('Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
     if (isDone(L.id)) setTimeout(() => toast('Meta concluída: ' + t.nome), 1500);
   } else { up = study(0); }
   S.bestCombo = Math.max(S.bestCombo, L.best);
@@ -1933,6 +2109,7 @@ async function sugerirIA() {
   ui.sugBusy = true; keep();
   try {
     const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano: "' + objTexto() + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
+    if (!r || typeof r !== 'object') throw new Error('vazio');
     const ids = (r.ids || []).filter(id => trilha(id));
     ui.sug = { txt: objTexto(), ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
   } catch (e) { if (e.code !== 'cancelled') toast(aiMsg(e)); }
@@ -1948,6 +2125,7 @@ function vSugestoes(onb) {
   if (sg.frase) h += '<p class="lede">' + esc(sg.frase) + '</p>';
   h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
   if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
+  if (ui.sugBusy) h += ART.mani('mani m-sm row', 'pensativo', 'Estou preparando as sugestões.');
   if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Refinar as sugestões com IA</button>';
   return h;
 }
@@ -1980,8 +2158,10 @@ function vPlano() {
   h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div>' + (objTexto() ? '<ul class="dots">' + objTexto().split('. ').map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="muted">Você ainda não definiu um objetivo.</p>') + '</section>';
   h += '<section class="sec"><div class="sec-h"><h2>' + plural(S.quiz.trilhas.length, 'etapa', 'etapas') + ' no seu ano</h2></div><ol class="etapas">';
   S.quiz.trilhas.forEach((id, i) => {
-    const t = trilha(id), d = doneCount(id), n = t.licoes.length;
-    h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover">Remover</button></div></div></li>';
+    const t = trilha(id);
+    if (!t || !t.licoes.length) return;
+    const d = doneCount(id), n = t.licoes.length;
+    h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir esta etapa"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer esta etapa"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover do plano">Remover</button></div></div></li>';
   });
   h += '</ol></section><button class="btn" data-a="open" data-ov="explorar" data-id="Sugestões">Adicionar ao plano</button>';
   return h + '</main>';
@@ -2017,6 +2197,7 @@ async function genTrail(tema, fonte) {
   const prompt = REGRAS + '\n\nMonte uma trilha de estudo bíblico ' + (fonte ? 'a partir desta pregação ou anotação:\n"""\n' + fonte.slice(0, 12000) + '\n"""\n' : '') + 'Tema: ' + tema + '.\nCrie de 5 a 8 lições curtas em sequência lógica. Cada lição tem um texto bíblico principal com referência exata no formato "Livro capítulo" ou "Livro capítulo:versículo-versículo", com nomes dos livros em português (ex.: "1 Coríntios 13", "Salmos 23", "Mateus 6:25-34"), um título curto, 1 ou 2 frases de contexto e uma pergunta de reflexão.\nResponda só com JSON: {"nome": "nome curto da trilha", "desc": "1 frase", "licoes": [{"titulo": "...", "ref": "...", "contexto": "...", "pergunta": "..."}]}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw { code: 'vazio' };
   const licoes = (r.licoes || []).filter(x => x && x.ref && parseRef(String(x.ref)).length).slice(0, 10)
     .map(x => ({ ref: String(x.ref), titulo: String(x.titulo || x.ref), ctx: String(x.contexto || ''), q: String(x.pergunta || ''), caps: new Set(parseRef(String(x.ref)).map(s => s.b + ':' + s.c)).size }));
   if (!licoes.length) throw { code: 'vazio' };
@@ -2040,7 +2221,7 @@ function vBiblia() {
   if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
   if (!BIBLIA) {
     loadBiblia().then(() => { if (ui.tab === 'biblia' && !ui.ov) keep(); }).catch(() => { ui.bibErr = true; if (ui.tab === 'biblia') keep(); });
-    return h + (ui.bibErr ? '<p class="note">Não foi possível abrir a Bíblia agora. Verifique a conexão e tente de novo.</p><button class="btn sec" data-a="bibRetry">Tentar de novo</button>' : '<div class="center-col">' + ART.mani('mani md', 'pensa') + '<p class="muted">Abrindo a Bíblia Livre…</p></div>') + '</main>';
+    return h + (ui.bibErr ? ART.mani('mani m-md', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') + '<p class="note" role="alert">Não foi possível abrir a Bíblia agora. Verifique a conexão e tente de novo.</p><button class="btn sec" data-a="bibRetry">Tentar de novo</button>' : '<div class="center-col"><p class="muted">Abrindo a Bíblia Livre…</p></div>') + '</main>';
   }
   const B = ui.bib;
   if (!B) {
@@ -2062,7 +2243,7 @@ function vBiblia() {
   }
   const [n, k] = LIVROS[B.b], key = B.b + ':' + B.c, vs = versesOf(n + ' ' + B.c), sel = ui.sel || [];
   h += '<div class="reader-h"><button class="iconbtn" data-a="bibChap" data-d="-1" aria-label="Capítulo anterior"' + (B.c > 1 ? '' : ' disabled') + '>' + icon('voltar') + '</button><button class="link" data-a="bibBook" data-b="' + B.b + '"><b>' + n + ' ' + B.c + '</b></button><button class="iconbtn flip" data-a="bibChap" data-d="1" aria-label="Próximo capítulo"' + (B.c < k ? '' : ' disabled') + '>' + icon('voltar') + '</button></div>' +
-    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted">Toque nos versículos para selecionar</span></div>';
+    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted hint">Toque nos versículos para selecionar</span></div>';
   h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(vs, { tap: true, sel }) + '</article>';
   if (sel.length) {
     const txt = selText();
@@ -2086,7 +2267,7 @@ function vHinario() {
     '<div class="two"><label>Número<input id="h-n" type="number" min="1" max="999" inputmode="numeric" placeholder="Ex.: 12"></label><label>Título<input id="h-t" maxlength="80" placeholder="Nome do hino"></label></div><button class="btn sec" type="submit">Guardar hino</button></form>';
   h += '<section class="sec"><div class="sec-h"><h2>Meus hinos</h2><span class="muted tnum">' + meus.length + '</span></div>';
   if (!meus.length) h += '<p class="empty">Guarde os hinos que você mais canta. Eles ficam aqui com um atalho para ouvir.</p>';
-  else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener">Ouvir no YouTube</a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">Favorito</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover">×</button></li>').join('') + '</ul>';
+  else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener noreferrer">Ouvir no YouTube<span class="sr-only"> (abre outra página)</span></a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">' + (x.fav ? 'Favorito' : 'Favoritar') + '</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover hino ' + esc(x.t || String(x.n)) + '">Remover</button></li>').join('') + '</ul>';
   return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). Por isso o Manna guarda só número e título.</p>';
 }
 
@@ -2168,8 +2349,9 @@ function vQuiz(q, s) {
 }
 function vResultado() {
   const q = S.quiz, first = trilha(q.trilhas[0]);
+  if (!first || !first.licoes.length) return '<main class="screen"><h1 class="h1">Escolha uma trilha</h1><p class="note">Volte um passo e marque pelo menos uma trilha para montar o plano.</p><button class="btn" data-a="back">Voltar</button></main>';
   const des = (q.celula === 'Célula' || q.celula === 'Os dois') ? 'Chame sua célula para "Evangelhos em 30 dias".' : 'Faça 7 dias seguidos e ganhe a medalha Fiel.';
-  let h = '<main class="screen">' + ART.mani('mani m-md row', 'grata', 'Pronto! Seu plano está montado.') + '<h1 class="h1">Seu plano para 2027</h1><p class="lede">Começa hoje, ' + fmt(todayK()) + '.</p>';
+  let h = '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Pronto! Seu plano está montado.') + '<h1 class="h1">Seu plano para 2027</h1><p class="lede">Começa hoje, ' + fmt(todayK()) + '.</p>';
   h += '<section class="plan-path">';
   q.trilhas.forEach((id, i) => {
     const t = trilha(id);
@@ -2180,8 +2362,12 @@ function vResultado() {
   return h + '<div class="sticky-cta"><button class="btn" data-a="next">Começar meu plano</button></div></main>';
 }
 function planEnd(id) {
-  let acc = 0; const rit = { 5: 5, 10: 6, 20: 7 }[S.quiz.minutos || 10];
-  for (const t of S.quiz.trilhas) { const tt = trilha(t); acc += (tt.licoes.length - doneCount(t)) * (tt.tipo === 'Plano' ? rit / 7 : 1); if (t === id) break; }
+  let acc = 0; const rit = { 5: 5, 10: 6, 20: 7 }[S.quiz.minutos || 10] || 6;
+  for (const t of S.quiz.trilhas) {
+    const tt = trilha(t); if (!tt) continue;
+    acc += (tt.licoes.length - doneCount(t)) * (tt.tipo === 'Plano' ? rit / 7 : 1);
+    if (t === id) break;
+  }
   return addDays(todayK(), Math.ceil(acc / rit * 7));
 }
 function vPaywall() {
@@ -2194,7 +2380,7 @@ function vPaywall() {
     h += '<button class="choice plan' + (p === id ? ' sel' : '') + '" data-a="plan" data-id="' + id + '" aria-pressed="' + (p === id) + '">' + (id === 'anual' ? '<span class="ribbon">Economize 24%</span>' : '') + '<span class="pl-l"><b>' + nome + '</b><small>' + det + '</small></span><span class="pl-p"><b class="tnum">' + v + '</b><small>' + per + '</small></span></button>';
   });
   h += '</div><ol class="tl"><li><b>Hoje</b><span>Acesso completo. Você paga R$ 0,00.</span></li><li><b>' + fmt(addDays(todayK(), 5)) + '</b><span>Avisamos que o teste está acabando.</span></li><li><b>' + fmt(addDays(todayK(), 7)) + '</b><span>Começa a cobrança de ' + preco + ', se você não cancelar.</span></li></ol>' +
-    '<div class="sticky-cta"><button class="btn" data-a="trial">Começar 7 dias grátis</button><p class="fine center-t">Versão de teste: nenhum pagamento é pedido nem cobrado.</p></div></main>';
+    '<p class="note">Versão de teste: nenhum pagamento é pedido nem cobrado.</p><div class="sticky-cta"><button class="btn" data-a="trial">Começar 7 dias grátis</button></div></main>';
   return h;
 }
 function vConvite() {
@@ -2209,9 +2395,15 @@ function busyBtn(label) {
 function pageHead(title, sub) {
   return capa(title, sub);
 }
+function maniDomingo() {
+  if (ui.aiErr) return ART.mani('mani m-sm row', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?');
+  if (ui.busy) return ART.mani('mani m-sm row', 'pensativo', 'Estou preparando seu estudo.');
+  if (ui.domMode === 'culto') return ART.mani('mani m-sm row', 'leitora', 'Como foi o culto? Me conta o tema.');
+  return '';
+}
 function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen sheet-top">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + (ui.domMode === 'culto' ? ART.mani('mani m-sm row', 'leitora', 'Como foi o culto? Me conta o tema.') : '') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
+  let h = '<main class="screen sheet-top">' + pageHead(nomeCulto(), 'A pregação e a ' + nomeEscola() + ' viram o estudo da sua semana.') + maniDomingo() + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
     h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
       '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
@@ -2220,7 +2412,7 @@ function vDomingo() {
       '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + (dv('c-igreja') || esc(S.lastIgreja || '')) + '"></label>' +
       '<label>Link da pregação no YouTube<input id="c-link" type="url" placeholder="Opcional" value="' + dv('c-link') + '"></label>' +
       '<label>Transcrição da pregação<textarea id="c-trans" rows="4" placeholder="Cole aqui a transcrição. No YouTube: abaixo do vídeo, Mostrar transcrição.">' + dv('c-trans') + '</textarea></label>' +
-      '<label class="file">Ou envie o arquivo da transcrição (.txt, .srt, .vtt)<input id="c-file" type="file" accept=".txt,.srt,.vtt,text/plain"></label>' +
+      '<label class="file">Ou envie o arquivo da transcrição (.txt, .srt, .vtt)<input id="c-file" type="file" accept=".txt,.srt,.vtt,text/plain"><span class="file-ui"><span class="file-btn">Escolher arquivo</span><span id="c-file-name">' + esc(ui.fileName || 'Nenhum arquivo escolhido') + '</span></span></label>' +
       '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você?">' + dv('c-notas') + '</textarea></label>' +
       (DICT ? '<button type="button" class="btn sec" data-a="dict">' + (ui.dictOn ? 'Parar de ditar' : 'Ditar anotações') + '</button>' : '') +
       '<label class="check"><input type="checkbox" id="c-trilha"' + (ui.draft && ui.draft['c-trilha'] === false ? '' : ' checked') + '> Criar também uma trilha para aprender mais sobre este tema</label>' +
@@ -2230,7 +2422,7 @@ function vDomingo() {
       h += '<section class="sec"><h2>Biblioteca de pregações</h2><ul class="list">';
       S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + ' · ' + c.feitos.length + ' de 5 dias' + (c.trilha ? ' · com trilha' : '') + '</span></button></li>'; });
       h += '</ul></section>';
-    }
+    } else h += '<p class="empty">Você ainda não registrou uma pregação. O estudo da semana aparece aqui.</p>';
   } else {
     h += '<form class="form card" data-f="ebd"><h3>Preparar a lição · +15 XP</h3>' +
       '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó" value="' + dv('e-tema') + '"></label>' +
@@ -2241,7 +2433,7 @@ function vDomingo() {
       h += '<section class="sec"><h2>Lições preparadas</h2><ul class="list">';
       S.ebds.forEach(e => { h += '<li><button data-a="open" data-ov="ebd" data-id="' + e.id + '"><b>' + esc(e.tema) + '</b><span class="muted">' + fmt(e.data, { day: 'numeric', month: 'short' }) + ' · ' + e.modo + '</span></button></li>'; });
       h += '</ul></section>';
-    }
+    } else h += '<p class="empty">Você ainda não preparou uma lição. Ela aparece aqui.</p>';
   }
   return h + '</main>';
 }
@@ -2252,6 +2444,7 @@ function vDuvidas() {
   const list = DUVIDAS.filter(d => !f || (d.q + ' ' + d.cat).toLowerCase().includes(f));
   const cats = [...new Set(DUVIDAS.map(d => d.cat))];
   let h = '<main class="screen sheet-top">' + pageHead('Dúvidas', 'O que dá vergonha de perguntar ao pastor, respondido com versículos.');
+  h += ui.aiErr ? ART.mani('mani m-sm row', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') : ui.busy ? ART.mani('mani m-sm row', 'pensativo', 'Estou preparando seu estudo.') : ART.mani('mani m-sm row', 'curioso', 'Pode perguntar. Só você vê.');
   h += '<form class="form ask" data-f="duvida"><label class="field" for="d-q">Pergunte sem vergonha. Só você vê.</label><textarea id="d-q" rows="2" maxlength="300" aria-label="Sua pergunta" placeholder="Ex.: Posso ser padrinho numa igreja católica?"></textarea>' +
     (SAMPLE ? busyBtn('Perguntar') : '<p class="fine">' + (aiChecked ? 'A pergunta livre usa IA e não está disponível aqui. A biblioteca abaixo funciona normalmente.' : 'Verificando a IA…') + '</p>') + '</form>';
   if (S.perguntas.length) {
@@ -2264,7 +2457,7 @@ function vDuvidas() {
   cats.forEach(c => {
     const ds = list.filter(d => d.cat === c); if (!ds.length) return;
     h += '<h3 class="grp">' + c + '</h3><ul class="list">';
-    ds.forEach(d => { const lida = S.duvidasLidas.includes(d.id); h += '<li><button data-a="open" data-ov="duvida" data-id="' + d.id + '" class="dq"><span class="dq-dot' + (lida ? ' on' : '') + '">' + (lida ? icon('check', 'ic xs') : '') + '</span><b>' + d.q + '</b>' + (lida ? '' : '<span class="xp-tag">+5 XP</span>') + '</button></li>'; });
+    ds.forEach(d => { const lida = S.duvidasLidas.includes(d.id); h += '<li><button data-a="open" data-ov="duvida" data-id="' + d.id + '" class="dq"><span class="dq-dot' + (lida ? ' on' : '') + '">' + (lida ? icon('check', 'ic xs') : '') + '</span><b>' + esc(d.q) + '</b>' + (lida ? '' : '<span class="xp-tag">+5 XP</span>') + '</button></li>'; });
     h += '</ul>';
   });
   if (!list.length) h += '<p class="empty">Nada encontrado. Faça a pergunta no campo acima.</p>';
@@ -2302,9 +2495,9 @@ function vGroupForms(onb) {
 function vGrupoBody() {
   const g = S.group;
   if (!g) return '<p class="lede">Leia junto com a sua célula: desafio com prazo, ranking e check-in todo dia.</p>' + vGroupForms(false);
-  const d = desafio(g.desafio), dia = Math.min(d.dias, diff(g.start, todayK()) + 1), meus = S.chapters - g.chapAtStart;
+  const d = desafio(g.desafio) || DESAFIOS[0], dia = Math.min(d.dias, Math.max(1, diff(g.start, todayK()) + 1)), meus = Math.max(0, S.chapters - g.chapAtStart);
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
-  const semana = weekChaps() + MEMBROS.reduce((a, m) => a + Math.round(m.rate * 7), 0);
+  const semana = capsDaSemanaGrupo();
   let h = ART.mani('mani m-sm row', 'joinha', 'Sua célula leu ' + semana + ' capítulos esta semana.') + '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
   h += '<section class="card"><div class="sec-h"><h3>Seu progresso no desafio</h3><span class="tnum muted">' + meus + '/' + d.caps + '</span></div><span class="bar thick"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><p class="fine">O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' capítulos por dia.</p></section>';
   const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
@@ -2320,8 +2513,8 @@ function vGrupoBody() {
     if (ui.cmt === p.id) h += '<form class="form inline" data-f="cmt" data-id="' + p.id + '"><input id="cmt-txt" maxlength="200" placeholder="Escreva um comentário" aria-label="Comentário"><button class="btn mini" type="submit">Enviar</button></form>';
     h += '</li>';
   });
-  h += '</ul></section><section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + g.code + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener">Abrir WhatsApp</a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div></section>';
-  return h + '<button class="link danger" data-a="leaveGroup">Sair do grupo</button>';
+  h += '</ul></section><section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + esc(g.code) + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener noreferrer">Abrir WhatsApp<span class="sr-only"> (abre outra página)</span></a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div></section>';
+  return h + '<button class="link danger" data-a="leaveGroup">' + (ui.confirmLeave ? 'Toque de novo para sair' : 'Sair do grupo') + '</button>';
 }
 
 /* ---------- Perfil ---------- */
@@ -2359,20 +2552,20 @@ function vLoja() {
   let h = ovHead('Loja') + '<main class="screen"><section class="shop-h"><div><p class="muted">Seus grãos de maná</p><b class="big-n tnum">' + S.grains + '</b><p class="fine">Ganhe grãos em lições, missões e vasos da jornada.</p></div></section><ul class="shop">';
   itens.forEach(it => {
     const pode = it.ok && S.grains >= it.preco;
-    h += '<li>' + it.art + '<div><b>' + it.nome + '</b><p class="muted">' + it.desc + '</p>' + (!it.ok ? '<p class="fine">' + it.motivo + '</p>' : '') + '</div><button class="btn mini' + (pode ? '' : ' off') + '" data-a="buy" data-id="' + it.id + '"' + (pode ? '' : ' disabled') + '>' + ART.vaso('vaso xs') + ' ' + it.preco + '</button></li>';
+    h += '<li>' + it.art + '<div><b>' + it.nome + '</b><p class="muted">' + it.desc + '</p>' + (!it.ok ? '<p class="fine">' + it.motivo + '</p>' : '') + '</div><button class="btn mini' + (pode ? '' : ' off') + '" data-a="buy" data-id="' + it.id + '"' + (pode ? '' : ' disabled') + ' aria-label="' + it.nome + ', ' + it.preco + ' grãos">' + ART.grao('grao') + ' ' + it.preco + '</button></li>';
   });
   return h + '</ul></main>';
 }
 
 function vSheet() {
   const s = ui.sheet;
-  let h = '<div class="scrim" data-a="closeSheet"></div><div class="sheet-panel" role="dialog" aria-modal="true">';
+  let h = '<div class="scrim" data-a="closeSheet"></div><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">';
   if (s === 'licao') {
     const t = trilha(curTrail()), i = ui.sheetI, l = t.licoes[i], feita = i < doneCount(t.id), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2>' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
+    h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2 id="sheet-title">' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
       '<button class="btn" data-a="sheetStart" data-i="' + i + '" data-r="' + (feita ? 1 : 0) + '">' + (feita ? 'Revisar · +5 XP' : 'Colher a porção · +15 XP') + '</button>';
   } else if (s === 'ofensiva') {
-    h += '<div class="center-col">' + '<div class="big-streak sm">' + ART.grao('grao huge') + '<b class="tnum">' + S.streak.count + '</b></div><h2>' + plural(S.streak.count, 'dia', 'dias') + ' de ofensiva</h2><p class="muted">' + (studiedToday() ? 'Você já colheu a porção de hoje.' : 'Faça uma lição hoje para manter a ofensiva.') + '</p>' + weekRow() + '<p class="fine">Recorde: ' + plural(S.streak.best, 'dia', 'dias') + ' · protetores: ' + S.protetores + '</p></div>';
+    h += '<div class="center-col"><div class="big-streak sm">' + ART.grao('grao huge') + '<b class="tnum">' + S.streak.count + '</b></div><h2 id="sheet-title">' + plural(S.streak.count, 'dia', 'dias') + ' de ofensiva</h2><p class="muted">' + (studiedToday() ? 'Você já colheu a porção de hoje.' : 'Faça uma lição hoje para manter a ofensiva.') + '</p>' + weekRow() + '<p class="fine">Recorde: ' + plural(S.streak.best, 'dia', 'dias') + ' · protetores: ' + S.protetores + '</p></div>';
   }
   return h + '<button class="btn sec" data-a="closeSheet">Fechar</button></div>';
 }
@@ -2381,7 +2574,8 @@ function vCulto(id) {
   const c = S.cultos.find(x => x.id === id); if (!c) return '';
   const s = c.study, nomes = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
   let h = ovHead('Culto de ' + fmt(c.data, { day: 'numeric', month: 'short' })) + '<main class="screen"><h1 class="h1">' + esc(c.tema) + '</h1><p class="muted">' + [c.pregador, c.igreja].filter(Boolean).map(esc).join(' · ') + '</p>';
-  if (c.link) h += '<p><a class="link" href="' + esc(c.link) + '" target="_blank" rel="noopener">Abrir a live</a></p>';
+  const live = safeHref(c.link);
+  if (live) h += '<p><a class="link" href="' + live + '" target="_blank" rel="noopener noreferrer">Abrir a live<span class="sr-only"> (abre outra página)</span></a></p>';
   if (!s.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
   h += '<article class="card"><h3>Resumo</h3><p>' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   if (s.meta && trilha(s.meta)) h += '<p class="insight">Este tema combina com a meta ' + trilha(s.meta).nome + '. ' + (S.quiz.trilhas.includes(s.meta) ? '' : '<button class="link" data-a="addMeta" data-id="' + s.meta + '">Adicionar às metas</button>') + '</p>';
@@ -2394,7 +2588,7 @@ function vCulto(id) {
   });
   h += '</ol></section>';
   if (S.group) h += '<button class="btn sec" data-a="shareCulto" data-id="' + c.id + '">Compartilhar com ' + esc(S.group.nome) + '</button>';
-  return h + '<button class="link danger" data-a="delCulto" data-id="' + c.id + '">Apagar este culto</button></main>';
+  return h + '<button class="link danger" data-a="delCulto" data-id="' + c.id + '">' + (ui.confirmDel === c.id ? 'Toque de novo para apagar' : 'Apagar este culto') + '</button></main>';
 }
 function vEbd(id) {
   const e = S.ebds.find(x => x.id === id); if (!e) return '';
@@ -2404,7 +2598,7 @@ function vEbd(id) {
   h += '<article class="card"><h3>Contexto</h3><p>' + esc(p.contexto) + '</p>' + (p.versiculos.length ? '<p class="ref">' + p.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   h += '<section class="card"><h3>Perguntas para discussão</h3><ol class="dots">' + p.perguntas.map(q => '<li>' + esc(q) + '</li>').join('') + '</ol></section><section class="card"><h3>Aplicação</h3><p>' + esc(p.aplicacao) + '</p></section>';
   if (p.roteiro && p.roteiro.length) h += '<section class="card"><h3>Roteiro da aula</h3><ol class="roteiro">' + p.roteiro.map(r => '<li><b>' + esc(r.etapa) + '</b> <span class="muted tnum">' + esc(r.minutos) + ' min</span><p>' + esc(r.descricao) + '</p></li>').join('') + '</ol></section>';
-  return h + '<button class="link danger" data-a="delEbd" data-id="' + e.id + '">Apagar esta lição</button></main>';
+  return h + '<button class="link danger" data-a="delEbd" data-id="' + e.id + '">' + (ui.confirmDel === e.id ? 'Toque de novo para apagar' : 'Apagar esta lição') + '</button></main>';
 }
 function vDuvida(id) {
   const d = DUVIDAS.find(x => x.id === id) || S.perguntas.find(x => x.id === id); if (!d) return '';
@@ -2420,7 +2614,7 @@ function vDuvida(id) {
 }
 function vModal() {
   const m = ui.modal;
-  return '<div class="scrim"></div><div class="modal" role="dialog" aria-modal="true">' + (m.art || '') + '<h2>' + m.t + '</h2><p class="body-l">' + m.p + '</p><button class="btn" data-a="closeModal">' + (m.btn || 'Continuar') + '</button></div>';
+  return '<div class="scrim" data-a="closeModal"></div><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">' + (m.art || '') + '<h2 id="modal-title">' + esc(m.t) + '</h2><p class="body-l">' + esc(m.p) + '</p><button class="btn" data-a="closeModal">' + esc(m.btn || 'Continuar') + '</button></div>';
 }
 
 /* ---------- Render ---------- */
@@ -2430,6 +2624,7 @@ function render() {
   const app = $('app'); if (!app) return;
   const y = window.scrollY;
   document.body.classList.toggle('in-lesson', !!ui.L);
+  document.body.classList.toggle('ov-open', !!(ui.sheet || ui.modal));
   if (!S.onboarded) { app.innerHTML = vOnboarding(); }
   else if (ui.L) { app.innerHTML = vLessonScreen(); }
   else {
@@ -2443,6 +2638,11 @@ function render() {
   }
   if (render.keep) window.scrollTo(0, y);
   render.keep = false;
+  const dlg = document.querySelector('[role="dialog"]');
+  if (dlg && !dlg.contains(document.activeElement)) {
+    const b = dlg.querySelector('button, [href], input, textarea, select');
+    if (b) b.focus();
+  }
 }
 function renderToast() {
   let t = $('toast');
@@ -2466,7 +2666,7 @@ const A = {
     if (k === 'minutos') { v = Number(v); S.goal = goalFor(v); }
     S.quiz[k] = v;
     if (k === 'denom') { const d = DENOMINACOES.find(x => x[0] === v); S.quiz.tradicao = d ? d[1] : null; }
-    render(); setTimeout(() => A.next(), 220);
+    save(); render(); setTimeout(() => A.next(), 220);
   },
   pickTrail(el) {
     const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
@@ -2501,7 +2701,7 @@ const A = {
     if (S.chests[ck]) { toast('Você já abriu este vaso.'); return; }
     if (doneCount(id) < Math.min(trilha(id).licoes.length, (u + 1) * (trilha(id).unit || UNIT))) { toast('Complete as lições da unidade para abrir o vaso.'); return; }
     const g = 15 + hash(ck) % 16; S.chests[ck] = true; S.grains += g; save();
-    ui.modal = { art: ART.deco.vasoGrande, t: 'Vaso de maná aberto', p: 'Você ganhou ' + g + ' grãos de maná. Use na loja para proteger sua ofensiva.' };
+    ui.modal = { art: ART.mani('mani m-md', 'surpreso', 'Olha o que você ganhou!'), t: 'Vaso de maná aberto', p: 'Você ganhou ' + g + ' grãos de maná. Use na loja para proteger sua ofensiva.' };
     SND.vaso(); keep(); rain(40);
   },
   claim(el) {
@@ -2579,16 +2779,21 @@ const A = {
     ui.busy = true; ui.aiErr = ''; ui.aiText = ''; renderLesson();
     aiCtl = new AbortController();
     SAMPLE(REGRAS + '\n\nExplique ' + l.ref + ' para um crente que vai ler o texto hoje. Tema da lição: ' + l.titulo + '. Em 2 parágrafos curtos: o contexto (quem, para quem, quando) e a ideia central. Depois, uma frase de aplicação. Texto corrido, sem títulos, sem listas, sem markdown.', {
-      signal: aiCtl.signal, modelTier: 'quick', onText: ({ text }) => { ui.aiText = text; if (ui.L) renderLesson(); },
+      signal: aiCtl.signal, modelTier: 'quick', onText: ({ text }) => {
+        ui.aiText = text;
+        const box = document.querySelector('.ai-out');
+        if (box) box.innerHTML = esc(text).split(/\n+/).filter(Boolean).map(p => '<p>' + p + '</p>').join('');
+        else if (ui.L) renderLesson();
+      },
     }).catch(e => { ui.aiText = e.text || ui.aiText; if (e.code !== 'cancelled') ui.aiErr = aiMsg(e); })
       .finally(() => { ui.busy = false; if (ui.L) renderLesson(); });
   },
   stopAi() { if (aiCtl) aiCtl.abort(); },
   finishLesson() { finishLesson(); },
   afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
-  closeLesson() { ui.L = null; ui.aiText = ''; ui.busy = false; window.scrollTo(0, 0); render(); },
+  closeLesson() { ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false; window.scrollTo(0, 0); render(); },
   lessonExit() { const L = ui.L; if (L.i === 0 && !L.lido) return A.closeLesson(); L.prev = L.phase; L.phase = 'sair'; renderLesson(); },
-  lessonStay() { ui.L.phase = 'steps'; renderLesson(); },
+  lessonStay() { ui.L.phase = ui.L.prev || 'steps'; renderLesson(); },
   lessonQuit() { if (aiCtl) aiCtl.abort(); A.closeLesson(); },
   /* Domingo */
   dom(el) { ui.domMode = el.dataset.m; ui.aiErr = ''; keep(); },
@@ -2605,14 +2810,25 @@ const A = {
     postFeed('Compartilhei o estudo do culto "' + c.tema + '". ' + (c.study.resumo || '').slice(0, 180), (c.study.versiculos || []).slice(0, 2).join('; '));
     toast('Estudo compartilhado no grupo.'); save(); keep();
   },
-  delCulto(el) { S.cultos = S.cultos.filter(x => x.id !== el.dataset.id); save(); A.close(); },
-  delEbd(el) { S.ebds = S.ebds.filter(x => x.id !== el.dataset.id); save(); A.close(); },
+  delCulto(el) {
+    if (ui.confirmDel !== el.dataset.id) { ui.confirmDel = el.dataset.id; keep(); return; }
+    ui.confirmDel = null; S.cultos = S.cultos.filter(x => x.id !== el.dataset.id); save(); A.close();
+  },
+  delEbd(el) {
+    if (ui.confirmDel !== el.dataset.id) { ui.confirmDel = el.dataset.id; keep(); return; }
+    ui.confirmDel = null; S.ebds = S.ebds.filter(x => x.id !== el.dataset.id); save(); A.close();
+  },
   /* Liga e grupo */
   ligaMode(el) { ui.ligaMode = el.dataset.m; keep(); },
   gmode(el) { ui.groupMode = el.dataset.m; keep(); },
   amem(el) { const p = S.group.feed.find(x => x.id === el.dataset.id); p.amei = !p.amei; p.amem += p.amei ? 1 : -1; save(); keep(); },
   cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; keep(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
-  leaveGroup() { if (ui.confirmLeave) { ui.confirmLeave = false; S.group = null; save(); keep(); toast('Você saiu do grupo.'); } else { ui.confirmLeave = true; toast('Toque de novo em "Sair do grupo" para confirmar.'); setTimeout(() => { ui.confirmLeave = false; }, 4000); } },
+  leaveGroup() {
+    if (ui.confirmLeave) { ui.confirmLeave = false; S.group = null; save(); keep(); toast('Você saiu do grupo.'); return; }
+    ui.confirmLeave = true; keep();
+    clearTimeout(leaveGroup.t);
+    leaveGroup.t = setTimeout(() => { ui.confirmLeave = false; if (S.group) keep(); }, 5000);
+  },
   copy(el) {
     const t = el.dataset.t;
     const fallback = () => { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copiado.'); } catch (e) { toast('Selecione e copie o texto.'); } ta.remove(); };
@@ -2643,9 +2859,13 @@ const F = {
     catch (e) { ui.busy = false; ui.aiErr = e.code === 'vazio' ? 'Não consegui montar essa trilha. Tente descrever de outro jeito.' : aiMsg(e); keep(); }
   },
   hino() {
-    const n = parseInt(val('h-n'), 10); if (!n) { toast('Digite o número do hino.'); return; }
+    const n = parseInt(val('h-n'), 10);
+    if (!n || n < 1 || n > 999) { toast('Digite o número do hino, de 1 a 999.'); return; }
     S.hinario = val('h-sel') || S.hinario || hinarioPadrao();
-    S.hinos.push({ id: uid(), h: S.hinario, n, t: val('h-t'), fav: false }); save(); toast('Hino guardado.'); keep();
+    const titulo = val('h-t');
+    const ja = S.hinos.find(y => y.h === S.hinario && y.n === n);
+    if (ja) { if (titulo) ja.t = titulo; save(); toast('Esse número já estava guardado. Atualizei o título.'); keep(); return; }
+    S.hinos.push({ id: uid(), h: S.hinario, n, t: titulo, fav: false }); save(); toast('Hino guardado.'); keep();
   },
   async culto() {
     const trans = val('c-trans'), criar = $('c-trilha') ? $('c-trilha').checked : true;
@@ -2710,6 +2930,28 @@ document.addEventListener('click', e => {
   e.preventDefault(); fn(el);
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (ui.modal) { e.preventDefault(); A.closeModal(); return; }
+    if (ui.sheet) { e.preventDefault(); A.closeSheet(); return; }
+    if (e.target.matches('textarea, input, select')) return;
+    if (ui.L && ui.L.phase === 'sair') { A.lessonStay(); return; }
+    if (ui.L) { A.lessonExit(); return; }
+    if (ui.ov) { A.close(); return; }
+  }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-a]') && !e.target.matches('button, a, input, textarea, select')) {
+    e.preventDefault(); e.target.click(); return;
+  }
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && e.target.getAttribute('role') === 'tab' && e.target.closest('[role="tablist"]')) {
+    const tabs = [...e.target.parentElement.querySelectorAll('[role="tab"]')];
+    const i = tabs.indexOf(e.target);
+    if (i < 0) return;
+    const n = e.key === 'ArrowRight' ? (i + 1) % tabs.length : (i - 1 + tabs.length) % tabs.length;
+    e.preventDefault();
+    tabs[n].click();
+    const sel = document.querySelector('[role="tab"][aria-selected="true"], [role="tab"][aria-checked="true"]');
+    if (sel) sel.focus();
+    return;
+  }
   if (ui.L && !e.target.matches('textarea,input')) {
     const L = ui.L, s = L.steps[L.i];
     if (s && s.k === 'mc' && !L.checked && /^[1-4]$/.test(e.key) && s.opts[Number(e.key) - 1]) { L.pick = s.opts[Number(e.key) - 1]; renderLesson(); }
@@ -2722,7 +2964,7 @@ document.addEventListener('input', e => {
     ui.filtro = e.target.value; const pos = e.target.selectionStart; keep();
     const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
   }
-  if (e.target.id === 'l-nota' && ui.L) { S.notes[ui.L.id + ui.L.idx] = e.target.value; save(); }
+  if (e.target.id === 'l-nota' && ui.L) { setLessonNote(ui.L.id, ui.L.idx, e.target.value); save(); }
   if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
   if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = !objPronto(); }
   if (e.target.id === 'expl-f' || e.target.id === 'bib-f') {
@@ -2736,6 +2978,7 @@ document.addEventListener('change', e => {
   if (e.target.id === 'c-file' && e.target.files && e.target.files[0]) {
     const f = e.target.files[0];
     if (f.size > 2000000) { toast('Arquivo grande demais. Envie até 2 MB de texto.'); return; }
+    ui.fileName = f.name;
     const r = new FileReader();
     r.onload = () => {
       const txt = String(r.result || '').replace(/^WEBVTT.*$/m, '').replace(/^\d+\s*$/gm, '').replace(/^[\d:.,]+\s*-->\s*[\d:.,]+.*$/gm, '').replace(/<[^>]+>/g, '').replace(/\n{2,}/g, '\n').trim();

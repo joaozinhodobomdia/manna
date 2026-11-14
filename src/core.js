@@ -17,15 +17,62 @@ function fresh() {
     objetivo: '', objSel: [], custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
+function asArr(v) { return Array.isArray(v) ? v : []; }
+function asObj(v) { return v && typeof v === 'object' && !Array.isArray(v) ? v : {}; }
+function num(v, d, min, max) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return d;
+  return Math.min(max, Math.max(min, n));
+}
 function load() {
   try {
     const r = localStorage.getItem(KEY);
-    if (r) { const o = Object.assign(fresh(), JSON.parse(r)); if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; } return o; }
+    if (!r) return fresh();
+    const parsed = JSON.parse(r);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return fresh();
+    const clean = {};
+    Object.keys(parsed).forEach(k => {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') return;
+      clean[k] = parsed[k];
+    });
+    const o = Object.assign(fresh(), clean);
+    o.quiz = asObj(o.quiz);
+    o.quiz.trilhas = asArr(o.quiz.trilhas).filter(id => typeof id === 'string' && id.length < 80);
+    o.streak = Object.assign({ count: 0, last: null, best: 0 }, asObj(o.streak));
+    o.league = Object.assign({ week: null, div: 0 }, asObj(o.league));
+    o.league.div = num(o.league.div, 0, 0, 5);
+    ['days', 'xpLog', 'chapLog', 'cultos', 'ebds', 'duvidasLidas', 'perguntas', 'hinos', 'objSel'].forEach(k => { o[k] = asArr(o[k]); });
+    ['progress', 'notes', 'chests', 'custom', 'lidos', 'ach', 'gen'].forEach(k => { o[k] = asObj(o[k]); });
+    if (o.group && !Array.isArray(asObj(o.group).feed)) o.group = null;
+    if (typeof o.nome !== 'string') o.nome = '';
+    if (typeof o.objetivo !== 'string') o.objetivo = '';
+    o.grains = num(o.grains, 0, 0, 1000000);
+    o.xp = num(o.xp, 0, 0, 10000000);
+    o.protetores = num(o.protetores, 0, 0, 2);
+    o.fonte = num(o.fonte, 18, 14, 26);
+    o.goal = [20, 30, 50].includes(Number(o.goal)) ? Number(o.goal) : 30;
+    o.offset = num(o.offset, 0, -3650, 3650);
+    if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; }
+    return o;
   } catch (e) {}
   return fresh();
 }
 let S = load();
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function pruneLogs() {
+  const cut = addDays(todayK(), -60);
+  if (S.xpLog.length > 300) S.xpLog = S.xpLog.filter(x => x.d >= cut);
+  if (S.chapLog.length > 300) S.chapLog = S.chapLog.filter(x => x.d >= cut);
+}
+function save() {
+  try {
+    pruneLogs();
+    localStorage.setItem(KEY, JSON.stringify(S));
+    save.failed = false;
+  } catch (e) {
+    if (!save.failed && typeof toast === 'function') toast('Não consegui salvar neste aparelho. O espaço do navegador pode ter acabado.');
+    save.failed = true;
+  }
+}
 
 /* Datas */
 const now = () => new Date(Date.now() + S.offset * DAY);
@@ -41,6 +88,26 @@ const lastSunday = weekStart;
 
 /* Utilidades */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function safeHref(u) {
+  const s = String(u || '').trim();
+  if (!/^https?:\/\//i.test(s) || /[\s<>"']/.test(s)) return '';
+  try {
+    const x = new URL(s);
+    if (x.protocol !== 'http:' && x.protocol !== 'https:') return '';
+    return esc(x.href);
+  } catch (e) { return ''; }
+}
+function noteKey(id, idx) { return id + ':' + idx; }
+function lessonNote(id, idx) {
+  const k = noteKey(id, idx);
+  if (S.notes[k] != null && S.notes[k] !== '') return S.notes[k];
+  return S.notes[id + idx] || '';
+}
+function setLessonNote(id, idx, text) {
+  S.notes[noteKey(id, idx)] = text;
+  const old = id + idx;
+  if (old !== noteKey(id, idx) && S.notes[old] != null) delete S.notes[old];
+}
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
 const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
@@ -63,9 +130,20 @@ const curTrail = () => {
 /* UI (não salvo) */
 const ui = { tab: 'jornada', bib: null, bibMode: 'biblia', expl: 'Sugestões', sug: null, sugBusy: false, ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
 
+const toastQ = [];
 function toast(msg) {
-  ui.toast = msg; renderToast();
-  clearTimeout(toast.t); toast.t = setTimeout(() => { ui.toast = ''; renderToast(); }, 3200);
+  if (!msg) return;
+  toastQ.push(String(msg));
+  if (toastQ.length > 6) toastQ.splice(0, toastQ.length - 6);
+  if (!toast.busy) nextToast();
+}
+function nextToast() {
+  if (!toastQ.length) { toast.busy = false; ui.toast = ''; if (typeof renderToast === 'function') renderToast(); return; }
+  toast.busy = true;
+  ui.toast = toastQ.shift();
+  if (typeof renderToast === 'function') renderToast();
+  clearTimeout(toast.t);
+  toast.t = setTimeout(nextToast, 2600);
 }
 
 /* XP e grãos */
@@ -78,14 +156,18 @@ function addXP(n) {
 }
 const todayXP = () => S.xpLog.filter(x => x.d === todayK()).reduce((a, x) => a + x.x, 0);
 const weekXPFrom = (start) => S.xpLog.filter(x => x.d >= start && diff(start, x.d) < 7).reduce((a, x) => a + x.x, 0);
-const weekChaps = () => S.chapLog.filter(x => diff(x.d, todayK()) < 7).reduce((a, x) => a + x.c, 0);
-const weekDays = () => S.days.filter(d => diff(d, todayK()) < 7).length;
+const inWeek = (d, start) => d >= start && diff(start, d) < 7;
+const weekChaps = () => { const start = weekStart(); return S.chapLog.filter(x => inWeek(x.d, start)).reduce((a, x) => a + x.c, 0); };
+const weekDays = () => { const start = weekStart(); return S.days.filter(d => inWeek(d, start)).length; };
 
 /* Ofensiva */
 function study(caps) {
   const t = todayK(), st = S.streak; let up = false;
+  ui.novoRecorde = false;
   if (st.last !== t) {
-    st.count = st.last && diff(st.last, t) === 1 ? st.count + 1 : 1;
+    const next = st.last && diff(st.last, t) === 1 ? st.count + 1 : 1;
+    ui.novoRecorde = st.best > 0 && next > st.best;
+    st.count = next;
     st.last = t; st.best = Math.max(st.best, st.count); up = true;
   }
   if (!S.days.includes(t)) S.days.push(t);
@@ -141,6 +223,7 @@ const LIGAS = [
   { nome: 'Semente', cor: '#C9A46A' }, { nome: 'Broto', cor: '#9CC28A' }, { nome: 'Ramo', cor: '#A9C6E8' },
   { nome: 'Videira', cor: '#C59BD0' }, { nome: 'Oliveira', cor: '#F2C14E' }, { nome: 'Cedro', cor: '#E8E2D0' },
 ];
+S.league.div = Math.max(0, Math.min(LIGAS.length - 1, Number(S.league.div) || 0));
 const RIVAIS = ['Débora', 'Pr. Samuel', 'Lucas', 'Raquel', 'Tiago', 'Ana Clara', 'Josué', 'Priscila', 'Mateus'];
 function leagueTable(week, dayIdx) {
   const div = S.league.div;
@@ -151,7 +234,7 @@ function leagueTable(week, dayIdx) {
     return { nome: n, xp };
   });
   rows.push({ nome: S.nome || 'Você', xp: weekXPFrom(week), me: true });
-  return rows.sort((a, b) => b.xp - a.xp || (a.me ? -1 : 1));
+  return rows.sort((a, b) => b.xp - a.xp || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
 }
 function checkLeague() {
   const w = weekStart();
@@ -191,6 +274,7 @@ function tone(notes) {
   if (!S.sound) return;
   try {
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
     let t = actx.currentTime;
     notes.forEach(([f, d]) => {
       const o = actx.createOscillator(), g = actx.createGain();
@@ -221,7 +305,7 @@ function rain(n) {
       x.fillStyle = '#D9A63A'; x.beginPath(); x.ellipse(1.4 * g.s, 1 * g.s, 2 * g.s, 4.5 * g.s, 0, 0, Math.PI * 2); x.fill();
       x.restore();
     });
-    if (el < 2400) requestAnimationFrame(f); else c.remove();
+    if (el < 2400 && c.isConnected) requestAnimationFrame(f); else c.remove();
   })(t0);
 }
 function countUp() {

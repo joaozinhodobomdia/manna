@@ -27,6 +27,7 @@ async function genStudy(c) {
     'Responda só com JSON neste formato: {"resumo": "3 a 4 frases sobre o tema e os textos", "pontos": ["3 a 4 pontos principais curtos"], "versiculos": ["referências citadas e relacionadas"], "dias": [5 objetos {"titulo": "curto", "referencia": "texto bíblico do dia", "pergunta": "uma pergunta de reflexão"}], "meta": "id da trilha que combina com o tema, ou null. Opções: ' + metas + '"}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { resumo: r.resumo || '', pontos: r.pontos || [], versiculos: r.versiculos || [], dias: (r.dias || []).slice(0, 5), meta: trilha(r.meta) ? r.meta : null, ia: true };
 }
 
@@ -53,6 +54,7 @@ async function genEbd(e) {
     'Responda só com JSON: {"contexto": "3 a 5 frases de contexto histórico e literário", "versiculos": ["referências principais e de apoio"], "perguntas": ["4 perguntas de discussão"], "aplicacao": "2 frases de aplicação prática"' + (e.modo === 'professor' ? ', "roteiro": [5 objetos {"etapa": "nome", "minutos": número, "descricao": "o que fazer, com uma dinâmica simples quando couber"}] somando 50 minutos' : '') + '}';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { contexto: r.contexto || '', versiculos: r.versiculos || [], perguntas: r.perguntas || [], aplicacao: r.aplicacao || '', roteiro: r.roteiro || [], ia: true };
 }
 
@@ -63,6 +65,7 @@ async function genDuvida(q) {
     'Responda só com JSON: {"biblia": "o que a Bíblia diz, 3 a 5 frases", "refs": "referências separadas por ponto e vírgula", "trad": {"pentecostal": "1 ou 2 frases", "batista": "1 ou 2 frases", "reformada": "1 ou 2 frases"}, "comum": "1 ou 2 frases sobre o que as tradições têm em comum ou onde divergem"}. Se as tradições concordam, diga isso.';
   aiCtl = new AbortController();
   const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  if (!r || typeof r !== 'object') throw new Error('resposta vazia');
   return { id: 'p' + uid(), q, cat: 'Sua pergunta', biblia: r.biblia || '', refs: r.refs || '', trad: r.trad || {}, comum: r.comum || '', ia: true };
 }
 
@@ -84,8 +87,17 @@ function makeGroup(nome, des) {
 function ranking() {
   const g = S.group, days = Math.max(0, diff(g.start, todayK())) + 1;
   const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true }));
-  rows.push({ nome: S.nome || 'Você', caps: S.chapters - g.chapAtStart, me: true });
-  return rows.sort((a, b) => b.caps - a.caps);
+  rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true });
+  return rows.sort((a, b) => b.caps - a.caps || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
+}
+function capsDaSemanaGrupo() {
+  const g = S.group;
+  if (!g) return 0;
+  const ws = weekStart();
+  if (g.start >= ws) return ranking().reduce((a, r) => a + r.caps, 0);
+  const dias = diff(ws, todayK()) + 1;
+  const deles = MEMBROS.reduce((a, m) => a + Math.round(m.rate * dias), 0);
+  return weekChaps() + deles;
 }
 function postFeed(text, ref) {
   if (!S.group) return;

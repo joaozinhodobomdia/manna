@@ -15,7 +15,7 @@ O progresso fica salvo no próprio navegador (localStorage).
 - XP, meta diária, 3 missões do dia, grãos de maná e loja (protetor de ofensiva, XP em dobro, recuperar ofensiva).
 - Liga semanal com 6 divisões (Semente a Cedro), promoção e rebaixamento.
 - Conquistas em 5 níveis com medalhas, calendário da ofensiva e cartão da semana.
-- Domingo (culto e EBD), Dúvidas (20 respostas prontas e pergunta livre) e grupo da igreja.
+- Domingo (culto e EBD), Dúvidas (21 respostas prontas e pergunta livre) e grupo da igreja.
 - Ferramentas de teste no Perfil: avançar um dia, ganhar grãos, refazer o quiz, apagar dados.
 
 ## Novidades da v3
