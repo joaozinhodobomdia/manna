@@ -23,6 +23,7 @@
   --areia: #E7DCBF; --tenda: #C98F55; --tenda-dk: #9C6634; --tronco: #8A6A44; --folha: #6E9A5A; --folha-dk: #557E45;
   --nuvem: #D5E3F3; --pedra: #E9E2D2; --pedra-dk: #A99E86; --fogo: #E0703F;
   --vaso: #F2C14E; --vaso-tampa: #C9952B; --vaso-tr: #0F1B3D;
+  --pomba: #FFFFFF; --pomba-asa: #E3EAF5; --pomba-peito: #F1F5FB; --pomba-tr: #0F1B3D;
   --f-brand: 'Sora', 'Inter', system-ui, sans-serif;
   --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --f-book: 'Literata', Georgia, 'Times New Roman', serif;
@@ -432,6 +433,66 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
   .cards2 { grid-template-columns: 1fr; }
   .res b { font-size: 20px; }
 }
+
+/* v3: plano aberto, catálogo, Bíblia e hinário */
+.tabs button { max-width: 84px; font-size: 11px; padding-inline: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 8px 12px; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 14px; background: var(--surface); font-weight: 600; font-size: 14px; text-align: left; }
+.chip:active { transform: translateY(2px); border-bottom-width: 2px; }
+textarea.obj { width: 100%; padding: 14px 16px; border: 2px solid var(--line); border-radius: 18px; background: var(--surface); font: 400 18px/1.5 var(--f-book); resize: vertical; }
+.obj-echo { font: italic 400 17px/1.5 var(--f-book); color: var(--muted); }
+.tgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tcard { display: flex; flex-direction: column; gap: 4px; padding: 14px; text-align: left; background: var(--surface); border: 2px solid var(--line); border-bottom-width: 5px; border-radius: 16px; min-width: 0; }
+.tcard:active { transform: translateY(2px); border-bottom-width: 3px; }
+.tcard b { font: 700 16px/1.2 var(--f-brand); overflow-wrap: anywhere; }
+.tcard small { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.tc-tipo { font-size: 12px; font-weight: 800; color: var(--ouro-dk); letter-spacing: .03em; }
+.tc-f { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: auto; padding-top: 6px; font-size: 12px; flex-wrap: wrap; }
+.tc-add { font-weight: 800; color: var(--link); display: inline-flex; align-items: center; gap: 4px; }
+.tcard.on { border-color: var(--ouro-dk); background: var(--mine); }
+.tcard.on .tc-add { color: var(--ok); }
+.tabs-h { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-inline: -16px; padding-inline: 16px; scrollbar-width: none; }
+.tabs-h button { flex: none; padding: 8px 14px; border: 2px solid var(--line); border-radius: 99px; background: var(--surface); font-weight: 700; font-size: 14px; color: var(--muted); }
+.tabs-h button[aria-selected="true"] { background: var(--noite); color: var(--ouro); border-color: var(--noite); }
+.etapas { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.etapas li { display: flex; gap: 12px; padding: 14px; border: 2px solid var(--line); border-radius: 18px; background: var(--surface); }
+.etapas li.cur { border-color: var(--ouro-dk); }
+.et-n { width: 34px; height: 34px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--ouro); color: var(--noite); font-weight: 800; border-bottom: 3px solid var(--ouro-dk); }
+.et-b { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.et-t { display: flex; flex-direction: column; text-align: left; border: 0; background: none; padding: 0; }
+.et-t b { font: 700 16px/1.25 var(--f-brand); }
+.et-acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.mini-i { min-width: 34px; height: 32px; padding: 0 10px; border: 2px solid var(--line); border-radius: 10px; background: var(--bg); font-weight: 700; font-size: 13px; color: var(--muted); }
+.mini-i:disabled { opacity: .4; }
+.path-more { text-align: center; font-size: 14px; }
+.books { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.book { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 14px; background: var(--surface); text-align: left; min-width: 0; }
+.book b { font-weight: 700; }
+.chaps { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 8px; }
+.chap { height: 52px; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 14px; background: var(--surface); font: 800 17px/1 var(--f-brand); }
+.chap.lido { background: var(--noite); color: var(--ouro); border-color: var(--noite-dk); }
+.reader-h { display: flex; align-items: center; justify-content: space-between; }
+.reader-h .link { font: 800 20px/1.2 var(--f-brand); text-decoration: none; }
+.flip .ic { transform: rotate(180deg); }
+.fsz { align-items: center; }
+.bible { padding: 20px; border-radius: 20px; background: var(--surface); border: 2px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.bt-cap { margin: 0; font: 800 15px/1.2 var(--f-brand); color: var(--ouro-dk); }
+.bt { font: 400 var(--fs, 18px)/1.75 var(--f-book); margin: 0; }
+.bt sup { font: 800 .6em/1 var(--f-body); color: var(--ouro-dk); margin-right: 3px; }
+.vv[role="button"] { cursor: pointer; border-radius: 4px; }
+.vv.on { background: color-mix(in srgb, var(--ouro) 40%, transparent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.selbar { position: sticky; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 5; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 14px; border-radius: 16px; background: var(--noite); color: var(--pergaminho); }
+.selbar .link { color: var(--ceu); }
+.lido-ok { display: flex; align-items: center; gap: 8px; color: var(--ok); font-weight: 700; }
+.hinos { list-style: none; padding: 0; display: flex; flex-direction: column; border: 2px solid var(--line); border-radius: 18px; background: var(--surface); }
+.hinos li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.hinos li + li { border-top: 2px solid var(--line); }
+.hinos li > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.h-n { width: 44px; height: 44px; flex: none; border-radius: 12px; background: var(--noite); color: var(--ouro); display: grid; place-items: center; font: 800 17px/1 var(--f-brand); }
+.quote { margin: 0; padding: 14px 16px; border-left: 4px solid var(--ouro); background: var(--surface); border-radius: 0 14px 14px 0; font: italic 400 18px/1.55 var(--f-book); }
+.form .file input { padding: 10px; font-size: 14px; }
+.bubble.bt-in { font-family: var(--f-book); }
+@media (max-width: 380px) { .tgrid { grid-template-columns: 1fr; } .tabs button span { font-size: 10px; } }
 </style>
 <div id="app"></div>
 <script>
@@ -649,6 +710,7 @@ const DESAFIOS = [
 const DENOMINACOES = [
   ['Assembleia de Deus', 'pentecostal'],
   ['Batista', 'batista'],
+  ['Adventista do Sétimo Dia', 'adventista'],
   ['Presbiteriana', 'reformada'],
   ['Congregação Cristã no Brasil', 'pentecostal'],
   ['Quadrangular', 'pentecostal'],
@@ -658,7 +720,7 @@ const DENOMINACOES = [
   ['Outra', null],
 ];
 
-const TRADICOES = { pentecostal: 'Pentecostal', batista: 'Batista', reformada: 'Reformada' };
+const TRADICOES = { pentecostal: 'Pentecostal', batista: 'Batista', reformada: 'Reformada', adventista: 'Adventista' };
 
 /* Biblioteca de dúvidas: formato fixo. Texto em linguagem própria; versículos só por referência. */
 const D = (id, q, cat, biblia, refs, pentecostal, batista, reformada, comum) =>
@@ -807,31 +869,67 @@ const DUVIDAS = [
     'O critério comum: o que isso faz com o seu coração e com a sua relação com Deus?'),
 ];
 
+/* Visão adventista em cada dúvida */
+const ADVENTISTA = {
+  vinho: 'Orienta a abstinência total de bebidas alcoólicas, como parte da mensagem de saúde e do cuidado com o corpo.',
+  tatuagem: 'Em geral desaconselha, pelo cuidado com o corpo como templo e pela ênfase na simplicidade.',
+  dizimo: 'Ensina o dízimo como mandamento atual, entregue à igreja, além das ofertas voluntárias.',
+  musica: 'Pede discernimento cuidadoso, pelo princípio de que somos transformados pelo que contemplamos.',
+  sexo: 'Ensina que o sexo é só para o casamento.',
+  halloween: 'Orienta não participar, pela ligação com o ocultismo e com a ideia de contato com os mortos.',
+  salvacao: 'Crê que a pessoa pode, por escolha própria, abandonar a fé e se afastar da salvação.',
+  linguas: 'Crê que os dons espirituais continuam, e entende o dom de línguas como falar idiomas reais para anunciar o evangelho.',
+  divorcio: 'O Manual da Igreja reconhece a infidelidade sexual como motivo bíblico para o divórcio e permite novo casamento ao cônjuge inocente.',
+  pastora: 'A Associação Geral votou em 2015 por não ordenar mulheres ao pastorado; mulheres servem em vários ministérios, e algumas regiões têm mulheres em funções pastorais.',
+  psicologo: 'Apoia o tratamento junto com a fé, dentro da ênfase adventista em saúde integral.',
+  domingo: 'Para os adventistas, o dia separado é o sábado; o cuidado é evitar o trabalho comum do pôr do sol de sexta ao pôr do sol de sábado.',
+  apostas: 'Condena jogos de azar e apostas.',
+  jugo: 'Orienta casar com alguém da mesma fé.',
+  batismo: 'Batiza por imersão quem crê e decide seguir a Jesus; as crianças são dedicadas.',
+  cremacao: 'Não proíbe; crê que os mortos dormem até a ressurreição, seja qual for o destino do corpo.',
+  divida: 'Orienta prudência e o pagamento fiel das dívidas.',
+  costumes: 'Destaca a modéstia e a simplicidade, e tradicionalmente desaconselha joias e adornos; a calça não é proibida em geral.',
+  politica: 'Defende a separação entre igreja e Estado e a liberdade religiosa; o membro pode votar, e a igreja não apoia candidatos.',
+  filmes: 'Pede cautela, pelo princípio de que somos transformados pelo que contemplamos.',
+};
+DUVIDAS.forEach(d => { if (ADVENTISTA[d.id]) d.trad.adventista = ADVENTISTA[d.id]; });
+DUVIDAS.push(D('sabado', 'Sábado ou domingo: qual dia guardar?', 'Doutrina',
+  'O quarto mandamento separa o sétimo dia para descanso e adoração, e Jesus ia à sinagoga no sábado. Depois da ressurreição, os cristãos passaram a se reunir no primeiro dia da semana, e Paulo fala de não julgar o irmão por causa de dias.',
+  'Êxodo 20:8-11; Lucas 4:16; Atos 20:7; 1 Coríntios 16:2; Colossenses 2:16-17; Romanos 14:5-6',
+  'Guarda o domingo como dia do Senhor, em memória da ressurreição.',
+  'Guarda o domingo como dia do Senhor e de culto, sem impor regras do sábado judaico.',
+  'Entende o domingo como o sábado cristão, separado para descanso e adoração.',
+  'Todos separam um dia para Deus, para o descanso e para o culto. A divergência está em qual dia e por quê: respeite a convicção do irmão.'));
+DUVIDAS[DUVIDAS.length - 1].trad.adventista = 'Guarda o sábado, do pôr do sol de sexta ao pôr do sol de sábado, como mandamento permanente e memorial da criação.';
+
 /* Manna: ilustrações em SVG (cores chapadas da paleta, sem degradê). */
 
 const ART = {};
 
-/* Mani: o grão de maná, mascote do app. humor: feliz, festa, pensa, triste */
+/* Mani: a pombinha, mascote do app. humor: feliz, festa, pensa, triste */
 ART.mani = (cls, humor) => {
-  const h = humor || 'feliz';
-  const boca = {
-    feliz: '<path d="M40 76 Q50 86 60 76" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-    festa: '<path d="M37 72 Q50 94 63 72 Z" fill="var(--noite)"/><path d="M43 82 Q50 88 57 82" fill="#E4806A"/>',
-    pensa: '<path d="M43 79 Q50 76 58 79" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-    triste: '<path d="M41 81 Q50 73 59 81" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-  }[h];
-  const bracos = h === 'festa'
-    ? '<path d="M17 58 L4 34" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/><path d="M83 58 L96 34" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/>'
-    : '<path d="M17 66 L7 80" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/><path d="M83 66 L93 80" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/>';
+  const h = humor || 'feliz', L = 'var(--pomba-tr)', W = 'var(--pomba)', A = 'var(--pomba-asa)';
+  const asas = h === 'festa'
+    ? '<path d="M27 60 C12 52 4 36 6 22 C12 26 16 30 20 30 C18 36 22 42 30 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M73 60 C88 52 96 36 94 22 C88 26 84 30 80 30 C82 36 78 42 70 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>'
+    : '<path d="M25 62 C12 66 9 84 16 98 C22 94 26 86 30 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M75 62 C88 66 91 84 84 98 C78 94 74 86 70 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>';
   const olhos = h === 'festa'
-    ? '<path d="M31 56 Q38 47 45 56" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M55 56 Q62 47 69 56" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'
-    : '<ellipse cx="38" cy="56" rx="7.5" ry="9.5" fill="#FFFDF7"/><ellipse cx="62" cy="56" rx="7.5" ry="9.5" fill="#FFFDF7"/><circle cx="' + (h === 'pensa' ? 41 : 39) + '" cy="' + (h === 'pensa' ? 54 : 58) + '" r="4.4" fill="var(--noite)"/><circle cx="' + (h === 'pensa' ? 65 : 63) + '" cy="' + (h === 'pensa' ? 54 : 58) + '" r="4.4" fill="var(--noite)"/>';
+    ? '<path d="M33 42 Q39 34 45 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M55 42 Q61 34 67 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : '<ellipse cx="39" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/><ellipse cx="61" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/>' +
+      '<circle cx="' + (h === 'pensa' ? 41 : 40) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/><circle cx="' + (h === 'pensa' ? 63 : 62) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/>' +
+      '<circle cx="' + (h === 'pensa' ? 42.4 : 41.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/><circle cx="' + (h === 'pensa' ? 64.4 : 63.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/>';
+  const sobr = h === 'triste' ? '<path d="M32 32 L44 35 M68 32 L56 35" stroke="var(--noite)" stroke-width="3" stroke-linecap="round"/>' : '';
+  const bico = h === 'festa'
+    ? '<path d="M43 51 L57 51 L50 56 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/><path d="M45 57 L55 57 L50 62 Z" fill="var(--ouro-dk)"/>'
+    : '<path d="M43 51 L57 51 L50 60 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/>';
+  const grao = h === 'festa' ? '<ellipse cx="50" cy="8" rx="4" ry="6" transform="rotate(-20 50 8)" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="1.5"/>' : '';
   return '<svg class="' + (cls || 'mani') + '" viewBox="0 0 100 124" aria-hidden="true">' +
-    '<ellipse cx="50" cy="117" rx="26" ry="5" fill="var(--chao)"/>' + bracos +
-    '<g transform="rotate(-8 50 64)"><ellipse cx="50" cy="64" rx="34" ry="46" fill="var(--ouro)"/>' +
-    '<path d="M70 26 C86 44 88 84 66 106 C80 98 84 82 84 64 C84 46 79 34 70 26Z" fill="var(--ouro-dk)"/>' +
-    '<path d="M36 22 C30 26 26 32 24 38" stroke="#FFF1C9" stroke-width="4.5" fill="none" stroke-linecap="round"/>' +
-    olhos + '<circle cx="28" cy="70" r="5" fill="#EE9A76"/><circle cx="72" cy="70" r="5" fill="#EE9A76"/>' + boca + '</g></svg>';
+    '<ellipse cx="50" cy="118" rx="24" ry="4.5" fill="var(--chao)"/>' + grao +
+    '<path d="M60 98 L80 112 L82 102 L90 104 L80 92 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M44 108 v7 M40 115 h8 M56 108 v7 M52 115 h8" stroke="var(--ouro-dk)" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M50 16 C66 16 75 28 74 42 C88 54 86 94 66 106 C58 111 42 111 34 106 C14 94 12 54 26 42 C25 28 34 16 50 16 Z" fill="' + W + '" stroke="' + L + '" stroke-width="3.2" stroke-linejoin="round"/>' +
+    '<path d="M48 17 C45 9 50 5 55 8" stroke="' + L + '" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<ellipse cx="50" cy="84" rx="15" ry="17" fill="var(--pomba-peito)"/>' + asas + olhos + sobr +
+    '<ellipse cx="30" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/><ellipse cx="70" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/>' + bico + '</svg>';
 };
 
 ART.grao = cls => '<svg class="' + (cls || 'grao') + '" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4.2" ry="6.4" transform="rotate(-22 6 8)"/></svg>';
@@ -916,6 +1014,7 @@ function fresh() {
     quests: null, league: { week: null, div: 0 },
     cultos: [], ebds: [], duvidasLidas: [], perguntas: [],
     group: null, ach: {}, offset: 0, sound: true, goal: 30,
+    objetivo: '', custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
 function load() {
@@ -945,22 +1044,24 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
 const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
-const trilha = id => TRILHAS.find(t => t.id === id);
+const trilha = id => id ? (TRILHAS.find(t => t.id === id) || (S.custom && S.custom[id]) || trilhaGen(id)) : null;
 const desafio = id => DESAFIOS.find(d => d.id === id);
 const uid = () => Math.random().toString(36).slice(2, 9);
 const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const studiedToday = () => S.days.includes(todayK());
-const doneCount = id => Math.min(S.progress[id] || 0, trilha(id).licoes.length);
-const isDone = id => doneCount(id) >= trilha(id).licoes.length;
+const doneCount = id => trilha(id) ? Math.min(S.progress[id] || 0, trilha(id).licoes.length) : 0;
+const isDone = id => !!trilha(id) && doneCount(id) >= trilha(id).licoes.length;
 const tradicao = () => S.quiz.tradicao || null;
 const curTrail = () => {
+  S.quiz.trilhas = S.quiz.trilhas.filter(id => trilha(id));
+  if (!S.quiz.trilhas.length) S.quiz.trilhas = ['joao'];
   if (!S.cur || !S.quiz.trilhas.includes(S.cur)) S.cur = S.quiz.trilhas.find(id => !isDone(id)) || S.quiz.trilhas[0];
   return S.cur;
 };
 
 /* UI (não salvo) */
-const ui = { tab: 'jornada', ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
+const ui = { tab: 'jornada', bib: null, bibMode: 'biblia', expl: 'Sugestões', sug: null, sugBusy: false, ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
 
 function toast(msg) {
   ui.toast = msg; renderToast();
@@ -1105,7 +1206,8 @@ const SND = { certo: () => tone([[660, .12], [990, .22]]), errado: () => tone([[
 const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function rain(n) {
   if (reduceMotion()) return;
-  const c = document.createElement('canvas'); c.className = 'rain'; document.body.appendChild(c);
+  document.querySelectorAll('canvas.rain').forEach(x => x.remove());
+  const c = document.createElement('canvas'); c.className = 'rain'; document.body.appendChild(c); setTimeout(() => c.remove(), 2800);
   const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
   c.width = W * dpr; c.height = H * dpr; const x = c.getContext('2d'); x.scale(dpr, dpr);
   const gs = Array.from({ length: n || 70 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * H * 0.6, v: 2.2 + Math.random() * 3, r: Math.random() * 6, s: 0.6 + Math.random() * 0.8, w: (Math.random() - .5) * 0.06 }));
@@ -1142,6 +1244,180 @@ const aiMsg = e => ({
 }[e && e.code] || 'Não deu para gerar agora. Tente de novo em instantes.');
 let aiCtl = null;
 const REGRAS = 'Você é o assistente de estudo bíblico do app Manna, para evangélicos brasileiros. Escreva em português do Brasil, com linguagem evangélica brasileira simples e respeitosa. Não use travessões. Não cite literalmente o texto de versões protegidas (ARA, ARC, NVI, NAA, NTLH): use referências (ex.: João 3:16) e explique com suas palavras. Nunca dê veredito único em tema que divide as igrejas evangélicas. Não invente fatos.';
+
+/* Manna: catálogo aberto de metas (planos, 66 livros, personagens, épocas, temas), referências bíblicas e hinários. */
+
+const LIVROS = [["Gênesis",50],["Êxodo",40],["Levítico",27],["Números",36],["Deuteronômio",34],["Josué",24],["Juízes",21],["Rute",4],["1 Samuel",31],["2 Samuel",24],["1 Reis",22],["2 Reis",25],["1 Crônicas",29],["2 Crônicas",36],["Esdras",10],["Neemias",13],["Ester",10],["Jó",42],["Salmos",150],["Provérbios",31],["Eclesiastes",12],["Cantares",8],["Isaías",66],["Jeremias",52],["Lamentações",5],["Ezequiel",48],["Daniel",12],["Oseias",14],["Joel",3],["Amós",9],["Obadias",1],["Jonas",4],["Miqueias",7],["Naum",3],["Habacuque",3],["Sofonias",3],["Ageu",2],["Zacarias",14],["Malaquias",4],["Mateus",28],["Marcos",16],["Lucas",24],["João",21],["Atos",28],["Romanos",16],["1 Coríntios",16],["2 Coríntios",13],["Gálatas",6],["Efésios",6],["Filipenses",4],["Colossenses",4],["1 Tessalonicenses",5],["2 Tessalonicenses",3],["1 Timóteo",6],["2 Timóteo",4],["Tito",3],["Filemom",1],["Hebreus",13],["Tiago",5],["1 Pedro",5],["2 Pedro",3],["1 João",5],["2 João",1],["3 João",1],["Judas",1],["Apocalipse",22]];
+const NT = 39;
+const LIVRO_DESC = { 'Gênesis': 'Criação, queda, dilúvio e os patriarcas.', 'Êxodo': 'Libertação do Egito, o maná e o Sinai.', 'Salmos': 'Orações e cânticos do povo de Deus.', 'Isaías': 'O profeta do Messias e da consolação.', 'Mateus': 'Jesus, o Rei prometido.', 'Marcos': 'O evangelho mais curto e direto.', 'Lucas': 'Jesus, o Salvador de todos.', 'Atos': 'O Espírito Santo e a igreja primitiva.', 'Apocalipse': 'A revelação de Jesus e a esperança final.', 'Daniel': 'Fidelidade no exílio e profecia.', 'Efésios': 'A igreja, a graça e a armadura de Deus.', 'Hebreus': 'Jesus, superior a tudo.', 'Jó': 'O sofrimento e a soberania de Deus.', 'Eclesiastes': 'O sentido da vida debaixo do sol.' };
+const CURADOS = { 'Romanos': 'romanos', 'João': 'joao', 'Provérbios': 'proverbios', 'Tiago': 'tiago' };
+
+/* Leitura de referências: "João 3", "Mateus 6:5-15", "2 Samuel 11-12", "Gênesis 50; Êxodo 1-2" */
+const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+const ALIAS = { 'salmo': 'Salmos', 'sl': 'Salmos', 'cantico dos canticos': 'Cantares', 'canticos': 'Cantares', 'apocalipse de joao': 'Apocalipse', 'atos dos apostolos': 'Atos', 'jo': 'Jó', 'mt': 'Mateus', 'mc': 'Marcos', 'lc': 'Lucas', 'jo.': 'João', 'rm': 'Romanos', 'gn': 'Gênesis', 'ex': 'Êxodo', 'sabedoria': null };
+const BOOK_IX = {};
+LIVROS.forEach(([n], i) => { BOOK_IX[norm(n)] = i; });
+Object.entries(ALIAS).forEach(([k, v]) => { if (v) BOOK_IX[k] = LIVROS.findIndex(l => l[0] === v); });
+function parseRef(ref) {
+  const out = [];
+  let lastBook = null;
+  String(ref || '').split(/;/).forEach(part => {
+    part = part.trim(); if (!part) return;
+    const m = part.match(/^((?:[123]\s*)?[A-Za-zÀ-ÿ.\s]+?)\s*(\d+)(?:\s*[:.]\s*(\d+)(?:\s*-\s*(\d+))?)?(?:\s*-\s*(\d+))?\s*$/);
+    let b, c, v1, v2, c2;
+    if (m) {
+      const name = norm(m[1].replace(/\./g, '')).replace(/^([123])\s*/, '$1 ');
+      b = BOOK_IX[name]; if (b == null) return;
+      c = +m[2]; v1 = m[3] ? +m[3] : null; v2 = m[4] ? +m[4] : v1; c2 = m[5] ? +m[5] : null;
+      lastBook = b;
+    } else if (lastBook != null && /^\d+(:\d+(-\d+)?)?$/.test(part)) {
+      const [cc, vv] = part.split(':'); b = lastBook; c = +cc;
+      if (vv) { const [a, z] = vv.split('-'); v1 = +a; v2 = z ? +z : +a; }
+    } else return;
+    if (c < 1 || c > LIVROS[b][1]) return;
+    if (c2 && !v1) { for (let x = c; x <= Math.min(c2, LIVROS[b][1]); x++) out.push({ b, c: x }); }
+    else out.push({ b, c, v1, v2 });
+  });
+  return out;
+}
+const refLabel = s => LIVROS[s.b][0] + ' ' + s.c + (s.v1 ? ':' + s.v1 + (s.v2 && s.v2 !== s.v1 ? '-' + s.v2 : '') : '');
+function findRefs(text) {
+  const names = LIVROS.map(l => l[0]).concat(['Salmo']).sort((a, b) => b.length - a.length).map(n => n.replace(/ /g, '\\s*'));
+  const re = new RegExp('(' + names.join('|') + ')\\s+\\d+(?:[:.]\\d+(?:-\\d+)?)?', 'gi');
+  const found = (String(text || '').match(re) || []).map(s => s.replace('.', ':'));
+  return [...new Set(found)].filter(r => parseRef(r).length);
+}
+
+/* Bíblia Livre: carregada sob demanda (arquivo blivre.js publicado junto) */
+let BIBLIA = window.BLIVRE || null, bibliaP = null;
+function loadBiblia() {
+  if (BIBLIA) return Promise.resolve(BIBLIA);
+  if (!bibliaP) bibliaP = new Promise((ok, no) => {
+    const s = document.createElement('script'); s.src = 'blivre.js'; s.async = true;
+    s.onload = () => { BIBLIA = window.BLIVRE || null; BIBLIA ? ok(BIBLIA) : no(new Error('vazio')); };
+    s.onerror = () => { bibliaP = null; no(new Error('falhou')); };
+    document.head.appendChild(s);
+  });
+  return bibliaP;
+}
+function versesOf(ref) {
+  if (!BIBLIA) return [];
+  const out = [];
+  parseRef(ref).forEach(s => {
+    const cap = BIBLIA.livros[s.b].c[s.c - 1] || [];
+    const a = s.v1 || 1, z = s.v2 || cap.length;
+    for (let v = a; v <= Math.min(z, cap.length); v++) if (cap[v - 1]) out.push({ b: s.b, c: s.c, v, t: cap[v - 1] });
+  });
+  return out;
+}
+
+/* Planos de leitura */
+const ALLCH = LIVROS.flatMap(([n, k], b) => Array.from({ length: k }, (_, i) => ({ b, c: i + 1 })));
+function chunkRef(chs) {
+  const parts = []; let cur = null;
+  chs.forEach(x => { if (cur && cur.b === x.b && cur.z === x.c - 1) cur.z = x.c; else { cur = { b: x.b, a: x.c, z: x.c }; parts.push(cur); } });
+  return parts.map(p => LIVROS[p.b][0] + ' ' + p.a + (p.z > p.a ? '-' + p.z : '')).join('; ');
+}
+function planLessons(chs, days, label) {
+  return Array.from({ length: days }, (_, d) => {
+    const part = chs.slice(Math.floor(d * chs.length / days), Math.floor((d + 1) * chs.length / days));
+    const ref = chunkRef(part);
+    return { ref, titulo: label + ' ' + (d + 1) + ': ' + ref, caps: part.length, plano: true };
+  });
+}
+const PLANOS = [
+  { id: 'plano:biblia1ano', nome: 'Bíblia em 1 ano', desc: 'Os 1.189 capítulos em 365 leituras, de Gênesis a Apocalipse.', unit: 7, gen: () => planLessons(ALLCH, 365, 'Dia') },
+  { id: 'plano:nt90', nome: 'Novo Testamento em 90 dias', desc: 'De Mateus a Apocalipse, cerca de 3 capítulos por dia.', unit: 7, gen: () => planLessons(ALLCH.filter(x => x.b >= NT), 90, 'Dia') },
+  { id: 'plano:evangelhos', nome: 'Evangelhos em 30 dias', desc: 'Mateus, Marcos, Lucas e João em um mês.', unit: 7, gen: () => planLessons(ALLCH.filter(x => x.b >= NT && x.b <= NT + 3), 30, 'Dia') },
+  { id: 'plano:at1ano', nome: 'Antigo Testamento em 1 ano', desc: 'De Gênesis a Malaquias, cerca de 3 capítulos por dia.', unit: 7, gen: () => planLessons(ALLCH.filter(x => x.b < NT), 365, 'Dia') },
+  { id: 'plano:salmos', nome: 'Salmos e Provérbios em 60 dias', desc: 'Oração e sabedoria, 3 capítulos por dia.', unit: 7, gen: () => planLessons(ALLCH.filter(x => x.b === 18 || x.b === 19), 60, 'Dia') },
+];
+
+/* Personagens e épocas: só títulos e referências; o texto vem da Bíblia Livre */
+const P = (ref, titulo, caps) => ({ ref, titulo, caps: caps || 1 });
+const PERSONAGENS = [
+  { id: 'per:abraao', nome: 'Abraão', desc: 'O pai da fé, chamado a sair da sua terra.', licoes: [P('Gênesis 12', 'O chamado de Abrão'), P('Gênesis 15', 'A aliança sob as estrelas'), P('Gênesis 18', 'Visitantes em Manre'), P('Gênesis 21', 'O nascimento de Isaque'), P('Gênesis 22', 'O monte Moriá'), P('Hebreus 11:8-19', 'A fé de Abraão')] },
+  { id: 'per:moises', nome: 'Moisés', desc: 'O libertador que conduziu o povo pelo deserto.', licoes: [P('Êxodo 2', 'Salvo das águas'), P('Êxodo 3', 'A sarça ardente'), P('Êxodo 12', 'A Páscoa'), P('Êxodo 14', 'O mar se abre'), P('Êxodo 16', 'O maná do céu'), P('Êxodo 20', 'Os dez mandamentos'), P('Números 20', 'A água da rocha'), P('Deuteronômio 34', 'A morte de Moisés')] },
+  { id: 'per:josue', nome: 'Josué', desc: 'Coragem para entrar na terra prometida.', licoes: [P('Josué 1', 'Sê forte e corajoso'), P('Josué 2', 'Raabe e os espias'), P('Josué 3', 'A travessia do Jordão'), P('Josué 6', 'Os muros de Jericó'), P('Josué 24', 'Eu e a minha casa')] },
+  { id: 'per:gideao', nome: 'Gideão', desc: 'O mais fraco, escolhido para libertar Israel.', licoes: [P('Juízes 6', 'O chamado no lagar'), P('Juízes 7', 'Os trezentos'), P('Juízes 8', 'Depois da vitória')] },
+  { id: 'per:samuel', nome: 'Samuel', desc: 'O menino que ouviu a voz de Deus.', licoes: [P('1 Samuel 1', 'A oração de Ana'), P('1 Samuel 3', 'Fala, Senhor'), P('1 Samuel 8', 'O povo pede um rei'), P('1 Samuel 12', 'A despedida de Samuel'), P('1 Samuel 16', 'Samuel unge Davi')] },
+  { id: 'per:elias', nome: 'Elias', desc: 'O profeta do fogo e do cicio tranquilo.', licoes: [P('1 Reis 17', 'Os corvos e a viúva'), P('1 Reis 18', 'Fogo no Carmelo'), P('1 Reis 19', 'O cicio tranquilo'), P('1 Reis 21', 'A vinha de Nabote'), P('2 Reis 2', 'O carro de fogo')] },
+  { id: 'per:ester', nome: 'Ester', desc: 'Coragem para um momento como este.', licoes: [P('Ester 2', 'Ester rainha'), P('Ester 3', 'O plano de Hamã'), P('Ester 4', 'Para um momento como este'), P('Ester 5', 'Diante do rei'), P('Ester 7', 'A virada'), P('Ester 9', 'A festa de Purim')] },
+  { id: 'per:daniel', nome: 'Daniel', desc: 'Fiel a Deus na corte da Babilônia.', licoes: [P('Daniel 1', 'Fiel na mesa do rei'), P('Daniel 2', 'O sonho da estátua'), P('Daniel 3', 'A fornalha'), P('Daniel 5', 'A escrita na parede'), P('Daniel 6', 'A cova dos leões'), P('Daniel 9', 'A oração de Daniel')] },
+  { id: 'per:neemias', nome: 'Neemias', desc: 'Oração e trabalho para reconstruir os muros.', licoes: [P('Neemias 1', 'A oração por Jerusalém'), P('Neemias 2', 'Diante do rei'), P('Neemias 4', 'Construindo e vigiando'), P('Neemias 6', 'O muro concluído'), P('Neemias 8', 'A leitura da Lei')] },
+  { id: 'per:maria', nome: 'Maria, mãe de Jesus', desc: 'A serva do Senhor, do anúncio à igreja.', licoes: [P('Lucas 1:26-56', 'O anúncio do anjo'), P('Lucas 2', 'O nascimento de Jesus'), P('João 2', 'Fazei tudo o que ele disser'), P('João 19:25-27', 'Ao pé da cruz'), P('Atos 1:12-14', 'Em oração com os discípulos')] },
+];
+const EPOCAS = [
+  { id: 'ep:origens', nome: 'Criação e patriarcas', desc: 'De Gênesis 1 até José no Egito.', licoes: [P('Gênesis 1', 'A criação'), P('Gênesis 3', 'A queda'), P('Gênesis 6-7', 'O dilúvio', 2), P('Gênesis 11', 'A torre de Babel'), P('Gênesis 12', 'O chamado de Abraão'), P('Gênesis 28', 'A escada de Jacó'), P('Gênesis 50', 'José e seus irmãos')] },
+  { id: 'ep:exodo', nome: 'Êxodo e deserto', desc: 'Da escravidão no Egito às portas de Canaã.', licoes: [P('Êxodo 1', 'Escravos no Egito'), P('Êxodo 12', 'A Páscoa'), P('Êxodo 14', 'A travessia do mar'), P('Êxodo 16', 'O maná'), P('Êxodo 19', 'No monte Sinai'), P('Êxodo 32', 'O bezerro de ouro'), P('Números 13-14', 'Os espias e a incredulidade', 2), P('Deuteronômio 6', 'Ouve, Israel')] },
+  { id: 'ep:juizes', nome: 'Conquista e juízes', desc: 'A entrada em Canaã e o ciclo dos juízes.', licoes: [P('Josué 1', 'Sê forte e corajoso'), P('Josué 6', 'Jericó'), P('Josué 24', 'A escolha de servir'), P('Juízes 2', 'O ciclo dos juízes'), P('Juízes 4', 'Débora e Baraque'), P('Juízes 7', 'Gideão'), P('Juízes 16', 'Sansão'), P('Rute 1', 'Rute e Noemi')] },
+  { id: 'ep:reino', nome: 'Reino unido', desc: 'Saul, Davi e Salomão.', licoes: [P('1 Samuel 8', 'O povo pede um rei'), P('1 Samuel 16', 'Davi ungido'), P('1 Samuel 17', 'Davi e Golias'), P('2 Samuel 7', 'A aliança com Davi'), P('1 Reis 3', 'A sabedoria de Salomão'), P('1 Reis 8', 'A dedicação do templo')] },
+  { id: 'ep:profetas', nome: 'Reino dividido e profetas', desc: 'Reis, profetas e a queda de Jerusalém.', licoes: [P('1 Reis 12', 'O reino se divide'), P('1 Reis 18', 'Elias no Carmelo'), P('2 Reis 17', 'A queda de Samaria'), P('Isaías 6', 'O chamado de Isaías'), P('Jeremias 1', 'O chamado de Jeremias'), P('2 Reis 22', 'Josias e o livro da Lei'), P('2 Reis 25', 'A queda de Jerusalém')] },
+  { id: 'ep:exilio', nome: 'Exílio e retorno', desc: 'Babilônia, Pérsia e a volta para Jerusalém.', licoes: [P('Salmos 137', 'Junto aos rios da Babilônia'), P('Daniel 1', 'Fiéis no exílio'), P('Ezequiel 37', 'O vale de ossos secos'), P('Esdras 1', 'O decreto de Ciro'), P('Esdras 3', 'O altar reconstruído'), P('Neemias 8', 'A leitura da Lei'), P('Ester 4', 'Para um momento como este'), P('Malaquias 3', 'O mensageiro')] },
+  { id: 'ep:jesus', nome: 'Vida de Jesus', desc: 'Do nascimento à ressurreição.', licoes: [P('Lucas 2', 'O nascimento'), P('Mateus 3', 'O batismo'), P('Mateus 4', 'A tentação'), P('Mateus 5', 'O Sermão do Monte'), P('João 11', 'Lázaro'), P('Mateus 26', 'A última ceia'), P('João 19', 'A cruz'), P('Lucas 24', 'O Ressuscitado')] },
+  { id: 'ep:igreja', nome: 'Igreja primitiva', desc: 'O Espírito Santo e o evangelho até Roma.', licoes: [P('Atos 1', 'A ascensão'), P('Atos 2', 'Pentecostes'), P('Atos 4', 'Ousadia'), P('Atos 7', 'Estêvão'), P('Atos 9', 'A conversão de Saulo'), P('Atos 10', 'Pedro e Cornélio'), P('Atos 15', 'O concílio de Jerusalém'), P('Atos 28', 'Paulo em Roma')] },
+];
+
+/* Catálogo unificado */
+const TIPOS = ['Plano', 'Livro', 'Personagem', 'Época', 'Tema'];
+const GEN_CACHE = {};
+function trilhaGen(id) {
+  if (GEN_CACHE[id]) return GEN_CACHE[id];
+  let t = null;
+  const pl = PLANOS.find(p => p.id === id);
+  if (pl) t = { id, tipo: 'Plano', nome: pl.nome, desc: pl.desc, unit: pl.unit, licoes: pl.gen() };
+  else if (id.startsWith('livro:')) {
+    const b = Number(id.slice(6)), [n, k] = LIVROS[b] || [];
+    if (n) t = { id, tipo: 'Livro', nome: n, desc: LIVRO_DESC[n] || plural(k, 'capítulo', 'capítulos') + ', um por lição.', licoes: Array.from({ length: k }, (_, i) => ({ ref: n + ' ' + (i + 1), titulo: n + ' ' + (i + 1), caps: 1 })) };
+  } else {
+    const x = PERSONAGENS.find(p => p.id === id) || EPOCAS.find(p => p.id === id);
+    if (x) t = Object.assign({ tipo: id.startsWith('per:') ? 'Personagem' : 'Época' }, x);
+  }
+  if (t) GEN_CACHE[id] = t;
+  return t;
+}
+function catalogo() {
+  const livros = LIVROS.map(([n], b) => CURADOS[n] ? TRILHAS.find(t => t.id === CURADOS[n]) : trilhaGen('livro:' + b));
+  return [].concat(PLANOS.map(p => trilhaGen(p.id)), livros, TRILHAS.filter(t => t.tipo === 'Personagem'), PERSONAGENS.map(p => trilhaGen(p.id)), EPOCAS.map(p => trilhaGen(p.id)), TRILHAS.filter(t => t.tipo === 'Tema'));
+}
+const tipoDe = t => t.tipo === 'Livro' && (t.id.startsWith('livro:') || TRILHAS.includes(t)) ? 'Livro' : t.tipo;
+
+/* Sugestões a partir do objetivo, sem IA */
+const OBJ_SUGEST = ['Ler a Bíblia toda em um ano', 'Conhecer a vida de um personagem', 'Estudar um livro da Bíblia', 'Entender uma época da história bíblica', 'Aprender sobre um tema da vida cristã', 'Voltar a ler a Bíblia todo dia', 'Me preparar melhor para a EBD ou Escola Sabatina'];
+function sugerirLocal(texto) {
+  const t = norm(texto || ''), out = [];
+  const add = id => { if (!out.includes(id) && trilha(id)) out.push(id); };
+  if (/(biblia|palavra).*(toda|inteira|completa)|(toda|inteira).*biblia|1 ano|um ano|365/.test(t)) add('plano:biblia1ano');
+  if (/novo testamento/.test(t)) add('plano:nt90');
+  if (/antigo testamento|velho testamento/.test(t)) add('plano:at1ano');
+  if (/evangelho/.test(t)) { add('plano:evangelhos'); add('joao'); }
+  LIVROS.forEach(([n], b) => { if (new RegExp('\\b' + norm(n) + '\\b').test(t) && n !== 'Jó') add(CURADOS[n] || 'livro:' + b); });
+  [...TRILHAS.filter(x => x.tipo === 'Personagem'), ...PERSONAGENS].forEach(p => { if (t.includes(norm(p.nome.split(',')[0]).split(' ')[0])) add(p.id); });
+  const ep = { 'ep:origens': /criacao|patriarca|genesis|diluvio/, 'ep:exodo': /exodo|deserto|egito|mana|sinai/, 'ep:juizes': /juizes|conquista|canaa/, 'ep:reino': /reis|reino|rei davi|salomao|monarquia/, 'ep:profetas': /profeta/, 'ep:exilio': /exilio|babilonia|retorno/, 'ep:jesus': /vida de jesus|jesus/, 'ep:igreja': /igreja primitiva|apostolo|atos|pentecostes/ };
+  Object.entries(ep).forEach(([id, re]) => { if (re.test(t)) add(id); });
+  const tm = { oracao: /orac|orar/, familia: /famil|casamento|filhos|marido|esposa/, financas: /financ|dinheiro|divida|dizimo/, ansiedade: /ansied|medo|paz|depress|preocup/ };
+  Object.entries(tm).forEach(([id, re]) => { if (re.test(t)) add(id); });
+  if (/personage/.test(t)) ['davi', 'per:moises', 'per:daniel', 'paulo'].forEach(add);
+  if (/livro/.test(t)) ['romanos', 'joao', 'livro:0', 'salmos'].forEach(add);
+  if (/epoca|historia|periodo|cronolog/.test(t)) ['ep:origens', 'ep:exodo', 'ep:reino', 'ep:jesus'].forEach(add);
+  if (/tema|vida crista|assunto/.test(t)) ['oracao', 'familia', 'ansiedade', 'financas'].forEach(add);
+  if (/todo dia|habito|voltar|parei|constancia/.test(t)) ['salmos', 'proverbios', 'plano:evangelhos'].forEach(add);
+  if (/ebd|escola sabatina|escola dominical|aula|professor/.test(t)) ['romanos', 'ep:jesus'].forEach(add);
+  if (out.length < 3) ['plano:biblia1ano', 'joao', 'oracao', 'per:moises'].forEach(add);
+  return out.slice(0, 8);
+}
+
+/* Hinários (o Manna não reproduz letras protegidas por direitos autorais) */
+const HINARIOS = [
+  { id: 'hasd', nome: 'Hinário Adventista do Sétimo Dia', trad: 'adventista' },
+  { id: 'harpa', nome: 'Harpa Cristã', denom: 'Assembleia de Deus' },
+  { id: 'cantor', nome: 'Cantor Cristão', trad: 'batista' },
+  { id: 'novocantico', nome: 'Hinário Novo Cântico', trad: 'reformada' },
+  { id: 'ccb', nome: 'Hinos de Louvores e Súplicas a Deus', denom: 'Congregação Cristã no Brasil' },
+  { id: 'salmoshinos', nome: 'Salmos e Hinos' },
+  { id: 'outro', nome: 'Outro hinário' },
+];
+const hinarioPadrao = () => (HINARIOS.find(h => h.denom === S.quiz.denom) || HINARIOS.find(h => h.trad && h.trad === S.quiz.tradicao) || HINARIOS[1]).id;
 
 /* Manna: geração de estudos (culto, EBD, dúvida livre) e grupo simulado. */
 
@@ -1248,7 +1524,7 @@ const STOP = new Set('quando sobre entre depois antes mesmo porque pelos pelas p
 function topBar() {
   const id = curTrail(), t = trilha(id), st = S.streak, hoje = studiedToday();
   return '<header class="hud">' +
-    '<button class="hud-trail" data-a="sheet" data-s="trilhas" aria-label="Trocar de meta">' + icon('livro') + '<span>' + t.nome + '</span></button>' +
+    '<button class="hud-trail" data-a="open" data-ov="plano" aria-label="Meu plano">' + icon('livro') + '<span>' + t.nome + '</span></button>' +
     '<div class="hud-r"><button class="hud-i' + (hoje ? ' lit' : '') + '" data-a="sheet" data-s="ofensiva" aria-label="Ofensiva">' + ART.grao() + '<b class="tnum">' + st.count + '</b></button>' +
     '<button class="hud-i" data-a="open" data-ov="loja" aria-label="Loja">' + ART.vaso('vaso sm') + '<b class="tnum">' + S.grains + '</b></button></div></header>';
 }
@@ -1278,12 +1554,14 @@ function vJornada() {
   }
 
   /* Caminho */
-  const units = Math.ceil(t.licoes.length / UNIT);
+  const US = t.unit || UNIT, units = Math.ceil(t.licoes.length / US), cu = Math.floor(Math.min(d, t.licoes.length - 1) / US);
+  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 4);
   h += '<div class="path">';
-  for (let u = 0; u < units; u++) {
-    const a = u * UNIT, b = Math.min(t.licoes.length, a + UNIT);
+  if (u0 > 0) h += '<p class="path-more muted">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + '</p>';
+  for (let u = u0; u < u1; u++) {
+    const a = u * US, b = Math.min(t.licoes.length, a + US);
     const unitDone = d >= b;
-    h += '<section class="unit"><div class="banner"><div><p>Unidade ' + (u + 1) + ' · ' + t.nome + '</p><h3>' + t.licoes[a].titulo + '</h3><small>Lições ' + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
+    h += '<section class="unit"><div class="banner"><div><p>' + (US === 7 ? 'Semana ' : 'Unidade ') + (u + 1) + ' · ' + esc(t.nome) + '</p><h3>' + esc(US === 7 ? chunkRef(t.licoes.slice(a, b).flatMap(l => parseRef(l.ref))).replace(/;.*$/, '') + (b - a > 1 ? ' em diante' : '') : t.licoes[a].titulo) + '</h3><small>' + (US === 7 ? 'Leituras ' : 'Lições ') + (a + 1) + ' a ' + b + '</small></div>' + ART.banner() + '</div><div class="nodes">';
     const deco = ART.deco[ART.decoOrder[(u + hash(id)) % ART.decoOrder.length]];
     h += '<div class="deco-wrap ' + (u % 2 ? 'left' : 'right') + '">' + deco + '</div>';
     for (let i = a; i < b; i++) {
@@ -1300,7 +1578,8 @@ function vJornada() {
     h += '<div class="node-w" style="--x:' + x + 'px"><button class="node chest' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : unitDone ? ', pronto para abrir' : ', bloqueado') + '">' + ART.vaso('vaso node-vaso') + '</button>' + (unitDone && !opened ? '<span class="start-bubble low">Abrir</span>' : '') + '</div>';
     h += '</div></section>';
   }
-  h += '<div class="path-end">' + ART.mani('mani md', isDone(id) ? 'festa' : 'feliz') + '<p>' + (isDone(id) ? 'Você completou ' + t.nome + '.' : 'Faltam ' + plural(t.licoes.length - d, 'lição', 'lições') + ' para completar ' + t.nome + '.') + '</p><button class="btn sec" data-a="sheet" data-s="trilhas">Trocar de meta</button></div></div>';
+  if (u1 < units) h += '<p class="path-more muted">Mais ' + plural(t.licoes.length - u1 * US, 'lição', 'lições') + ' adiante na jornada.</p>';
+  h += '<div class="path-end">' + ART.mani('mani md', isDone(id) ? 'festa' : 'feliz') + '<p>' + (isDone(id) ? 'Você completou ' + t.nome + '.' : 'Faltam ' + plural(t.licoes.length - d, 'lição', 'lições') + ' para completar ' + t.nome + '.') + '</p><button class="btn sec" data-a="open" data-ov="plano">Ver meu plano</button></div></div>';
   return h + '</main>';
 }
 
@@ -1317,83 +1596,127 @@ function pickOthers(arr, exclude, n) {
   return shuffle(arr).filter(x => { if (seen.has(x)) return false; seen.add(x); return true; }).slice(0, n);
 }
 const words = s => s.replace(/[.,;:"()?!]/g, '').split(/\s+/).filter(Boolean);
-function buildSteps(t, i) {
-  const l = t.licoes[i], all = TRILHAS.flatMap(x => x.licoes), pool = t.licoes.length >= 5 ? t.licoes : all;
-  const steps = [{ k: 'leia' }];
-  steps.push({ k: 'mc', q: 'Qual destes títulos resume ' + l.ref + '?', opts: shuffle([l.titulo, ...pickOthers(pool.map(x => x.titulo), l.titulo, 3)]), ans: l.titulo, exp: l.ctx });
-  const cand = words(l.ctx).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && l.ctx.indexOf(w) > -1);
-  if (cand.length) {
-    const w = cand[Math.floor(Math.random() * cand.length)];
-    const others = all.flatMap(x => words(x.ctx)).filter(x => x.length >= 5 && !STOP.has(x.toLowerCase()) && x.toLowerCase() !== w.toLowerCase() && !l.ctx.includes(x));
-    const at = l.ctx.indexOf(w);
-    steps.push({ k: 'fill', before: l.ctx.slice(0, at), after: l.ctx.slice(at + w.length), opts: shuffle([w, ...pickOthers(others, w, 3)]), ans: w });
+const vref = x => LIVROS[x.b][0] + ' ' + x.c + ':' + x.v;
+const GENQ = ['O que este texto mostra sobre quem Deus é?', 'Que versículo daqui você quer guardar hoje, e por quê?', 'Que atitude este texto pede de você esta semana?', 'O que mais chamou sua atenção nesta leitura?', 'Por quem você pode orar a partir deste texto?'];
+function buildSteps(t, i, vs) {
+  const l = t.licoes[i], all = TRILHAS.flatMap(x => x.licoes), steps = [{ k: 'leia' }];
+  const curado = !!l.ctx;
+  if (curado) steps.push({ k: 'mc', q: 'Qual destes títulos resume ' + l.ref + '?', opts: shuffle([l.titulo, ...pickOthers((t.licoes.length >= 5 ? t.licoes : all).map(x => x.titulo), l.titulo, 3)]), ans: l.titulo, exp: l.ctx });
+  const good = vs.filter(x => { const n = words(x.t).length; return n >= 7 && n <= 34; });
+  const pool = shuffle(good);
+  const allWords = vs.flatMap(x => words(x.t)).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()));
+  /* Complete o versículo */
+  const vf = pool[0];
+  if (vf) {
+    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && vf.t.indexOf(w) > -1);
+    if (cand.length) {
+      const w = cand[Math.floor(Math.random() * cand.length)], at = vf.t.indexOf(w);
+      const outros = allWords.concat(TRILHAS.flatMap(x => x.licoes.flatMap(y => words(y.ctx || '')))).filter(x => x.length >= 5 && x.toLowerCase() !== w.toLowerCase() && !vf.t.includes(x));
+      const ops = pickOthers(outros, w, 3);
+      if (ops.length === 3) steps.push({ k: 'fill', q: 'Complete o versículo', hint: vref(vf), before: vf.t.slice(0, at), after: vf.t.slice(at + w.length), opts: shuffle([w, ...ops]), ans: w });
+    }
   }
-  const tw = l.titulo.split(' ');
-  if (tw.length >= 3) {
-    const extra = pickOthers(all.flatMap(x => x.titulo.split(' ')).filter(x => !tw.includes(x) && x.length > 2), null, 2);
-    steps.push({ k: 'tiles', prompt: 'Monte o título desta lição', hint: l.ref, target: tw, bank: shuffle([...tw, ...extra].map((w, j) => ({ w, id: j }))) });
+  /* Monte o final do versículo */
+  const vt = pool.find(x => x !== vf && words(x.t).length <= 18) || pool[1];
+  if (vt) {
+    const ws = vt.t.replace(/\s+/g, ' ').trim().split(' '), cut = Math.max(2, ws.length - Math.min(7, Math.ceil(ws.length / 2)));
+    const target = ws.slice(cut), extra = pickOthers(allWords.filter(x => !target.includes(x)), null, 2);
+    steps.push({ k: 'tiles', prompt: 'Monte o final do versículo', hint: vref(vt) + ': ' + ws.slice(0, cut).join(' ') + '…', target, bank: shuffle([...target, ...extra].map((w, j) => ({ w, id: j }))) });
   }
-  steps.push({ k: 'mc', q: 'Em que texto você encontra "' + l.titulo + '"?', opts: shuffle([l.ref, ...pickOthers(pool.map(x => x.ref), l.ref, 3)]), ans: l.ref });
-  steps.push({ k: 'reflita' });
+  /* Em que versículo está */
+  const vm = pool.find(x => x !== vf && x !== vt) || pool[2];
+  if (vm && vs.length >= 4) {
+    const outros = vs.filter(x => x !== vm).map(vref);
+    const trecho = words(vm.t).slice(0, 12).join(' ');
+    steps.push({ k: 'mc', q: 'Em que versículo está este trecho?', quote: trecho + '…', opts: shuffle([vref(vm), ...pickOthers(outros, vref(vm), 3)]), ans: vref(vm) });
+  }
+  if (!vs.length) {
+    steps.push({ k: 'mc', q: 'Em que texto você encontra "' + l.titulo + '"?', opts: shuffle([l.ref, ...pickOthers((t.licoes.length >= 5 ? t.licoes : all).map(x => x.ref), l.ref, 3)]), ans: l.ref });
+    const tw = l.titulo.split(' ');
+    if (tw.length >= 3) steps.push({ k: 'tiles', prompt: 'Monte o título desta lição', hint: l.ref, target: tw, bank: shuffle([...tw, ...pickOthers(all.flatMap(x => x.titulo.split(' ')).filter(x => !tw.includes(x) && x.length > 2), null, 2)].map((w, j) => ({ w, id: j }))) });
+  }
+  steps.push({ k: 'reflita', q: l.q || (S.gen[l.ref] && S.gen[l.ref].pergunta) || GENQ[(i + l.ref.length) % GENQ.length] });
   return steps;
 }
 async function aiQuestions(L) {
   if (!SAMPLE || L.review) return;
   const l = trilha(L.id).licoes[L.idx];
+  const texto = L.vs.map(x => x.v + ' ' + x.t).join('\n').slice(0, 9000);
   try {
-    const r = await SAMPLE.json(REGRAS + '\n\nCrie 2 perguntas de múltipla escolha sobre fatos explícitos de ' + l.ref + ' (tema da lição: ' + l.titulo + '). Use só fatos que estão claramente no texto bíblico, sem interpretação que divide as igrejas. Opções curtas, no máximo 8 palavras. Responda só com JSON: [{"pergunta": "...", "opcoes": ["4 opções"], "correta": 0, "explicacao": "1 frase citando o versículo por referência"}]', { modelTier: 'quick' });
-    if (ui.L !== L || L.phase !== 'steps' || !Array.isArray(r)) return;
-    const qs = r.filter(q => q && q.pergunta && Array.isArray(q.opcoes) && q.opcoes.length >= 3 && q.opcoes[q.correta]).slice(0, 2)
+    const r = await SAMPLE.json(REGRAS + '\n\nTexto bíblico (Bíblia Livre, ' + l.ref + '):\n' + (texto || '(texto indisponível; use seu conhecimento de ' + l.ref + ')') + '\n\nCrie 2 perguntas de múltipla escolha sobre fatos explícitos deste texto, uma frase de contexto (quem escreveu ou fala, para quem, quando) e uma pergunta de reflexão pessoal. Opções curtas, no máximo 8 palavras. Responda só com JSON: {"contexto": "2 frases", "pergunta": "reflexão", "questoes": [{"pergunta": "...", "opcoes": ["4 opções"], "correta": 0, "explicacao": "1 frase com o versículo"}]}', { modelTier: 'quick' });
+    if (!r) return;
+    if (r.contexto && !l.ctx) { S.gen[l.ref] = { contexto: String(r.contexto), pergunta: r.pergunta ? String(r.pergunta) : '' }; save(); }
+    if (ui.L !== L || L.phase !== 'steps') return;
+    const last = L.steps[L.steps.length - 1];
+    if (last.k === 'reflita' && !l.q && r.pergunta) last.q = String(r.pergunta);
+    const qs = (Array.isArray(r.questoes) ? r.questoes : []).filter(q => q && q.pergunta && Array.isArray(q.opcoes) && q.opcoes.length >= 3 && q.opcoes[q.correta]).slice(0, 2)
       .map(q => ({ k: 'mc', q: String(q.pergunta), opts: shuffle(q.opcoes.map(String)), ans: String(q.opcoes[q.correta]), exp: q.explicacao ? String(q.explicacao) : '', ia: true }));
-    if (!qs.length) return;
-    const at = Math.max(L.i + 1, 2);
-    L.steps.splice(Math.min(at, L.steps.length - 1), 0, qs[0]);
-    if (qs[1]) L.steps.splice(L.steps.length - 2, 0, qs[1]);
-    L.total += qs.length;
+    if (qs.length) {
+      L.steps.splice(Math.min(Math.max(L.i + 1, 2), L.steps.length - 1), 0, qs[0]);
+      if (qs[1]) L.steps.splice(L.steps.length - 1, 0, qs[1]);
+      L.total += qs.length;
+    }
     renderLesson();
   } catch (e) { /* sem IA, segue com os exercícios prontos */ }
 }
 
-function startLesson(id, idx, review) {
+async function startLesson(id, idx, review) {
   const t = trilha(id);
   ui.pop = null; ui.aiText = ''; ui.aiErr = '';
-  const steps = buildSteps(t, idx);
-  ui.L = { id, idx, review: !!review, steps, total: steps.length, i: 0, phase: 'steps', pick: null, built: [], checked: null, combo: 0, best: 0, right: 0, wrong: 0, t0: Date.now(), lido: false };
+  ui.L = { id, idx, review: !!review, phase: 'load', steps: [], vs: [] };
+  render();
+  try { await loadBiblia(); } catch (e) { /* sem o texto, a lição usa a referência */ }
+  if (!ui.L || ui.L.id !== id) return;
+  const vs = versesOf(t.licoes[idx].ref);
+  const steps = buildSteps(t, idx, vs);
+  ui.L = { id, idx, review: !!review, steps, vs, total: steps.length, i: 0, phase: 'steps', pick: null, built: [], checked: null, combo: 0, best: 0, right: 0, wrong: 0, t0: Date.now(), lido: false };
   render();
   aiQuestions(ui.L);
+}
+function bibleText(vs, opts) {
+  if (!vs.length) return '';
+  let h = '', lastC = null;
+  vs.forEach(x => {
+    if (x.c !== lastC) { h += (lastC !== null ? '</p>' : '') + '<h4 class="bt-cap">' + LIVROS[x.b][0] + ' ' + x.c + '</h4><p class="bt">'; lastC = x.c; }
+    h += '<span class="vv' + (opts && opts.sel && opts.sel.includes(x.b + ':' + x.c + ':' + x.v) ? ' on' : '') + '"' + (opts && opts.tap ? ' data-a="verse" data-k="' + x.b + ':' + x.c + ':' + x.v + '" role="button" tabindex="0"' : '') + '><sup>' + x.v + '</sup>' + esc(x.t) + ' </span>';
+  });
+  return h + '</p>';
 }
 
 /* ---------- Telas da lição ---------- */
 function vLessonScreen() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
+  if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'pensa') + '<p class="body-l">Abrindo a Bíblia…</p></main></div>';
   if (L.phase === 'fim') return vFim(L);
   if (L.phase === 'ofensiva') return vOfensivaUp();
   if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col">' + ART.mani('mani lg', 'triste') + '<h2 class="qt">Espere, não vá ainda!</h2><p class="body-l">Se sair agora, você perde o progresso desta lição.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn ghost danger-t" data-a="lessonQuit">Sair da lição</button></footer></div>';
-  const s = L.steps[L.i], prog = Math.min(100, (L.i / (L.steps.length)) * 100);
+  const t2 = t, s = L.steps[L.i], prog = Math.min(100, (L.i / (L.steps.length)) * 100);
   let h = '<div class="lesson"><header class="lhead"><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button><span class="bar thick"><i style="width:' + prog + '%"></i></span>' +
     (L.combo >= 3 ? '<span class="combo tnum">' + L.combo + ' seguidas</span>' : '<span class="combo ghost tnum">' + (L.review ? 'Revisão' : '') + '</span>') + '</header><main class="lz">';
   if (s.k === 'leia') {
-    const ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? 'na ' + S.quiz.versao : 'na sua Bíblia';
-    h += '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Abra ' + ver + ' e leia <b>' + l.ref + '</b> com calma. Depois a gente pratica.</div></div>' +
-      '<article class="scroll"><p class="sc-ref">' + l.ref + '</p><h2 class="sc-t">' + l.titulo + '</h2><p class="sc-ctx">' + l.ctx + '</p>' + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
+    const ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? S.quiz.versao : '';
+    const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+    h += '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">' + (L.vs.length ? 'Leia <b>' + esc(l.ref) + '</b> com calma. Depois a gente pratica.' : 'Abra a sua Bíblia em <b>' + esc(l.ref) + '</b> e leia com calma.') + '</div></div>' +
+      '<article class="scroll"><p class="sc-ref">' + esc(l.ref) + '</p><h2 class="sc-t">' + esc(l.titulo) + '</h2>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="fine">' + t.nota + '</p>' : '') + '</article>';
+    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre (BLIVRE), CC BY.' + (ver && ver !== 'BLIVRE' ? ' Se preferir, leia também na ' + ver + '.' : '') + '</p></article>';
     if (SAMPLE) {
       if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
       if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
       else if (!ui.aiText) h += '<button class="btn sec" data-a="explain">Explicar este texto</button>';
       if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
     }
-    h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + l.ref + '</label></main>';
+    h += '<label class="check big"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label></main>';
     h += '<footer class="lfoot"><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Continuar</button></footer></div>';
     return h;
   }
   if (s.k === 'reflita') {
-    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="scroll"><p class="sc-ref">Para refletir</p><h2 class="sc-q">' + l.q + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
+    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Última parte. Pense nisso antes de fechar a Bíblia.</div></div><article class="scroll"><p class="sc-ref">Para refletir</p><h2 class="sc-q">' + esc(s.q) + '</h2><textarea id="l-nota" rows="4" placeholder="Escreva sua resposta (opcional, fica só com você)">' + esc(S.notes[L.id + L.idx] || '') + '</textarea></article></main>';
     h += '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir lição</button></footer></div>';
     return h;
   }
   const ck = L.checked;
   if (s.k === 'mc') {
-    h += '<h2 class="ex-q">' + esc(s.q) + '</h2>' + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="choices">';
+    h += '<h2 class="ex-q">' + esc(s.q) + '</h2>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="choices">';
     s.opts.forEach((o, j) => {
       let cls = L.pick === o ? ' sel' : '';
       if (ck) cls = o === s.ans ? ' right' : (L.pick === o ? ' wrong' : ' dim');
@@ -1402,7 +1725,7 @@ function vLessonScreen() {
     h += '</div>';
   } else if (s.k === 'fill') {
     const shown = L.pick ? '<span class="blank filled">' + esc(L.pick) + '</span>' : '<span class="blank">&nbsp;</span>';
-    h += '<h2 class="ex-q">Complete a frase</h2><p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
+    h += '<h2 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h2>' + (s.hint ? '<p class="sc-ref">' + esc(s.hint) + '</p>' : '') + '<p class="fill-s">' + esc(s.before) + shown + esc(s.after) + '</p><div class="tiles bank">';
     s.opts.forEach(o => { h += '<button class="tile' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
     h += '</div>';
   } else if (s.k === 'tiles') {
@@ -1472,6 +1795,187 @@ function finishLesson() {
   render(); SND.fim(); rain(80); countUp();
 }
 
+/* Manna: objetivo do ano, plano aberto, catálogo, leitor da Bíblia Livre, hinário e trilhas criadas por IA. */
+
+const isAdv = () => S.quiz.tradicao === 'adventista';
+const nomeCulto = () => isAdv() ? 'Sábado' : 'Domingo';
+const nomeEscola = () => isAdv() ? 'Escola Sabatina' : 'EBD';
+const lastCultDay = () => { const d = now(); const back = isAdv() ? (d.getDay() + 1) % 7 : d.getDay(); return keyOf(new Date(d.getTime() - back * DAY)); };
+const MAX_METAS = 12;
+
+/* ---------- Sugestões ---------- */
+function sugestoes() {
+  if (!ui.sug || ui.sug.txt !== S.objetivo) ui.sug = { txt: S.objetivo, ids: sugerirLocal(S.objetivo), frase: '', tema: null, ia: false };
+  return ui.sug;
+}
+async function sugerirIA() {
+  if (!SAMPLE) return;
+  const cat = catalogo().map(t => t.id + ' = ' + t.nome + ' (' + tipoDe(t) + ')').join('\n');
+  ui.sugBusy = true; keep();
+  try {
+    const r = await SAMPLE.json(REGRAS + '\n\nObjetivo da pessoa para este ano, com as palavras dela: "' + S.objetivo + '"\nTempo por dia: ' + (S.quiz.minutos || 10) + ' minutos.\n\nCatálogo de trilhas (id = nome):\n' + cat + '\n\nEscolha de 3 a 6 trilhas do catálogo que melhor atendem ao objetivo, na ordem em que faz sentido estudar. Se o objetivo pedir um tema que não está no catálogo, sugira o nome de uma trilha nova em "tema_novo". Responda só com JSON: {"ids": ["..."], "frase": "1 frase explicando a sugestão, falando com a pessoa", "tema_novo": null}', { modelTier: 'quick' });
+    const ids = (r.ids || []).filter(id => trilha(id));
+    ui.sug = { txt: S.objetivo, ids: ids.length ? ids : ui.sug.ids, frase: r.frase ? String(r.frase) : '', tema: r.tema_novo ? String(r.tema_novo) : null, ia: true };
+  } catch (e) { if (e.code !== 'cancelled') toast(aiMsg(e)); }
+  ui.sugBusy = false; keep();
+}
+function trailCard(t, opts) {
+  const no = S.quiz.trilhas.includes(t.id), n = t.licoes.length;
+  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><span class="tc-tipo">' + tipoDe(t) + '</span><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
+}
+function vSugestoes(onb) {
+  const sg = sugestoes();
+  let h = '';
+  if (sg.frase) h += '<div class="speak small">' + ART.mani('mani xs', 'feliz') + '<div class="bubble">' + esc(sg.frase) + '</div></div>';
+  h += '<div class="tgrid">' + sg.ids.map(id => trailCard(trilha(id), { onb })).join('') + '</div>';
+  if (sg.tema) h += '<button class="btn sec" data-a="genTema" data-t="' + esc(sg.tema) + '">Criar a trilha "' + esc(sg.tema) + '" com IA</button>';
+  if (SAMPLE && !sg.ia) h += ui.sugBusy ? '<button class="btn sec" disabled>O Mani está pensando…</button>' : '<button class="btn sec" data-a="sugIA">Pedir sugestões mais precisas ao Mani</button>';
+  return h;
+}
+
+/* Etapa do quiz: objetivo em texto livre */
+function vObjetivo(s) {
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'feliz') + '<div class="bubble">Agora a parte boa: o que você quer viver com a Bíblia este ano? Escreva do seu jeito.</div></div>' +
+    '<label class="sr" for="obj">Seu objetivo</label><textarea id="obj" class="obj" rows="4" maxlength="400" placeholder="Ex.: Quero ler a Bíblia toda e entender melhor a vida de Davi">' + esc(S.objetivo) + '</textarea>' +
+    '<h3 class="grp">Ideias para começar</h3><div class="chips">' + OBJ_SUGEST.map(o => '<button class="chip" data-a="objChip" data-t="' + esc(o) + '">' + esc(o) + '</button>').join('') + '</div>';
+  return h + '<div class="sticky-cta"><button class="btn" data-a="objNext"' + (S.objetivo.trim().length >= 3 ? '' : ' disabled') + '>Ver sugestões</button></div></main>';
+}
+function vQuizSug(s) {
+  const sg = sugestoes();
+  if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
+  let h = '<main class="screen">' + quizHead(s) + '<div class="speak">' + ART.mani('mani sm', 'festa') + '<div class="bubble">Separei estas trilhas para o seu objetivo. Escolha quantas quiser: você monta o seu ano e muda quando precisar.</div></div>';
+  h += '<p class="obj-echo">"' + esc(S.objetivo) + '"</p>' + vSugestoes(true);
+  h += '<p class="fine">Depois, em "Meu plano", você encontra os 66 livros, personagens, épocas, planos de leitura e pode criar trilhas novas.</p>';
+  return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
+}
+
+/* ---------- Meu plano ---------- */
+function vPlano() {
+  let h = ovHead('Meu plano') + '<main class="screen"><h1 class="h1">Seu ano na Palavra</h1>';
+  h += '<section class="card"><div class="sec-h"><h3>Seu objetivo</h3><button class="link" data-a="open" data-ov="explorar" data-id="Sugestões">Editar</button></div><p class="obj-echo">' + (S.objetivo ? '"' + esc(S.objetivo) + '"' : 'Você ainda não escreveu um objetivo.') + '</p></section>';
+  h += '<section class="sec"><div class="sec-h"><h2>Etapas</h2><span class="muted">na ordem do seu ano</span></div><ol class="etapas">';
+  S.quiz.trilhas.forEach((id, i) => {
+    const t = trilha(id), d = doneCount(id), n = t.licoes.length;
+    h += '<li class="' + (id === curTrail() ? 'cur' : '') + '"><span class="et-n">' + (isDone(id) ? icon('check', 'ic sm') : i + 1) + '</span><div class="et-b"><button class="et-t" data-a="goTrail" data-id="' + id + '"><b>' + esc(t.nome) + '</b><small class="muted">' + tipoDe(t) + ' · ' + d + ' de ' + n + (isDone(id) ? ' · concluída' : ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' })) + '</small></button><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span><div class="et-acts"><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="-1" aria-label="Subir"' + (i ? '' : ' disabled') + '>↑</button><button class="mini-i" data-a="moveMeta" data-id="' + id + '" data-d="1" aria-label="Descer"' + (i < S.quiz.trilhas.length - 1 ? '' : ' disabled') + '>↓</button><button class="mini-i" data-a="toggleMeta" data-id="' + id + '" aria-label="Remover">Remover</button></div></div></li>';
+  });
+  h += '</ol></section><button class="btn" data-a="open" data-ov="explorar" data-id="Sugestões">Adicionar ao plano</button>';
+  return h + '<p class="fine">Você pode quebrar o ano em etapas: termine uma trilha e a próxima vira a sua jornada. Toque no nome para ir direto para ela.</p></main>';
+}
+
+/* ---------- Explorar catálogo ---------- */
+function vExplorar(tab) {
+  const aba = ui.expl = tab && ['Sugestões', 'Criar', ...TIPOS].includes(tab) ? (ui.ov.id = tab) : ui.expl;
+  let h = ovHead('Explorar') + '<main class="screen"><h1 class="h1">Monte o seu ano</h1><div class="tabs-h" role="tablist">' + ['Sugestões', ...TIPOS, 'Criar'].map(x => '<button role="tab" aria-selected="' + (aba === x ? 'true' : 'false') + '" data-a="expl" data-t="' + x + '">' + ({ Plano: 'Planos', Livro: 'Livros', Personagem: 'Personagens', Época: 'Épocas', Tema: 'Temas' }[x] || x) + '</button>').join('') + '</div>';
+  if (aba === 'Sugestões') {
+    h += '<form class="form" data-f="objetivo"><label>Seu objetivo para o ano<textarea id="obj" rows="3" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form>' + vSugestoes(false);
+  } else if (aba === 'Criar') {
+    h += '<div class="speak">' + ART.mani('mani sm', 'pensa') + '<div class="bubble">Quer estudar algo que não está na lista? Me diga o assunto e eu monto uma trilha com textos bíblicos.</div></div>';
+    h += SAMPLE ? '<form class="form card" data-f="criarTrilha"><label>Sobre o que você quer aprender?<input id="cr-tema" maxlength="120" placeholder="Ex.: perdão, os profetas menores, a volta de Jesus"></label>' + busyBtn('Criar trilha') + '</form>'
+      : '<p class="note">Criar trilhas novas usa IA, que não está disponível aqui. Os planos, livros, personagens, épocas e temas prontos funcionam normalmente.</p>';
+    const minhas = Object.values(S.custom || {});
+    if (minhas.length) h += '<section class="sec"><h2>Trilhas que você criou</h2><div class="tgrid">' + minhas.map(t => trailCard(t)).join('') + '</div></section>';
+  } else {
+    const f = norm(ui.explF || '');
+    let list = catalogo().filter(t => tipoDe(t) === aba);
+    if (aba === 'Tema') list = list.concat(Object.values(S.custom || {}));
+    if (f) list = list.filter(t => norm(t.nome + ' ' + (t.desc || '')).includes(f));
+    if (aba === 'Livro') h += '<input id="expl-f" class="search" type="search" placeholder="Buscar livro" value="' + esc(ui.explF || '') + '" aria-label="Buscar livro">';
+    if (aba === 'Livro' && !f) {
+      h += '<h3 class="grp">Antigo Testamento</h3><div class="tgrid">' + list.slice(0, NT).map(t => trailCard(t)).join('') + '</div><h3 class="grp">Novo Testamento</h3><div class="tgrid">' + list.slice(NT).map(t => trailCard(t)).join('') + '</div>';
+    } else h += '<div class="tgrid">' + list.map(t => trailCard(t)).join('') + '</div>' + (list.length ? '' : '<p class="empty">Nada encontrado.</p>');
+  }
+  return h + '</main>';
+}
+
+/* ---------- Trilhas criadas por IA ou a partir de uma pregação ---------- */
+async function genTrail(tema, fonte) {
+  const prompt = REGRAS + '\n\nMonte uma trilha de estudo bíblico ' + (fonte ? 'a partir desta pregação ou anotação:\n"""\n' + fonte.slice(0, 12000) + '\n"""\n' : '') + 'Tema: ' + tema + '.\nCrie de 5 a 8 lições curtas em sequência lógica. Cada lição tem um texto bíblico principal com referência exata no formato "Livro capítulo" ou "Livro capítulo:versículo-versículo", com nomes dos livros em português (ex.: "1 Coríntios 13", "Salmos 23", "Mateus 6:25-34"), um título curto, 1 ou 2 frases de contexto e uma pergunta de reflexão.\nResponda só com JSON: {"nome": "nome curto da trilha", "desc": "1 frase", "licoes": [{"titulo": "...", "ref": "...", "contexto": "...", "pergunta": "..."}]}';
+  aiCtl = new AbortController();
+  const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  const licoes = (r.licoes || []).filter(x => x && x.ref && parseRef(String(x.ref)).length).slice(0, 10)
+    .map(x => ({ ref: String(x.ref), titulo: String(x.titulo || x.ref), ctx: String(x.contexto || ''), q: String(x.pergunta || ''), caps: new Set(parseRef(String(x.ref)).map(s => s.b + ':' + s.c)).size }));
+  if (!licoes.length) throw { code: 'vazio' };
+  return { id: 'custom:' + uid(), tipo: 'Tema', origem: fonte ? 'pregacao' : 'ia', nome: String(r.nome || tema).slice(0, 60), desc: String(r.desc || ''), licoes };
+}
+function localTrail(tema, texto) {
+  const refs = findRefs(texto).slice(0, 10);
+  if (!refs.length) return null;
+  return { id: 'custom:' + uid(), tipo: 'Tema', origem: 'pregacao', nome: tema.slice(0, 60), desc: 'Os textos citados na pregação, um por lição.', licoes: refs.map(r => ({ ref: r, titulo: r, caps: new Set(parseRef(r).map(s => s.b + ':' + s.c)).size })) };
+}
+function saveTrail(t, add) {
+  S.custom[t.id] = t;
+  if (add && !S.quiz.trilhas.includes(t.id) && S.quiz.trilhas.length < MAX_METAS) S.quiz.trilhas.push(t.id);
+  save();
+}
+
+/* ---------- Bíblia Livre e hinário ---------- */
+function vBiblia() {
+  let h = '<main class="screen">' + pageHead(ui.bibMode === 'hinario' ? 'Hinário' : 'Bíblia', ui.bibMode === 'hinario' ? 'Os hinos da sua igreja, organizados do seu jeito.' : 'Bíblia Livre completa, para ler e marcar o que já leu.', ART.deco.tabuas) +
+    '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.bibMode === 'biblia') + '" data-a="bibMode" data-m="biblia">Bíblia</button><button role="tab" aria-selected="' + (ui.bibMode === 'hinario') + '" data-a="bibMode" data-m="hinario">Hinário</button></div>';
+  if (ui.bibMode === 'hinario') return h + vHinario() + '</main>';
+  if (!BIBLIA) {
+    loadBiblia().then(() => { if (ui.tab === 'biblia' && !ui.ov) keep(); }).catch(() => { ui.bibErr = true; if (ui.tab === 'biblia') keep(); });
+    return h + (ui.bibErr ? '<p class="note">Não foi possível abrir a Bíblia agora. Verifique a conexão e tente de novo.</p><button class="btn sec" data-a="bibRetry">Tentar de novo</button>' : '<div class="center-col">' + ART.mani('mani md', 'pensa') + '<p class="muted">Abrindo a Bíblia Livre…</p></div>') + '</main>';
+  }
+  const B = ui.bib;
+  if (!B) {
+    const f = norm(ui.bibF || '');
+    if (S.lastRead) { const [b, c] = S.lastRead.split(':').map(Number); h += '<button class="culto-row" data-a="bibGo" data-b="' + b + '" data-c="' + c + '"><span class="cr-ic">' + icon('livro') + '</span><span><b>Continuar em ' + LIVROS[b][0] + ' ' + c + '</b><small>Onde você parou</small></span><span class="chev">›</span></button>'; }
+    h += '<input id="bib-f" class="search" type="search" placeholder="Buscar livro" value="' + esc(ui.bibF || '') + '" aria-label="Buscar livro">';
+    [['Antigo Testamento', 0, NT], ['Novo Testamento', NT, 66]].forEach(([nome, a, z]) => {
+      const ls = LIVROS.slice(a, z).map((l, i) => [l, a + i]).filter(([l]) => !f || norm(l[0]).includes(f));
+      if (!ls.length) return;
+      h += '<h3 class="grp">' + nome + '</h3><div class="books">' + ls.map(([[n, k], b]) => { const r = Object.keys(S.lidos).filter(x => x.startsWith(b + ':')).length; return '<button class="book" data-a="bibBook" data-b="' + b + '"><b>' + n + '</b><small class="muted tnum">' + r + '/' + k + '</small>' + (r ? '<span class="bar"><i style="width:' + (r / k * 100) + '%"></i></span>' : '') + '</button>'; }).join('') + '</div>';
+    });
+    return h + '<p class="fine center-t">' + esc(BIBLIA.fonte) + '</p></main>';
+  }
+  if (!B.c) {
+    const [n, k] = LIVROS[B.b];
+    h += '<div class="sec-h"><button class="link" data-a="bibBack">‹ Livros</button><span class="muted">' + n + '</span></div><h2 class="h1">' + n + '</h2><div class="chaps">';
+    for (let c = 1; c <= k; c++) h += '<button class="chap' + (S.lidos[B.b + ':' + c] ? ' lido' : '') + '" data-a="bibGo" data-b="' + B.b + '" data-c="' + c + '">' + c + '</button>';
+    return h + '</div></main>';
+  }
+  const [n, k] = LIVROS[B.b], key = B.b + ':' + B.c, vs = versesOf(n + ' ' + B.c), sel = ui.sel || [];
+  h += '<div class="reader-h"><button class="iconbtn" data-a="bibChap" data-d="-1" aria-label="Capítulo anterior"' + (B.c > 1 ? '' : ' disabled') + '>' + icon('voltar') + '</button><button class="link" data-a="bibBook" data-b="' + B.b + '"><b>' + n + ' ' + B.c + '</b></button><button class="iconbtn flip" data-a="bibChap" data-d="1" aria-label="Próximo capítulo"' + (B.c < k ? '' : ' disabled') + '>' + icon('voltar') + '</button></div>' +
+    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted">Toque nos versículos para selecionar</span></div>';
+  h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(vs, { tap: true, sel }) + '</article>';
+  if (sel.length) {
+    const txt = selText();
+    h += '<div class="selbar"><span class="tnum">' + plural(sel.length, 'versículo', 'versículos') + '</span><button class="btn mini" data-a="copy" data-t="' + esc(txt) + '">Copiar</button>' + (S.group ? '<button class="btn mini sec" data-a="shareVerses">Postar no grupo</button>' : '') + '<button class="link" data-a="clearSel">Limpar</button></div>';
+  }
+  h += S.lidos[key] ? '<p class="lido-ok">' + icon('check', 'ic sm') + ' Você leu este capítulo em ' + fmt(S.lidos[key], { day: 'numeric', month: 'short' }) + '.</p>' + (B.c < k ? '<button class="btn sec" data-a="bibChap" data-d="1">Próximo: ' + n + ' ' + (B.c + 1) + '</button>' : '')
+    : '<button class="btn" data-a="bibRead">Marcar como lido · +5 XP</button>';
+  return h + '<p class="fine center-t">Bíblia Livre (BLIVRE), CC BY 3.0 Brasil.</p></main>';
+}
+function selText() {
+  const sel = (ui.sel || []).map(k => k.split(':').map(Number)).sort((a, b) => a[2] - b[2]);
+  if (!sel.length) return '';
+  const [b, c] = sel[0], cap = BIBLIA.livros[b].c[c - 1];
+  const nums = sel.map(x => x[2]);
+  return sel.map(x => cap[x[2] - 1]).join(' ') + ' (' + LIVROS[b][0] + ' ' + c + ':' + (nums.length > 1 && nums[nums.length - 1] - nums[0] === nums.length - 1 ? nums[0] + '-' + nums[nums.length - 1] : nums.join(',')) + ', Bíblia Livre)';
+}
+function vHinario() {
+  const hid = S.hinario || hinarioPadrao(), hn = HINARIOS.find(x => x.id === hid);
+  const meus = S.hinos.filter(x => x.h === hid).sort((a, b) => (b.fav - a.fav) || (a.n - b.n));
+  let h = '<form class="form card" data-f="hino"><label>Seu hinário<select id="h-sel" data-a2="hinario">' + HINARIOS.map(x => '<option value="' + x.id + '"' + (x.id === hid ? ' selected' : '') + '>' + x.nome + '</option>').join('') + '</select></label>' +
+    '<div class="two"><label>Número<input id="h-n" type="number" min="1" max="999" inputmode="numeric" placeholder="Ex.: 12"></label><label>Título<input id="h-t" maxlength="80" placeholder="Nome do hino"></label></div><button class="btn sec" type="submit">Guardar hino</button></form>';
+  h += '<section class="sec"><div class="sec-h"><h2>Meus hinos</h2><span class="muted tnum">' + meus.length + '</span></div>';
+  if (!meus.length) h += '<p class="empty">Guarde os hinos que você mais canta. Eles ficam aqui com um atalho para ouvir.</p>';
+  else h += '<ul class="hinos">' + meus.map(x => '<li><span class="h-n tnum">' + x.n + '</span><div><b>' + esc(x.t || 'Hino ' + x.n) + '</b><a class="link" href="https://www.youtube.com/results?search_query=' + encodeURIComponent(hn.nome + ' hino ' + x.n + ' ' + (x.t || '')) + '" target="_blank" rel="noopener">Ouvir no YouTube</a></div><button class="pill' + (x.fav ? ' on' : '') + '" data-a="hinoFav" data-id="' + x.id + '" aria-pressed="' + !!x.fav + '">Favorito</button><button class="mini-i" data-a="hinoDel" data-id="' + x.id + '" aria-label="Remover">×</button></li>').join('') + '</ul>';
+  return h + '</section><p class="fine">As letras e partituras dos hinários pertencem às editoras (Casa Publicadora Brasileira, CPAD, JUERP e outras). O Manna guarda número e título e vai pedir licença para mostrar as letras.</p>';
+}
+
+/* ---------- Ditado de anotações durante o culto ---------- */
+let DICT = null;
+if (window.claude && window.claude.use) {
+  window.claude.use('dictation').then(d => {
+    DICT = d; if (!d) return;
+    d.onFinal(({ text }) => { const v = ((ui.draft && ui.draft['c-notas']) || '') + ' ' + text; ui.draft = Object.assign(ui.draft || {}, { 'c-notas': v.trim() }); const ta = $('c-notas'); if (ta) ta.value = ui.draft['c-notas']; });
+    d.onState(({ state }) => { ui.dictOn = state === 'listening'; const b = document.querySelector('[data-a="dict"]'); if (b) b.textContent = ui.dictOn ? 'Parar de ditar' : 'Ditar anotações'; });
+    if (ui.tab === 'domingo' && !ui.L) keep();
+  }).catch(() => {});
+}
+
 /* Manna: telas, render e ações. */
 
 /* ---------- Onboarding ---------- */
@@ -1480,7 +1984,8 @@ const QUIZ = [
   { k: 'convertido', t: 'Há quanto tempo você é convertido?', fala: 'Há quanto tempo você caminha com Jesus?', opts: ['Menos de 1 ano', 'De 1 a 5 anos', 'De 5 a 15 anos', 'Mais de 15 anos', 'Ainda estou conhecendo'] },
   { k: 'leitura', t: 'Como está sua leitura bíblica hoje?', fala: 'Sem julgamento: como está sua leitura da Bíblia?', opts: ['Leio todo dia', 'Leio às vezes', 'Parei de ler'] },
   { k: 'minutos', t: 'Quanto tempo você tem por dia?', fala: 'Quanto tempo por dia você quer separar?', opts: [[5, '5 minutos · leve'], [10, '10 minutos · firme'], [20, '20 minutos · intenso']] },
-  { k: 'trilhas', t: 'O que você quer aprender este ano?', fala: 'Agora a parte boa: o que você quer aprender este ano? Escolha até 3.', multi: true },
+  { k: 'objetivo', t: 'Qual é o seu objetivo para este ano?' },
+  { k: 'sugestoes', t: 'Sugestões para o seu objetivo' },
   { k: 'celula', t: 'Você participa de célula ou EBD?', fala: 'Você participa de célula ou de EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
   { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual Bíblia você usa? Eu indico o texto e você lê nela.', opts: ['ARA', 'ARC', 'NVI', 'NAA', 'NTLH', 'Outra ou não sei'] },
   { k: 'horario', t: 'Qual horário você prefere para o lembrete?', fala: 'Que horas eu te lembro da sua porção?', opts: ['6h', '7h', '12h', '19h', '21h'] },
@@ -1492,7 +1997,7 @@ function vOnboarding() {
   if (s === 0) return '<main class="onb-hero"><div class="sky">' + ART.banner() + '</div>' + ART.mani('mani hero', 'feliz') +
     '<div class="onb-c"><h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p><p class="body-l">Uma jornada pela Bíblia com lições curtas, ofensiva, liga semanal e os amigos da sua igreja.</p>' +
     '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto. Versão de teste: nada é cobrado.</p></div></main>';
-  if (s >= 1 && s <= QUIZ.length) return vQuiz(QUIZ[s - 1], s);
+  if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
   if (s === QUIZ.length + 2) return vPaywall();
   return vConvite();
@@ -1538,7 +2043,7 @@ function vResultado() {
 }
 function planEnd(id) {
   let acc = 0; const rit = { 5: 5, 10: 6, 20: 7 }[S.quiz.minutos || 10];
-  for (const t of S.quiz.trilhas) { acc += trilha(t).licoes.length - doneCount(t); if (t === id) break; }
+  for (const t of S.quiz.trilhas) { const tt = trilha(t); acc += (tt.licoes.length - doneCount(t)) * (tt.tipo === 'Plano' ? rit / 7 : 1); if (t === id) break; }
   return addDays(todayK(), Math.ceil(acc / rit * 7));
 }
 function vPaywall() {
@@ -1566,29 +2071,34 @@ function busyBtn(label) {
 function pageHead(title, sub, art) {
   return '<header class="phead"><div><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</div>' + (art || '') + '</header>';
 }
+function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen">' + pageHead('Domingo', 'O culto e a EBD viram o estudo da sua semana.', ART.deco.tenda) + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">EBD</button></div>';
+  let h = '<main class="screen">' + pageHead(nomeCulto(), 'O culto e a ' + nomeEscola() + ' viram o estudo da sua semana.', ART.deco.tenda) + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
-    h += '<form class="form card" data-f="culto"><h3>Registrar o culto · +20 XP</h3>' +
-      '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo"></label>' +
-      '<label>Versículos citados<textarea id="c-vers" rows="2" placeholder="Ex.: Josué 1:9; Marcos 4:35-41"></textarea></label>' +
-      '<div class="two"><label>Pregador<input id="c-preg" maxlength="60" placeholder="Opcional"></label><label>Data<input id="c-data" type="date" value="' + lastSunday() + '"></label></div>' +
-      '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + esc(S.lastIgreja || '') + '"></label>' +
-      '<label>Link da live no YouTube<input id="c-link" type="url" placeholder="Opcional"></label>' +
-      '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você? (opcional)"></textarea></label>' +
-      '<p class="fine">' + (SAMPLE ? 'O estudo é montado com IA a partir do tema, dos versículos e das suas anotações. O áudio da live não é ouvido nesta versão.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão de 5 dias com os seus versículos.' : 'Verificando a IA…')) + '</p>' +
+    h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
+      '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
+      '<label>Versículos citados<textarea id="c-vers" rows="2" placeholder="Ex.: Josué 1:9; Marcos 4:35-41">' + dv('c-vers') + '</textarea></label>' +
+      '<div class="two"><label>Pregador<input id="c-preg" maxlength="60" placeholder="Opcional" value="' + dv('c-preg') + '"></label><label>Data<input id="c-data" type="date" value="' + (dv('c-data') || lastCultDay()) + '"></label></div>' +
+      '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + (dv('c-igreja') || esc(S.lastIgreja || '')) + '"></label>' +
+      '<label>Link da pregação no YouTube<input id="c-link" type="url" placeholder="Opcional" value="' + dv('c-link') + '"></label>' +
+      '<label>Transcrição da pregação<textarea id="c-trans" rows="4" placeholder="Cole aqui a transcrição. No YouTube: abaixo do vídeo, Mostrar transcrição.">' + dv('c-trans') + '</textarea></label>' +
+      '<label class="file">Ou envie o arquivo da transcrição (.txt, .srt, .vtt)<input id="c-file" type="file" accept=".txt,.srt,.vtt,text/plain"></label>' +
+      '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você?">' + dv('c-notas') + '</textarea></label>' +
+      (DICT ? '<button type="button" class="btn sec" data-a="dict">' + (ui.dictOn ? 'Parar de ditar' : 'Ditar anotações') + '</button>' : '') +
+      '<label class="check"><input type="checkbox" id="c-trilha"' + (ui.draft && ui.draft['c-trilha'] === false ? '' : ' checked') + '> Criar também uma trilha para aprender mais sobre este tema</label>' +
+      '<p class="fine">' + (SAMPLE ? 'O estudo e a trilha são montados com IA a partir do tema, da transcrição e das suas anotações.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão e a trilha usa os versículos citados.' : 'Verificando a IA…')) + ' Envio de áudio com transcrição automática chega numa próxima versão.</p>' +
       busyBtn('Montar estudo da semana') + '</form>';
     if (S.cultos.length) {
-      h += '<section class="sec"><h2>Biblioteca de cultos</h2><ul class="list">';
-      S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + ' · ' + c.feitos.length + ' de 5 dias</span></button></li>'; });
+      h += '<section class="sec"><h2>Biblioteca de pregações</h2><ul class="list">';
+      S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + ' · ' + c.feitos.length + ' de 5 dias' + (c.trilha ? ' · com trilha' : '') + '</span></button></li>'; });
       h += '</ul></section>';
     }
   } else {
     h += '<form class="form card" data-f="ebd"><h3>Preparar a lição · +15 XP</h3>' +
-      '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó"></label>' +
-      '<label>Textos bíblicos<textarea id="e-textos" rows="2" placeholder="Ex.: Jó 1:1-22; Tiago 5:11"></textarea></label>' +
+      '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó" value="' + dv('e-tema') + '"></label>' +
+      '<label>Textos bíblicos<textarea id="e-textos" rows="2" placeholder="Ex.: Jó 1:1-22; Tiago 5:11">' + dv('e-textos') + '</textarea></label>' +
       '<div class="seg small" role="radiogroup"><button type="button" role="radio" aria-checked="' + (ui.ebdModo !== 'professor') + '" data-a="ebdModo" data-m="aluno">Sou aluno</button><button type="button" role="radio" aria-checked="' + (ui.ebdModo === 'professor') + '" data-a="ebdModo" data-m="professor">Sou professor</button></div>' +
-      '<p class="fine">O Manna não reproduz as revistas de EBD. A preparação é material próprio sobre os textos bíblicos.</p>' + busyBtn('Preparar a lição') + '</form>';
+      '<p class="fine">O Manna não reproduz ' + (isAdv() ? 'a Lição da Escola Sabatina' : 'as revistas de EBD') + '. A preparação é material próprio sobre os textos bíblicos.</p>' + busyBtn('Preparar a lição') + '</form>';
     if (S.ebds.length) {
       h += '<section class="sec"><h2>Lições preparadas</h2><ul class="list">';
       S.ebds.forEach(e => { h += '<li><button data-a="open" data-ov="ebd" data-id="' + e.id + '"><b>' + esc(e.tema) + '</b><span class="muted">' + fmt(e.data, { day: 'numeric', month: 'short' }) + ' · ' + e.modo + '</span></button></li>'; });
@@ -1737,6 +2247,8 @@ function vCulto(id) {
   if (!s.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
   h += '<article class="scroll"><p class="sc-ref">Resumo</p><p class="sc-ctx">' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   if (s.meta && trilha(s.meta)) h += '<p class="insight">Este tema combina com a meta ' + trilha(s.meta).nome + '. ' + (S.quiz.trilhas.includes(s.meta) ? '' : '<button class="link" data-a="addMeta" data-id="' + s.meta + '">Adicionar às metas</button>') + '</p>';
+  const tr = c.trilha && trilha(c.trilha);
+  if (tr) h += '<section class="banner"><div><p>Trilha criada a partir da pregação</p><h3>' + esc(tr.nome) + '</h3><small>' + plural(tr.licoes.length, 'lição', 'lições') + '</small></div>' + ART.banner() + '</section><div class="row">' + (S.quiz.trilhas.includes(tr.id) ? '' : '<button class="btn sec" data-a="toggleMeta" data-id="' + tr.id + '">Adicionar ao plano</button>') + '<button class="btn" data-a="goTrail" data-id="' + tr.id + '">Estudar agora</button></div>';
   h += '<section class="sec"><h2>Estudo da semana</h2><ol class="days">';
   s.dias.forEach((d, i) => {
     const f = c.feitos.includes(i);
@@ -1774,7 +2286,7 @@ function vModal() {
 }
 
 /* ---------- Render ---------- */
-const TABS = [['jornada', 'Jornada'], ['domingo', 'Domingo'], ['duvidas', 'Dúvidas'], ['liga', 'Liga'], ['perfil', 'Perfil']];
+const TABS = () => [['jornada', 'Jornada', 'jornada'], ['biblia', 'Bíblia', 'livro'], ['domingo', nomeCulto(), 'domingo'], ['duvidas', 'Dúvidas', 'duvidas'], ['liga', 'Liga', 'liga'], ['perfil', 'Perfil', 'perfil']];
 function renderLesson() { const app = $('app'); if (app && ui.L) app.innerHTML = vLessonScreen(); }
 function render() {
   const app = $('app'); if (!app) return;
@@ -1784,9 +2296,9 @@ function render() {
   else if (ui.L) { app.innerHTML = vLessonScreen(); }
   else {
     let h;
-    if (ui.ov) h = '<div class="ov">' + ({ culto: vCulto, ebd: vEbd, duvida: vDuvida, loja: vLoja }[ui.ov.type])(ui.ov.id) + '</div>';
-    else h = ({ jornada: vJornada, domingo: vDomingo, duvidas: vDuvidas, liga: vLiga, perfil: vPerfil }[ui.tab])() +
-      '<nav class="tabs" aria-label="Seções">' + TABS.map(([k, n]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(k) + '<span>' + n + '</span></button>').join('') + '</nav>';
+    if (ui.ov) h = '<div class="ov">' + ({ culto: vCulto, ebd: vEbd, duvida: vDuvida, loja: vLoja, plano: vPlano, explorar: vExplorar }[ui.ov.type])(ui.ov.id) + '</div>';
+    else h = ({ jornada: vJornada, biblia: vBiblia, domingo: vDomingo, duvidas: vDuvidas, liga: vLiga, perfil: vPerfil }[ui.tab])() +
+      '<nav class="tabs" aria-label="Seções">' + TABS().map(([k, n, ic]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(ic) + '<span>' + n + '</span></button>').join('') + '</nav>';
     if (ui.sheet) h += vSheet();
     if (ui.modal) h += vModal();
     app.innerHTML = h;
@@ -1820,7 +2332,7 @@ const A = {
   },
   pickTrail(el) {
     const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
-    if (i > -1) a.splice(i, 1); else if (a.length < 3) a.push(id); else toast('Escolha até 3 metas agora. Dá para adicionar mais depois.');
+    if (i > -1) a.splice(i, 1); else if (a.length < MAX_METAS) a.push(id); else toast('Você já tem ' + MAX_METAS + ' metas.');
     save(); keep();
   },
   plan(el) { S.plano = el.dataset.id; save(); keep(); },
@@ -1833,9 +2345,9 @@ const A = {
   sheet(el) { ui.sheet = el.dataset.s; keep(); },
   closeSheet() { ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
-  goTrail(el) { S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; save(); window.scrollTo(0, 0); render(); },
+  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
   addMeta(el) {
-    if (S.quiz.trilhas.length >= 5) { toast('Você já tem 5 metas.'); return; }
+    if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
   },
@@ -1847,7 +2359,7 @@ const A = {
   chest(el) {
     const id = curTrail(), u = Number(el.dataset.u), ck = id + ':' + u;
     if (S.chests[ck]) { toast('Você já abriu este vaso.'); return; }
-    if (doneCount(id) < Math.min(trilha(id).licoes.length, (u + 1) * UNIT)) { toast('Complete as lições da unidade para abrir o vaso.'); return; }
+    if (doneCount(id) < Math.min(trilha(id).licoes.length, (u + 1) * (trilha(id).unit || UNIT))) { toast('Complete as lições da unidade para abrir o vaso.'); return; }
     const g = 15 + hash(ck) % 16; S.chests[ck] = true; S.grains += g; save();
     ui.modal = { art: ART.deco.vasoGrande, t: 'Vaso de maná aberto', p: 'Você ganhou ' + g + ' grãos de maná. Use na loja para proteger sua ofensiva.' };
     SND.vaso(); keep(); rain(40);
@@ -1864,6 +2376,51 @@ const A = {
     if (id === 'dobro') { S.boostUntil = Date.now() + 15 * 60000; toast('XP em dobro por 15 minutos.'); }
     if (id === 'recuperar' && S.lost) { const c = S.lost.count + (S.streak.count ? 1 : 0); S.streak.count = c; S.streak.last = S.streak.count > S.lost.count ? todayK() : addDays(todayK(), -1); S.streak.best = Math.max(S.streak.best, c); S.lost = null; ui.notice = ''; toast('Ofensiva de ' + plural(c, 'dia', 'dias') + ' recuperada.'); }
     SND.vaso(); save(); keep();
+  },
+  toggleMeta(el) {
+    const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
+    if (i > -1) { if (a.length === 1) { toast('Mantenha pelo menos uma meta no plano.'); return; } a.splice(i, 1); toast('Removida do plano: ' + trilha(id).nome); }
+    else if (a.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
+    else { a.push(id); toast('Adicionada ao plano: ' + trilha(id).nome); }
+    save(); keep();
+  },
+  moveMeta(el) {
+    const a = S.quiz.trilhas, i = a.indexOf(el.dataset.id), j = i + Number(el.dataset.d);
+    if (i < 0 || j < 0 || j >= a.length) return;
+    [a[i], a[j]] = [a[j], a[i]]; save(); keep();
+  },
+  objChip(el) { S.objetivo = (S.objetivo.trim() ? S.objetivo.trim().replace(/[.]$/, '') + '. ' : '') + el.dataset.t + '.'; save(); keep(); },
+  objNext() { S.objetivo = val('obj') || S.objetivo; ui.sug = null; ui.sugInit = false; S.quiz.trilhas = []; save(); A.next(); },
+  sugIA() { sugerirIA(); },
+  async genTema(el) {
+    const tema = el.dataset.t; if (!SAMPLE) return;
+    el.disabled = true; el.textContent = 'Criando a trilha…';
+    try { const t = await genTrail(tema); saveTrail(t, true); toast('Trilha criada: ' + t.nome); ui.sug.ids.unshift(t.id); }
+    catch (e) { toast(e.code === 'vazio' ? 'Não consegui montar essa trilha. Tente outro tema.' : aiMsg(e)); }
+    keep();
+  },
+  expl(el) { ui.expl = el.dataset.t; ui.ov.id = el.dataset.t; keep(); },
+  bibMode(el) { ui.bibMode = el.dataset.m; keep(); },
+  bibRetry() { ui.bibErr = false; keep(); },
+  bibBook(el) { ui.bib = { b: Number(el.dataset.b) }; ui.sel = []; window.scrollTo(0, 0); render(); },
+  bibBack() { ui.bib = null; window.scrollTo(0, 0); render(); },
+  bibGo(el) { ui.bib = { b: Number(el.dataset.b), c: Number(el.dataset.c) }; ui.sel = []; S.lastRead = ui.bib.b + ':' + ui.bib.c; save(); window.scrollTo(0, 0); render(); },
+  bibChap(el) { const B = ui.bib, c = B.c + Number(el.dataset.d); if (c < 1 || c > LIVROS[B.b][1]) return; A.bibGo({ dataset: { b: B.b, c } }); },
+  bibRead() {
+    const B = ui.bib, k = B.b + ':' + B.c; if (S.lidos[k]) return;
+    S.lidos[k] = todayK(); study(1); addXP(5); save();
+    toast('Capítulo lido. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.'); keep();
+  },
+  verse(el) { const k = el.dataset.k; ui.sel = ui.sel || []; const i = ui.sel.indexOf(k); if (i > -1) ui.sel.splice(i, 1); else ui.sel.push(k); keep(); },
+  clearSel() { ui.sel = []; keep(); },
+  shareVerses() { const t = selText(); const m = t.match(/\(([^,]+),/); postFeed(t.replace(/\s*\([^)]*\)$/, ''), m ? m[1] : ''); ui.sel = []; save(); toast('Postado no grupo.'); keep(); },
+  fonte(el) { S.fonte = Math.max(14, Math.min(26, S.fonte + 2 * Number(el.dataset.d))); save(); keep(); },
+  hinoFav(el) { const x = S.hinos.find(y => y.id === el.dataset.id); if (x) x.fav = !x.fav; save(); keep(); },
+  hinoDel(el) { S.hinos = S.hinos.filter(y => y.id !== el.dataset.id); save(); keep(); },
+  dict() {
+    if (!DICT) return;
+    if (ui.dictOn) { DICT.stop().catch(() => {}); return; }
+    DICT.start().catch(e => { toast(e && e.code === 'not_granted' ? 'O ditado não foi permitido. Dá para digitar normalmente.' : 'Não deu para começar o ditado.'); });
   },
   /* Lição */
   pick(el) { const L = ui.L; if (L.checked) return; L.pick = el.dataset.v; renderLesson(); },
@@ -1938,14 +2495,33 @@ function lessonNext() {
 }
 
 const F = {
+  objetivo() { S.objetivo = val('obj'); ui.sug = null; save(); keep(); },
+  async criarTrilha() {
+    const tema = val('cr-tema'); if (tema.length < 3) { toast('Escreva o assunto da trilha.'); return; }
+    ui.busy = true; ui.aiErr = ''; keep();
+    try { const t = await genTrail(tema); saveTrail(t, true); ui.busy = false; toast('Trilha criada e adicionada ao plano.'); A.goTrail({ dataset: { id: t.id } }); }
+    catch (e) { ui.busy = false; ui.aiErr = e.code === 'vazio' ? 'Não consegui montar essa trilha. Tente descrever de outro jeito.' : aiMsg(e); keep(); }
+  },
+  hino() {
+    const n = parseInt(val('h-n'), 10); if (!n) { toast('Digite o número do hino.'); return; }
+    S.hinario = val('h-sel') || S.hinario || hinarioPadrao();
+    S.hinos.push({ id: uid(), h: S.hinario, n, t: val('h-t'), fav: false }); save(); toast('Hino guardado.'); keep();
+  },
   async culto() {
-    const c = { id: uid(), tema: val('c-tema'), versiculos: val('c-vers'), pregador: val('c-preg'), data: val('c-data') || lastSunday(), igreja: val('c-igreja'), link: val('c-link'), notas: val('c-notas'), feitos: [] };
+    const trans = val('c-trans'), criar = $('c-trilha') ? $('c-trilha').checked : true;
+    const c = { id: uid(), tema: val('c-tema'), versiculos: val('c-vers'), pregador: val('c-preg'), data: val('c-data') || lastCultDay(), igreja: val('c-igreja'), link: val('c-link'), notas: [val('c-notas'), trans ? 'Transcrição: ' + trans.slice(0, 10000) : ''].filter(Boolean).join('\n\n'), feitos: [] };
     if (!c.tema) { toast('Digite o tema da pregação.'); return; }
     if (c.link && !/^https?:\/\//i.test(c.link)) c.link = '';
     S.lastIgreja = c.igreja; ui.busy = true; ui.aiErr = ''; keep();
     try { c.study = await genStudy(c); }
     catch (e) { ui.busy = false; if (e.code === 'cancelled') { keep(); return; } ui.aiErr = aiMsg(e) + ' Montei com o roteiro padrão.'; c.study = localStudy(c); }
-    ui.busy = false; S.cultos.unshift(c); addXP(20); save(); openOv('culto', c.id);
+    if (criar) {
+      let t = null;
+      try { t = SAMPLE ? await genTrail(c.tema, [c.versiculos, c.notas].filter(Boolean).join('\n')) : null; } catch (e) { t = null; }
+      if (!t) t = localTrail(c.tema, [c.versiculos, c.notas, (c.study.versiculos || []).join('; ')].join(' '));
+      if (t) { t.nome = t.nome || c.tema; saveTrail(t, false); c.trilha = t.id; }
+    }
+    ui.busy = false; ui.draft = {}; S.cultos.unshift(c); addXP(20); save(); openOv('culto', c.id);
   },
   async ebd() {
     const e = { id: uid(), tema: val('e-tema'), textos: val('e-textos'), modo: ui.ebdModo === 'professor' ? 'professor' : 'aluno', data: todayK() };
@@ -2007,8 +2583,26 @@ document.addEventListener('input', e => {
     const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
   }
   if (e.target.id === 'l-nota' && ui.L) { S.notes[ui.L.id + ui.L.idx] = e.target.value; save(); }
+  if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
+  if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = S.objetivo.trim().length < 3; }
+  if (e.target.id === 'expl-f' || e.target.id === 'bib-f') {
+    ui[e.target.id === 'expl-f' ? 'explF' : 'bibF'] = e.target.value; const id = e.target.id, pos = e.target.selectionStart; keep();
+    const n = $(id); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
+  }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'h-sel') { S.hinario = e.target.value; save(); keep(); }
+  if (e.target.id === 'c-trilha') { ui.draft = ui.draft || {}; ui.draft['c-trilha'] = e.target.checked; }
+  if (e.target.id === 'c-file' && e.target.files && e.target.files[0]) {
+    const f = e.target.files[0];
+    if (f.size > 2000000) { toast('Arquivo grande demais. Envie até 2 MB de texto.'); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      const txt = String(r.result || '').replace(/^WEBVTT.*$/m, '').replace(/^\d+\s*$/gm, '').replace(/^[\d:.,]+\s*-->\s*[\d:.,]+.*$/gm, '').replace(/<[^>]+>/g, '').replace(/\n{2,}/g, '\n').trim();
+      ui.draft = ui.draft || {}; ui.draft['c-trans'] = txt; toast('Transcrição carregada: ' + txt.split(/\s+/).length + ' palavras.'); keep();
+    };
+    r.readAsText(f);
+  }
   if (e.target.id === 'l-lido' && ui.L) { ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
 });
 

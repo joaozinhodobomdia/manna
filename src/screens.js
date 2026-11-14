@@ -6,7 +6,8 @@ const QUIZ = [
   { k: 'convertido', t: 'Há quanto tempo você é convertido?', fala: 'Há quanto tempo você caminha com Jesus?', opts: ['Menos de 1 ano', 'De 1 a 5 anos', 'De 5 a 15 anos', 'Mais de 15 anos', 'Ainda estou conhecendo'] },
   { k: 'leitura', t: 'Como está sua leitura bíblica hoje?', fala: 'Sem julgamento: como está sua leitura da Bíblia?', opts: ['Leio todo dia', 'Leio às vezes', 'Parei de ler'] },
   { k: 'minutos', t: 'Quanto tempo você tem por dia?', fala: 'Quanto tempo por dia você quer separar?', opts: [[5, '5 minutos · leve'], [10, '10 minutos · firme'], [20, '20 minutos · intenso']] },
-  { k: 'trilhas', t: 'O que você quer aprender este ano?', fala: 'Agora a parte boa: o que você quer aprender este ano? Escolha até 3.', multi: true },
+  { k: 'objetivo', t: 'Qual é o seu objetivo para este ano?' },
+  { k: 'sugestoes', t: 'Sugestões para o seu objetivo' },
   { k: 'celula', t: 'Você participa de célula ou EBD?', fala: 'Você participa de célula ou de EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
   { k: 'versao', t: 'Qual versão da Bíblia você usa?', fala: 'Qual Bíblia você usa? Eu indico o texto e você lê nela.', opts: ['ARA', 'ARC', 'NVI', 'NAA', 'NTLH', 'Outra ou não sei'] },
   { k: 'horario', t: 'Qual horário você prefere para o lembrete?', fala: 'Que horas eu te lembro da sua porção?', opts: ['6h', '7h', '12h', '19h', '21h'] },
@@ -18,7 +19,7 @@ function vOnboarding() {
   if (s === 0) return '<main class="onb-hero"><div class="sky">' + ART.banner() + '</div>' + ART.mani('mani hero', 'feliz') +
     '<div class="onb-c"><h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p><p class="body-l">Uma jornada pela Bíblia com lições curtas, ofensiva, liga semanal e os amigos da sua igreja.</p>' +
     '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto. Versão de teste: nada é cobrado.</p></div></main>';
-  if (s >= 1 && s <= QUIZ.length) return vQuiz(QUIZ[s - 1], s);
+  if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
   if (s === QUIZ.length + 2) return vPaywall();
   return vConvite();
@@ -64,7 +65,7 @@ function vResultado() {
 }
 function planEnd(id) {
   let acc = 0; const rit = { 5: 5, 10: 6, 20: 7 }[S.quiz.minutos || 10];
-  for (const t of S.quiz.trilhas) { acc += trilha(t).licoes.length - doneCount(t); if (t === id) break; }
+  for (const t of S.quiz.trilhas) { const tt = trilha(t); acc += (tt.licoes.length - doneCount(t)) * (tt.tipo === 'Plano' ? rit / 7 : 1); if (t === id) break; }
   return addDays(todayK(), Math.ceil(acc / rit * 7));
 }
 function vPaywall() {
@@ -92,29 +93,34 @@ function busyBtn(label) {
 function pageHead(title, sub, art) {
   return '<header class="phead"><div><h1 class="h1">' + title + '</h1>' + (sub ? '<p class="muted">' + sub + '</p>' : '') + '</div>' + (art || '') + '</header>';
 }
+function dv(id) { return esc((ui.draft && ui.draft[id]) || ''); }
 function vDomingo() {
-  let h = '<main class="screen">' + pageHead('Domingo', 'O culto e a EBD viram o estudo da sua semana.', ART.deco.tenda) + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">EBD</button></div>';
+  let h = '<main class="screen">' + pageHead(nomeCulto(), 'O culto e a ' + nomeEscola() + ' viram o estudo da sua semana.', ART.deco.tenda) + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">' + nomeEscola() + '</button></div>';
   if (ui.domMode === 'culto') {
-    h += '<form class="form card" data-f="culto"><h3>Registrar o culto · +20 XP</h3>' +
-      '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo"></label>' +
-      '<label>Versículos citados<textarea id="c-vers" rows="2" placeholder="Ex.: Josué 1:9; Marcos 4:35-41"></textarea></label>' +
-      '<div class="two"><label>Pregador<input id="c-preg" maxlength="60" placeholder="Opcional"></label><label>Data<input id="c-data" type="date" value="' + lastSunday() + '"></label></div>' +
-      '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + esc(S.lastIgreja || '') + '"></label>' +
-      '<label>Link da live no YouTube<input id="c-link" type="url" placeholder="Opcional"></label>' +
-      '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você? (opcional)"></textarea></label>' +
-      '<p class="fine">' + (SAMPLE ? 'O estudo é montado com IA a partir do tema, dos versículos e das suas anotações. O áudio da live não é ouvido nesta versão.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão de 5 dias com os seus versículos.' : 'Verificando a IA…')) + '</p>' +
+    h += '<form class="form card" data-f="culto"><h3>Registrar a pregação · +20 XP</h3>' +
+      '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo" value="' + dv('c-tema') + '"></label>' +
+      '<label>Versículos citados<textarea id="c-vers" rows="2" placeholder="Ex.: Josué 1:9; Marcos 4:35-41">' + dv('c-vers') + '</textarea></label>' +
+      '<div class="two"><label>Pregador<input id="c-preg" maxlength="60" placeholder="Opcional" value="' + dv('c-preg') + '"></label><label>Data<input id="c-data" type="date" value="' + (dv('c-data') || lastCultDay()) + '"></label></div>' +
+      '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + (dv('c-igreja') || esc(S.lastIgreja || '')) + '"></label>' +
+      '<label>Link da pregação no YouTube<input id="c-link" type="url" placeholder="Opcional" value="' + dv('c-link') + '"></label>' +
+      '<label>Transcrição da pregação<textarea id="c-trans" rows="4" placeholder="Cole aqui a transcrição. No YouTube: abaixo do vídeo, Mostrar transcrição.">' + dv('c-trans') + '</textarea></label>' +
+      '<label class="file">Ou envie o arquivo da transcrição (.txt, .srt, .vtt)<input id="c-file" type="file" accept=".txt,.srt,.vtt,text/plain"></label>' +
+      '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você?">' + dv('c-notas') + '</textarea></label>' +
+      (DICT ? '<button type="button" class="btn sec" data-a="dict">' + (ui.dictOn ? 'Parar de ditar' : 'Ditar anotações') + '</button>' : '') +
+      '<label class="check"><input type="checkbox" id="c-trilha"' + (ui.draft && ui.draft['c-trilha'] === false ? '' : ' checked') + '> Criar também uma trilha para aprender mais sobre este tema</label>' +
+      '<p class="fine">' + (SAMPLE ? 'O estudo e a trilha são montados com IA a partir do tema, da transcrição e das suas anotações.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão e a trilha usa os versículos citados.' : 'Verificando a IA…')) + ' Envio de áudio com transcrição automática chega numa próxima versão.</p>' +
       busyBtn('Montar estudo da semana') + '</form>';
     if (S.cultos.length) {
-      h += '<section class="sec"><h2>Biblioteca de cultos</h2><ul class="list">';
-      S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + ' · ' + c.feitos.length + ' de 5 dias</span></button></li>'; });
+      h += '<section class="sec"><h2>Biblioteca de pregações</h2><ul class="list">';
+      S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + ' · ' + c.feitos.length + ' de 5 dias' + (c.trilha ? ' · com trilha' : '') + '</span></button></li>'; });
       h += '</ul></section>';
     }
   } else {
     h += '<form class="form card" data-f="ebd"><h3>Preparar a lição · +15 XP</h3>' +
-      '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó"></label>' +
-      '<label>Textos bíblicos<textarea id="e-textos" rows="2" placeholder="Ex.: Jó 1:1-22; Tiago 5:11"></textarea></label>' +
+      '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó" value="' + dv('e-tema') + '"></label>' +
+      '<label>Textos bíblicos<textarea id="e-textos" rows="2" placeholder="Ex.: Jó 1:1-22; Tiago 5:11">' + dv('e-textos') + '</textarea></label>' +
       '<div class="seg small" role="radiogroup"><button type="button" role="radio" aria-checked="' + (ui.ebdModo !== 'professor') + '" data-a="ebdModo" data-m="aluno">Sou aluno</button><button type="button" role="radio" aria-checked="' + (ui.ebdModo === 'professor') + '" data-a="ebdModo" data-m="professor">Sou professor</button></div>' +
-      '<p class="fine">O Manna não reproduz as revistas de EBD. A preparação é material próprio sobre os textos bíblicos.</p>' + busyBtn('Preparar a lição') + '</form>';
+      '<p class="fine">O Manna não reproduz ' + (isAdv() ? 'a Lição da Escola Sabatina' : 'as revistas de EBD') + '. A preparação é material próprio sobre os textos bíblicos.</p>' + busyBtn('Preparar a lição') + '</form>';
     if (S.ebds.length) {
       h += '<section class="sec"><h2>Lições preparadas</h2><ul class="list">';
       S.ebds.forEach(e => { h += '<li><button data-a="open" data-ov="ebd" data-id="' + e.id + '"><b>' + esc(e.tema) + '</b><span class="muted">' + fmt(e.data, { day: 'numeric', month: 'short' }) + ' · ' + e.modo + '</span></button></li>'; });
@@ -263,6 +269,8 @@ function vCulto(id) {
   if (!s.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
   h += '<article class="scroll"><p class="sc-ref">Resumo</p><p class="sc-ctx">' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</article>';
   if (s.meta && trilha(s.meta)) h += '<p class="insight">Este tema combina com a meta ' + trilha(s.meta).nome + '. ' + (S.quiz.trilhas.includes(s.meta) ? '' : '<button class="link" data-a="addMeta" data-id="' + s.meta + '">Adicionar às metas</button>') + '</p>';
+  const tr = c.trilha && trilha(c.trilha);
+  if (tr) h += '<section class="banner"><div><p>Trilha criada a partir da pregação</p><h3>' + esc(tr.nome) + '</h3><small>' + plural(tr.licoes.length, 'lição', 'lições') + '</small></div>' + ART.banner() + '</section><div class="row">' + (S.quiz.trilhas.includes(tr.id) ? '' : '<button class="btn sec" data-a="toggleMeta" data-id="' + tr.id + '">Adicionar ao plano</button>') + '<button class="btn" data-a="goTrail" data-id="' + tr.id + '">Estudar agora</button></div>';
   h += '<section class="sec"><h2>Estudo da semana</h2><ol class="days">';
   s.dias.forEach((d, i) => {
     const f = c.feitos.includes(i);
@@ -300,7 +308,7 @@ function vModal() {
 }
 
 /* ---------- Render ---------- */
-const TABS = [['jornada', 'Jornada'], ['domingo', 'Domingo'], ['duvidas', 'Dúvidas'], ['liga', 'Liga'], ['perfil', 'Perfil']];
+const TABS = () => [['jornada', 'Jornada', 'jornada'], ['biblia', 'Bíblia', 'livro'], ['domingo', nomeCulto(), 'domingo'], ['duvidas', 'Dúvidas', 'duvidas'], ['liga', 'Liga', 'liga'], ['perfil', 'Perfil', 'perfil']];
 function renderLesson() { const app = $('app'); if (app && ui.L) app.innerHTML = vLessonScreen(); }
 function render() {
   const app = $('app'); if (!app) return;
@@ -310,9 +318,9 @@ function render() {
   else if (ui.L) { app.innerHTML = vLessonScreen(); }
   else {
     let h;
-    if (ui.ov) h = '<div class="ov">' + ({ culto: vCulto, ebd: vEbd, duvida: vDuvida, loja: vLoja }[ui.ov.type])(ui.ov.id) + '</div>';
-    else h = ({ jornada: vJornada, domingo: vDomingo, duvidas: vDuvidas, liga: vLiga, perfil: vPerfil }[ui.tab])() +
-      '<nav class="tabs" aria-label="Seções">' + TABS.map(([k, n]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(k) + '<span>' + n + '</span></button>').join('') + '</nav>';
+    if (ui.ov) h = '<div class="ov">' + ({ culto: vCulto, ebd: vEbd, duvida: vDuvida, loja: vLoja, plano: vPlano, explorar: vExplorar }[ui.ov.type])(ui.ov.id) + '</div>';
+    else h = ({ jornada: vJornada, biblia: vBiblia, domingo: vDomingo, duvidas: vDuvidas, liga: vLiga, perfil: vPerfil }[ui.tab])() +
+      '<nav class="tabs" aria-label="Seções">' + TABS().map(([k, n, ic]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(ic) + '<span>' + n + '</span></button>').join('') + '</nav>';
     if (ui.sheet) h += vSheet();
     if (ui.modal) h += vModal();
     app.innerHTML = h;
@@ -346,7 +354,7 @@ const A = {
   },
   pickTrail(el) {
     const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
-    if (i > -1) a.splice(i, 1); else if (a.length < 3) a.push(id); else toast('Escolha até 3 metas agora. Dá para adicionar mais depois.');
+    if (i > -1) a.splice(i, 1); else if (a.length < MAX_METAS) a.push(id); else toast('Você já tem ' + MAX_METAS + ' metas.');
     save(); keep();
   },
   plan(el) { S.plano = el.dataset.id; save(); keep(); },
@@ -359,9 +367,9 @@ const A = {
   sheet(el) { ui.sheet = el.dataset.s; keep(); },
   closeSheet() { ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
-  goTrail(el) { S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; save(); window.scrollTo(0, 0); render(); },
+  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
   addMeta(el) {
-    if (S.quiz.trilhas.length >= 5) { toast('Você já tem 5 metas.'); return; }
+    if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
   },
@@ -373,7 +381,7 @@ const A = {
   chest(el) {
     const id = curTrail(), u = Number(el.dataset.u), ck = id + ':' + u;
     if (S.chests[ck]) { toast('Você já abriu este vaso.'); return; }
-    if (doneCount(id) < Math.min(trilha(id).licoes.length, (u + 1) * UNIT)) { toast('Complete as lições da unidade para abrir o vaso.'); return; }
+    if (doneCount(id) < Math.min(trilha(id).licoes.length, (u + 1) * (trilha(id).unit || UNIT))) { toast('Complete as lições da unidade para abrir o vaso.'); return; }
     const g = 15 + hash(ck) % 16; S.chests[ck] = true; S.grains += g; save();
     ui.modal = { art: ART.deco.vasoGrande, t: 'Vaso de maná aberto', p: 'Você ganhou ' + g + ' grãos de maná. Use na loja para proteger sua ofensiva.' };
     SND.vaso(); keep(); rain(40);
@@ -390,6 +398,51 @@ const A = {
     if (id === 'dobro') { S.boostUntil = Date.now() + 15 * 60000; toast('XP em dobro por 15 minutos.'); }
     if (id === 'recuperar' && S.lost) { const c = S.lost.count + (S.streak.count ? 1 : 0); S.streak.count = c; S.streak.last = S.streak.count > S.lost.count ? todayK() : addDays(todayK(), -1); S.streak.best = Math.max(S.streak.best, c); S.lost = null; ui.notice = ''; toast('Ofensiva de ' + plural(c, 'dia', 'dias') + ' recuperada.'); }
     SND.vaso(); save(); keep();
+  },
+  toggleMeta(el) {
+    const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
+    if (i > -1) { if (a.length === 1) { toast('Mantenha pelo menos uma meta no plano.'); return; } a.splice(i, 1); toast('Removida do plano: ' + trilha(id).nome); }
+    else if (a.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
+    else { a.push(id); toast('Adicionada ao plano: ' + trilha(id).nome); }
+    save(); keep();
+  },
+  moveMeta(el) {
+    const a = S.quiz.trilhas, i = a.indexOf(el.dataset.id), j = i + Number(el.dataset.d);
+    if (i < 0 || j < 0 || j >= a.length) return;
+    [a[i], a[j]] = [a[j], a[i]]; save(); keep();
+  },
+  objChip(el) { S.objetivo = (S.objetivo.trim() ? S.objetivo.trim().replace(/[.]$/, '') + '. ' : '') + el.dataset.t + '.'; save(); keep(); },
+  objNext() { S.objetivo = val('obj') || S.objetivo; ui.sug = null; ui.sugInit = false; S.quiz.trilhas = []; save(); A.next(); },
+  sugIA() { sugerirIA(); },
+  async genTema(el) {
+    const tema = el.dataset.t; if (!SAMPLE) return;
+    el.disabled = true; el.textContent = 'Criando a trilha…';
+    try { const t = await genTrail(tema); saveTrail(t, true); toast('Trilha criada: ' + t.nome); ui.sug.ids.unshift(t.id); }
+    catch (e) { toast(e.code === 'vazio' ? 'Não consegui montar essa trilha. Tente outro tema.' : aiMsg(e)); }
+    keep();
+  },
+  expl(el) { ui.expl = el.dataset.t; ui.ov.id = el.dataset.t; keep(); },
+  bibMode(el) { ui.bibMode = el.dataset.m; keep(); },
+  bibRetry() { ui.bibErr = false; keep(); },
+  bibBook(el) { ui.bib = { b: Number(el.dataset.b) }; ui.sel = []; window.scrollTo(0, 0); render(); },
+  bibBack() { ui.bib = null; window.scrollTo(0, 0); render(); },
+  bibGo(el) { ui.bib = { b: Number(el.dataset.b), c: Number(el.dataset.c) }; ui.sel = []; S.lastRead = ui.bib.b + ':' + ui.bib.c; save(); window.scrollTo(0, 0); render(); },
+  bibChap(el) { const B = ui.bib, c = B.c + Number(el.dataset.d); if (c < 1 || c > LIVROS[B.b][1]) return; A.bibGo({ dataset: { b: B.b, c } }); },
+  bibRead() {
+    const B = ui.bib, k = B.b + ':' + B.c; if (S.lidos[k]) return;
+    S.lidos[k] = todayK(); study(1); addXP(5); save();
+    toast('Capítulo lido. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.'); keep();
+  },
+  verse(el) { const k = el.dataset.k; ui.sel = ui.sel || []; const i = ui.sel.indexOf(k); if (i > -1) ui.sel.splice(i, 1); else ui.sel.push(k); keep(); },
+  clearSel() { ui.sel = []; keep(); },
+  shareVerses() { const t = selText(); const m = t.match(/\(([^,]+),/); postFeed(t.replace(/\s*\([^)]*\)$/, ''), m ? m[1] : ''); ui.sel = []; save(); toast('Postado no grupo.'); keep(); },
+  fonte(el) { S.fonte = Math.max(14, Math.min(26, S.fonte + 2 * Number(el.dataset.d))); save(); keep(); },
+  hinoFav(el) { const x = S.hinos.find(y => y.id === el.dataset.id); if (x) x.fav = !x.fav; save(); keep(); },
+  hinoDel(el) { S.hinos = S.hinos.filter(y => y.id !== el.dataset.id); save(); keep(); },
+  dict() {
+    if (!DICT) return;
+    if (ui.dictOn) { DICT.stop().catch(() => {}); return; }
+    DICT.start().catch(e => { toast(e && e.code === 'not_granted' ? 'O ditado não foi permitido. Dá para digitar normalmente.' : 'Não deu para começar o ditado.'); });
   },
   /* Lição */
   pick(el) { const L = ui.L; if (L.checked) return; L.pick = el.dataset.v; renderLesson(); },
@@ -464,14 +517,33 @@ function lessonNext() {
 }
 
 const F = {
+  objetivo() { S.objetivo = val('obj'); ui.sug = null; save(); keep(); },
+  async criarTrilha() {
+    const tema = val('cr-tema'); if (tema.length < 3) { toast('Escreva o assunto da trilha.'); return; }
+    ui.busy = true; ui.aiErr = ''; keep();
+    try { const t = await genTrail(tema); saveTrail(t, true); ui.busy = false; toast('Trilha criada e adicionada ao plano.'); A.goTrail({ dataset: { id: t.id } }); }
+    catch (e) { ui.busy = false; ui.aiErr = e.code === 'vazio' ? 'Não consegui montar essa trilha. Tente descrever de outro jeito.' : aiMsg(e); keep(); }
+  },
+  hino() {
+    const n = parseInt(val('h-n'), 10); if (!n) { toast('Digite o número do hino.'); return; }
+    S.hinario = val('h-sel') || S.hinario || hinarioPadrao();
+    S.hinos.push({ id: uid(), h: S.hinario, n, t: val('h-t'), fav: false }); save(); toast('Hino guardado.'); keep();
+  },
   async culto() {
-    const c = { id: uid(), tema: val('c-tema'), versiculos: val('c-vers'), pregador: val('c-preg'), data: val('c-data') || lastSunday(), igreja: val('c-igreja'), link: val('c-link'), notas: val('c-notas'), feitos: [] };
+    const trans = val('c-trans'), criar = $('c-trilha') ? $('c-trilha').checked : true;
+    const c = { id: uid(), tema: val('c-tema'), versiculos: val('c-vers'), pregador: val('c-preg'), data: val('c-data') || lastCultDay(), igreja: val('c-igreja'), link: val('c-link'), notas: [val('c-notas'), trans ? 'Transcrição: ' + trans.slice(0, 10000) : ''].filter(Boolean).join('\n\n'), feitos: [] };
     if (!c.tema) { toast('Digite o tema da pregação.'); return; }
     if (c.link && !/^https?:\/\//i.test(c.link)) c.link = '';
     S.lastIgreja = c.igreja; ui.busy = true; ui.aiErr = ''; keep();
     try { c.study = await genStudy(c); }
     catch (e) { ui.busy = false; if (e.code === 'cancelled') { keep(); return; } ui.aiErr = aiMsg(e) + ' Montei com o roteiro padrão.'; c.study = localStudy(c); }
-    ui.busy = false; S.cultos.unshift(c); addXP(20); save(); openOv('culto', c.id);
+    if (criar) {
+      let t = null;
+      try { t = SAMPLE ? await genTrail(c.tema, [c.versiculos, c.notas].filter(Boolean).join('\n')) : null; } catch (e) { t = null; }
+      if (!t) t = localTrail(c.tema, [c.versiculos, c.notas, (c.study.versiculos || []).join('; ')].join(' '));
+      if (t) { t.nome = t.nome || c.tema; saveTrail(t, false); c.trilha = t.id; }
+    }
+    ui.busy = false; ui.draft = {}; S.cultos.unshift(c); addXP(20); save(); openOv('culto', c.id);
   },
   async ebd() {
     const e = { id: uid(), tema: val('e-tema'), textos: val('e-textos'), modo: ui.ebdModo === 'professor' ? 'professor' : 'aluno', data: todayK() };
@@ -533,8 +605,26 @@ document.addEventListener('input', e => {
     const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
   }
   if (e.target.id === 'l-nota' && ui.L) { S.notes[ui.L.id + ui.L.idx] = e.target.value; save(); }
+  if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
+  if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = S.objetivo.trim().length < 3; }
+  if (e.target.id === 'expl-f' || e.target.id === 'bib-f') {
+    ui[e.target.id === 'expl-f' ? 'explF' : 'bibF'] = e.target.value; const id = e.target.id, pos = e.target.selectionStart; keep();
+    const n = $(id); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
+  }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'h-sel') { S.hinario = e.target.value; save(); keep(); }
+  if (e.target.id === 'c-trilha') { ui.draft = ui.draft || {}; ui.draft['c-trilha'] = e.target.checked; }
+  if (e.target.id === 'c-file' && e.target.files && e.target.files[0]) {
+    const f = e.target.files[0];
+    if (f.size > 2000000) { toast('Arquivo grande demais. Envie até 2 MB de texto.'); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      const txt = String(r.result || '').replace(/^WEBVTT.*$/m, '').replace(/^\d+\s*$/gm, '').replace(/^[\d:.,]+\s*-->\s*[\d:.,]+.*$/gm, '').replace(/<[^>]+>/g, '').replace(/\n{2,}/g, '\n').trim();
+      ui.draft = ui.draft || {}; ui.draft['c-trans'] = txt; toast('Transcrição carregada: ' + txt.split(/\s+/).length + ' palavras.'); keep();
+    };
+    r.readAsText(f);
+  }
   if (e.target.id === 'l-lido' && ui.L) { ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
 });
 

@@ -4,7 +4,7 @@ Sua porção diária da Palavra. Versão 1 de teste do app descrito em "Manna: e
 
 ## Como abrir
 
-Abra `index.html` no navegador (celular ou computador). Não precisa de servidor nem de instalação.
+Rode `python3 build.py` e abra `dist/index.html` no navegador (celular ou computador). Não precisa de servidor nem de instalação.
 O progresso fica salvo no próprio navegador (localStorage).
 
 ## O que tem nesta versão (v2, gamificada)
@@ -17,6 +17,17 @@ O progresso fica salvo no próprio navegador (localStorage).
 - Conquistas em 5 níveis com medalhas, calendário da ofensiva e cartão da semana.
 - Domingo (culto e EBD), Dúvidas (20 respostas prontas e pergunta livre) e grupo da igreja.
 - Ferramentas de teste no Perfil: avançar um dia, ganhar grãos, refazer o quiz, apagar dados.
+
+## Novidades da v3
+
+- Mascote Mani agora é uma pombinha.
+- Igreja Adventista do Sétimo Dia: visão adventista nas 21 dúvidas, nova dúvida sobre sábado e domingo, aba "Sábado" e "Escola Sabatina" para adventistas.
+- Objetivo do ano em texto livre, com ideias prontas e sugestões de trilhas (com IA quando disponível).
+- Plano aberto: 5 planos de leitura (Bíblia em 1 ano e outros), os 66 livros, 14 personagens, 8 épocas, temas e trilhas criadas por IA. O plano é uma lista de etapas que a pessoa ordena, adiciona e remove.
+- Bíblia Livre completa dentro do app (`public/blivre.js`, gerado por `tools/blivre.py` a partir do repositório oficial blivre/biblialivre, licença CC BY 3.0 Brasil). As lições mostram o texto e criam exercícios a partir dos versículos.
+- Leitor da Bíblia com marcação de capítulos lidos, seleção de versículos, cópia e postagem no grupo.
+- Hinário: escolha do hinário (Adventista, Harpa Cristã, Cantor Cristão, Novo Cântico, CCB e outros), hinos guardados por número e título, atalho para ouvir no YouTube. As letras não estão incluídas por direitos autorais.
+- Pregação vira trilha: transcrição colada ou enviada em arquivo (.txt, .srt, .vtt), ditado de anotações e criação de uma trilha de aprendizado sobre o tema.
 
 ## Limites do teste
 

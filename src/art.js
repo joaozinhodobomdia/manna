@@ -2,27 +2,30 @@
 
 const ART = {};
 
-/* Mani: o grão de maná, mascote do app. humor: feliz, festa, pensa, triste */
+/* Mani: a pombinha, mascote do app. humor: feliz, festa, pensa, triste */
 ART.mani = (cls, humor) => {
-  const h = humor || 'feliz';
-  const boca = {
-    feliz: '<path d="M40 76 Q50 86 60 76" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-    festa: '<path d="M37 72 Q50 94 63 72 Z" fill="var(--noite)"/><path d="M43 82 Q50 88 57 82" fill="#E4806A"/>',
-    pensa: '<path d="M43 79 Q50 76 58 79" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-    triste: '<path d="M41 81 Q50 73 59 81" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>',
-  }[h];
-  const bracos = h === 'festa'
-    ? '<path d="M17 58 L4 34" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/><path d="M83 58 L96 34" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/>'
-    : '<path d="M17 66 L7 80" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/><path d="M83 66 L93 80" stroke="var(--ouro-dk)" stroke-width="7" stroke-linecap="round"/>';
+  const h = humor || 'feliz', L = 'var(--pomba-tr)', W = 'var(--pomba)', A = 'var(--pomba-asa)';
+  const asas = h === 'festa'
+    ? '<path d="M27 60 C12 52 4 36 6 22 C12 26 16 30 20 30 C18 36 22 42 30 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M73 60 C88 52 96 36 94 22 C88 26 84 30 80 30 C82 36 78 42 70 46 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>'
+    : '<path d="M25 62 C12 66 9 84 16 98 C22 94 26 86 30 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/><path d="M75 62 C88 66 91 84 84 98 C78 94 74 86 70 78 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>';
   const olhos = h === 'festa'
-    ? '<path d="M31 56 Q38 47 45 56" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M55 56 Q62 47 69 56" stroke="var(--noite)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'
-    : '<ellipse cx="38" cy="56" rx="7.5" ry="9.5" fill="#FFFDF7"/><ellipse cx="62" cy="56" rx="7.5" ry="9.5" fill="#FFFDF7"/><circle cx="' + (h === 'pensa' ? 41 : 39) + '" cy="' + (h === 'pensa' ? 54 : 58) + '" r="4.4" fill="var(--noite)"/><circle cx="' + (h === 'pensa' ? 65 : 63) + '" cy="' + (h === 'pensa' ? 54 : 58) + '" r="4.4" fill="var(--noite)"/>';
+    ? '<path d="M33 42 Q39 34 45 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M55 42 Q61 34 67 42" stroke="var(--noite)" stroke-width="4" fill="none" stroke-linecap="round"/>'
+    : '<ellipse cx="39" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/><ellipse cx="61" cy="42" rx="6.5" ry="8" fill="#FFFFFF"/>' +
+      '<circle cx="' + (h === 'pensa' ? 41 : 40) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/><circle cx="' + (h === 'pensa' ? 63 : 62) + '" cy="' + (h === 'pensa' ? 39 : 43.5) + '" r="4" fill="var(--noite)"/>' +
+      '<circle cx="' + (h === 'pensa' ? 42.4 : 41.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/><circle cx="' + (h === 'pensa' ? 64.4 : 63.4) + '" cy="' + (h === 'pensa' ? 37.6 : 42) + '" r="1.4" fill="#FFFFFF"/>';
+  const sobr = h === 'triste' ? '<path d="M32 32 L44 35 M68 32 L56 35" stroke="var(--noite)" stroke-width="3" stroke-linecap="round"/>' : '';
+  const bico = h === 'festa'
+    ? '<path d="M43 51 L57 51 L50 56 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/><path d="M45 57 L55 57 L50 62 Z" fill="var(--ouro-dk)"/>'
+    : '<path d="M43 51 L57 51 L50 60 Z" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="2" stroke-linejoin="round"/>';
+  const grao = h === 'festa' ? '<ellipse cx="50" cy="8" rx="4" ry="6" transform="rotate(-20 50 8)" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="1.5"/>' : '';
   return '<svg class="' + (cls || 'mani') + '" viewBox="0 0 100 124" aria-hidden="true">' +
-    '<ellipse cx="50" cy="117" rx="26" ry="5" fill="var(--chao)"/>' + bracos +
-    '<g transform="rotate(-8 50 64)"><ellipse cx="50" cy="64" rx="34" ry="46" fill="var(--ouro)"/>' +
-    '<path d="M70 26 C86 44 88 84 66 106 C80 98 84 82 84 64 C84 46 79 34 70 26Z" fill="var(--ouro-dk)"/>' +
-    '<path d="M36 22 C30 26 26 32 24 38" stroke="#FFF1C9" stroke-width="4.5" fill="none" stroke-linecap="round"/>' +
-    olhos + '<circle cx="28" cy="70" r="5" fill="#EE9A76"/><circle cx="72" cy="70" r="5" fill="#EE9A76"/>' + boca + '</g></svg>';
+    '<ellipse cx="50" cy="118" rx="24" ry="4.5" fill="var(--chao)"/>' + grao +
+    '<path d="M60 98 L80 112 L82 102 L90 104 L80 92 Z" fill="' + A + '" stroke="' + L + '" stroke-width="3" stroke-linejoin="round"/>' +
+    '<path d="M44 108 v7 M40 115 h8 M56 108 v7 M52 115 h8" stroke="var(--ouro-dk)" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M50 16 C66 16 75 28 74 42 C88 54 86 94 66 106 C58 111 42 111 34 106 C14 94 12 54 26 42 C25 28 34 16 50 16 Z" fill="' + W + '" stroke="' + L + '" stroke-width="3.2" stroke-linejoin="round"/>' +
+    '<path d="M48 17 C45 9 50 5 55 8" stroke="' + L + '" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<ellipse cx="50" cy="84" rx="15" ry="17" fill="var(--pomba-peito)"/>' + asas + olhos + sobr +
+    '<ellipse cx="30" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/><ellipse cx="70" cy="54" rx="5" ry="3.4" fill="#F4A6A0"/>' + bico + '</svg>';
 };
 
 ART.grao = cls => '<svg class="' + (cls || 'grao') + '" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4.2" ry="6.4" transform="rotate(-22 6 8)"/></svg>';

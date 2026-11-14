@@ -14,6 +14,7 @@ function fresh() {
     quests: null, league: { week: null, div: 0 },
     cultos: [], ebds: [], duvidasLidas: [], perguntas: [],
     group: null, ach: {}, offset: 0, sound: true, goal: 30,
+    objetivo: '', custom: {}, lidos: {}, hinario: null, hinos: [], gen: {}, fonte: 18,
   };
 }
 function load() {
@@ -43,22 +44,24 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
 const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
-const trilha = id => TRILHAS.find(t => t.id === id);
+const trilha = id => id ? (TRILHAS.find(t => t.id === id) || (S.custom && S.custom[id]) || trilhaGen(id)) : null;
 const desafio = id => DESAFIOS.find(d => d.id === id);
 const uid = () => Math.random().toString(36).slice(2, 9);
 const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const studiedToday = () => S.days.includes(todayK());
-const doneCount = id => Math.min(S.progress[id] || 0, trilha(id).licoes.length);
-const isDone = id => doneCount(id) >= trilha(id).licoes.length;
+const doneCount = id => trilha(id) ? Math.min(S.progress[id] || 0, trilha(id).licoes.length) : 0;
+const isDone = id => !!trilha(id) && doneCount(id) >= trilha(id).licoes.length;
 const tradicao = () => S.quiz.tradicao || null;
 const curTrail = () => {
+  S.quiz.trilhas = S.quiz.trilhas.filter(id => trilha(id));
+  if (!S.quiz.trilhas.length) S.quiz.trilhas = ['joao'];
   if (!S.cur || !S.quiz.trilhas.includes(S.cur)) S.cur = S.quiz.trilhas.find(id => !isDone(id)) || S.quiz.trilhas[0];
   return S.cur;
 };
 
 /* UI (não salvo) */
-const ui = { tab: 'jornada', ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
+const ui = { tab: 'jornada', bib: null, bibMode: 'biblia', expl: 'Sugestões', sug: null, sugBusy: false, ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
 
 function toast(msg) {
   ui.toast = msg; renderToast();
@@ -203,7 +206,8 @@ const SND = { certo: () => tone([[660, .12], [990, .22]]), errado: () => tone([[
 const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function rain(n) {
   if (reduceMotion()) return;
-  const c = document.createElement('canvas'); c.className = 'rain'; document.body.appendChild(c);
+  document.querySelectorAll('canvas.rain').forEach(x => x.remove());
+  const c = document.createElement('canvas'); c.className = 'rain'; document.body.appendChild(c); setTimeout(() => c.remove(), 2800);
   const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
   c.width = W * dpr; c.height = H * dpr; const x = c.getContext('2d'); x.scale(dpr, dpr);
   const gs = Array.from({ length: n || 70 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * H * 0.6, v: 2.2 + Math.random() * 3, r: Math.random() * 6, s: 0.6 + Math.random() * 0.8, w: (Math.random() - .5) * 0.06 }));

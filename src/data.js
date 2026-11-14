@@ -212,6 +212,7 @@ const DESAFIOS = [
 const DENOMINACOES = [
   ['Assembleia de Deus', 'pentecostal'],
   ['Batista', 'batista'],
+  ['Adventista do Sétimo Dia', 'adventista'],
   ['Presbiteriana', 'reformada'],
   ['Congregação Cristã no Brasil', 'pentecostal'],
   ['Quadrangular', 'pentecostal'],
@@ -221,7 +222,7 @@ const DENOMINACOES = [
   ['Outra', null],
 ];
 
-const TRADICOES = { pentecostal: 'Pentecostal', batista: 'Batista', reformada: 'Reformada' };
+const TRADICOES = { pentecostal: 'Pentecostal', batista: 'Batista', reformada: 'Reformada', adventista: 'Adventista' };
 
 /* Biblioteca de dúvidas: formato fixo. Texto em linguagem própria; versículos só por referência. */
 const D = (id, q, cat, biblia, refs, pentecostal, batista, reformada, comum) =>
@@ -369,3 +370,36 @@ const DUVIDAS = [
     'Pede discernimento, reconhecendo valor na arte e cuidado com o que alimenta o pecado.',
     'O critério comum: o que isso faz com o seu coração e com a sua relação com Deus?'),
 ];
+
+/* Visão adventista em cada dúvida */
+const ADVENTISTA = {
+  vinho: 'Orienta a abstinência total de bebidas alcoólicas, como parte da mensagem de saúde e do cuidado com o corpo.',
+  tatuagem: 'Em geral desaconselha, pelo cuidado com o corpo como templo e pela ênfase na simplicidade.',
+  dizimo: 'Ensina o dízimo como mandamento atual, entregue à igreja, além das ofertas voluntárias.',
+  musica: 'Pede discernimento cuidadoso, pelo princípio de que somos transformados pelo que contemplamos.',
+  sexo: 'Ensina que o sexo é só para o casamento.',
+  halloween: 'Orienta não participar, pela ligação com o ocultismo e com a ideia de contato com os mortos.',
+  salvacao: 'Crê que a pessoa pode, por escolha própria, abandonar a fé e se afastar da salvação.',
+  linguas: 'Crê que os dons espirituais continuam, e entende o dom de línguas como falar idiomas reais para anunciar o evangelho.',
+  divorcio: 'O Manual da Igreja reconhece a infidelidade sexual como motivo bíblico para o divórcio e permite novo casamento ao cônjuge inocente.',
+  pastora: 'A Associação Geral votou em 2015 por não ordenar mulheres ao pastorado; mulheres servem em vários ministérios, e algumas regiões têm mulheres em funções pastorais.',
+  psicologo: 'Apoia o tratamento junto com a fé, dentro da ênfase adventista em saúde integral.',
+  domingo: 'Para os adventistas, o dia separado é o sábado; o cuidado é evitar o trabalho comum do pôr do sol de sexta ao pôr do sol de sábado.',
+  apostas: 'Condena jogos de azar e apostas.',
+  jugo: 'Orienta casar com alguém da mesma fé.',
+  batismo: 'Batiza por imersão quem crê e decide seguir a Jesus; as crianças são dedicadas.',
+  cremacao: 'Não proíbe; crê que os mortos dormem até a ressurreição, seja qual for o destino do corpo.',
+  divida: 'Orienta prudência e o pagamento fiel das dívidas.',
+  costumes: 'Destaca a modéstia e a simplicidade, e tradicionalmente desaconselha joias e adornos; a calça não é proibida em geral.',
+  politica: 'Defende a separação entre igreja e Estado e a liberdade religiosa; o membro pode votar, e a igreja não apoia candidatos.',
+  filmes: 'Pede cautela, pelo princípio de que somos transformados pelo que contemplamos.',
+};
+DUVIDAS.forEach(d => { if (ADVENTISTA[d.id]) d.trad.adventista = ADVENTISTA[d.id]; });
+DUVIDAS.push(D('sabado', 'Sábado ou domingo: qual dia guardar?', 'Doutrina',
+  'O quarto mandamento separa o sétimo dia para descanso e adoração, e Jesus ia à sinagoga no sábado. Depois da ressurreição, os cristãos passaram a se reunir no primeiro dia da semana, e Paulo fala de não julgar o irmão por causa de dias.',
+  'Êxodo 20:8-11; Lucas 4:16; Atos 20:7; 1 Coríntios 16:2; Colossenses 2:16-17; Romanos 14:5-6',
+  'Guarda o domingo como dia do Senhor, em memória da ressurreição.',
+  'Guarda o domingo como dia do Senhor e de culto, sem impor regras do sábado judaico.',
+  'Entende o domingo como o sábado cristão, separado para descanso e adoração.',
+  'Todos separam um dia para Deus, para o descanso e para o culto. A divergência está em qual dia e por quê: respeite a convicção do irmão.'));
+DUVIDAS[DUVIDAS.length - 1].trad.adventista = 'Guarda o sábado, do pôr do sol de sexta ao pôr do sol de sábado, como mandamento permanente e memorial da criação.';
