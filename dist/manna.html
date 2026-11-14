@@ -1,0 +1,1365 @@
+<title>Manna</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap">
+<style>
+/* Coluna de app de celular, centrada. Cores chapadas da marca, sem degradê nem brilho. */
+:root {
+  --noite: #0F1B3D; --ouro: #F2C14E; --ceu: #A9C6E8; --pergaminho: #F5F1E6;
+  --bg: #F5F1E6; --surface: #FFFCF5; --fg: #0F1B3D; --muted: #5A6278; --line: #DED6C3; --soft: #EBE4D2;
+  --link: #0F1B3D; --accent: #F2C14E; --on-accent: #0F1B3D; --danger: #9E3A24; --mine: #FFF4D6;
+  --f-brand: 'Sora', 'Inter', system-ui, sans-serif;
+  --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1B3D; --surface: #15234A; --fg: #F5F1E6; --muted: #A8B2CA; --line: #283A66; --soft: #1D2D58;
+    --link: #A9C6E8; --danger: #F0937D; --mine: #1F2F5C; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1B3D; --surface: #15234A; --fg: #F5F1E6; --muted: #A8B2CA; --line: #283A66; --soft: #1D2D58;
+  --link: #A9C6E8; --danger: #F0937D; --mine: #1F2F5C; color-scheme: dark;
+}
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--fg); font: 400 16px/1.5 var(--f-body); -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+#app { max-width: 480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
+h1, h2, h3, p, ol, ul { margin: 0; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.25; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--ceu); outline-offset: 2px; }
+.tnum { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.fine { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.center-t { text-align: center; }
+.screen { display: flex; flex-direction: column; gap: 16px; padding-block: 16px 24px; }
+.screen.center { align-items: stretch; text-align: center; padding-top: 40px; }
+.h1 { font: 700 26px/1.2 var(--f-brand); letter-spacing: -0.01em; }
+.qt { font: 700 23px/1.25 var(--f-brand); letter-spacing: -0.01em; }
+.body-l { font-size: 17px; }
+.brand { font: 700 44px/1 var(--f-brand); letter-spacing: -0.03em; }
+.brand.sm { font-size: 20px; }
+.lead { font-size: 18px; color: var(--muted); }
+.hero { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-block: 24px 8px; }
+.logo { width: 30px; height: 30px; display: block; flex: none; }
+.logo.big { width: 96px; height: 96px; }
+.grao { width: 14px; height: 18px; fill: var(--ouro); flex: none; }
+.ic { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Botões */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 50px; padding: 12px 18px; border: 0; border-radius: 12px; background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; text-align: center; }
+.btn:disabled { opacity: .6; cursor: default; }
+.btn.sec { background: var(--surface); color: var(--fg); border: 1px solid var(--line); }
+.btn.ghost { background: transparent; color: var(--fg); }
+.btn.sm { min-height: 40px; width: auto; padding: 8px 14px; font-size: 15px; }
+.btn.danger-btn { background: var(--danger); color: var(--bg); }
+.link { background: none; border: 0; padding: 0; color: var(--link); text-decoration: underline; text-underline-offset: 3px; font-weight: 500; }
+.link.danger { color: var(--danger); align-self: center; padding: 8px; }
+.iconbtn { width: 40px; height: 40px; display: inline-grid; place-items: center; border: 0; border-radius: 10px; background: transparent; margin-left: -8px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row > .btn { flex: 1 1 140px; width: auto; }
+.busy { display: flex; flex-direction: column; gap: 8px; }
+.sticky-cta { position: sticky; bottom: 0; padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--bg); margin-top: 4px; }
+
+/* Quiz */
+.qhead { display: flex; align-items: center; gap: 12px; }
+.qhead .bar { flex: 1; }
+.bar { display: block; height: 8px; border-radius: 99px; background: var(--soft); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 54px; padding: 12px 16px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; font-weight: 500; }
+.opt span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.opt small { color: var(--muted); font-weight: 400; font-size: 14px; }
+.opt.on { border: 2px solid var(--fg); padding: 11px 15px; background: var(--soft); }
+.ord { font-style: normal; font-weight: 700; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; flex: none; }
+.grp { font-size: 15px; color: var(--muted); font-weight: 600; margin-top: 6px; }
+.plan strong { font-size: 15px; white-space: nowrap; }
+.tag { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 99px; background: var(--accent); color: var(--on-accent); font-size: 12px; font-weight: 600; vertical-align: 2px; }
+.checks { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.timeline { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border-radius: var(--r); border: 1px solid var(--line); font-size: 15px; }
+.metas { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.metas li span { display: block; font-size: 14px; }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.card h3 { font-size: 16px; font-weight: 600; }
+.card h2 { font: 700 20px/1.25 var(--f-brand); }
+.kicker { color: var(--muted); font-size: 14px; }
+.ref { font-weight: 600; }
+.ref.big { font: 700 20px/1.3 var(--f-brand); }
+.porcao { padding: 20px; gap: 12px; }
+.porcao.done h2 { font-size: 19px; }
+.row-card { flex-direction: row; align-items: center; justify-content: space-between; cursor: pointer; }
+.row-card > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.chev { font-size: 28px; color: var(--muted); line-height: 1; }
+.note { padding: 12px 14px; border-radius: 12px; background: var(--soft); font-size: 15px; }
+.risk { font-weight: 600; color: var(--danger); }
+.err { color: var(--danger); font-size: 14px; }
+.insight { color: var(--muted); font-size: 15px; }
+
+/* Topo */
+.top { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; }
+.mark { display: flex; align-items: center; gap: 8px; }
+.streak { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; background: var(--surface); }
+.streak b { font: 700 17px/1 var(--f-brand); }
+.streak span { font-size: 14px; color: var(--muted); }
+
+/* Seções */
+.sec { display: flex; flex-direction: column; gap: 10px; }
+.sec > h2, .sec-h h2 { font-size: 18px; font-weight: 700; }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.meta { display: flex; flex-direction: column; gap: 8px; width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); text-align: left; }
+.meta-t { display: flex; justify-content: space-between; gap: 8px; }
+.stats3, .stats2 { display: grid; gap: 10px; }
+.stats3 { grid-template-columns: repeat(3, 1fr); }
+.stats2 { grid-template-columns: repeat(2, 1fr); }
+.stats3 div, .stats2 div { display: flex; flex-direction: column; gap: 2px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.stats3 b, .stats2 b { font: 700 26px/1.1 var(--f-brand); }
+.stats3 span, .stats2 span { font-size: 13px; color: var(--muted); line-height: 1.3; }
+.stats2 small { font-size: 12px; }
+
+/* Abas */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; justify-content: center; background: var(--surface); border-top: 1px solid var(--line); padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+.tabs button { flex: 1; max-width: 96px; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 2px; border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 500; border-radius: 10px; }
+.tabs button[aria-current] { color: var(--fg); font-weight: 700; }
+.tabs button[aria-current] .ic { stroke-width: 2.3; }
+.tabs button[aria-current] span { box-shadow: inset 0 -2px 0 var(--accent); }
+
+/* Formulários */
+.form { display: flex; flex-direction: column; gap: 12px; }
+.form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; min-width: 0; }
+.form input, .form textarea, .form select, .search, .lesson textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-weight: 400; font-size: 16px; }
+.form textarea, .lesson textarea { resize: vertical; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form.inline { flex-direction: row; gap: 8px; margin-top: 8px; }
+.form.inline input { flex: 1; min-width: 0; }
+.check { display: flex; align-items: center; gap: 10px; font-weight: 600; min-height: 44px; }
+.check input { width: 22px; height: 22px; accent-color: var(--noite); }
+.ask { padding: 16px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); }
+.seg { display: flex; padding: 4px; gap: 4px; border-radius: 12px; background: var(--soft); }
+.seg button { flex: 1; min-height: 40px; border: 0; border-radius: 9px; background: transparent; font-weight: 600; color: var(--muted); }
+.seg button[aria-selected="true"], .seg button[aria-checked="true"] { background: var(--surface); color: var(--fg); border: 1px solid var(--line); }
+
+/* Listas */
+.list { list-style: none; padding: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
+.list li + li { border-top: 1px solid var(--line); }
+.list button { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 14px 16px; border: 0; background: none; text-align: left; }
+.list button b { font-weight: 600; }
+.list .muted { font-size: 14px; }
+.list .empty { padding: 16px; color: var(--muted); }
+.lessons, .days, .ach, .rank, .feed { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.lessons li > * { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); text-align: left; }
+.lessons li > * > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.lessons .n { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--soft); font-weight: 600; font-size: 14px; }
+.lessons .feita .n { background: var(--fg); color: var(--bg); }
+.lessons .next > * { border: 2px solid var(--fg); padding: 11px 13px; }
+.lessons .next .n { background: var(--accent); color: var(--on-accent); }
+.lessons li:not(.feita):not(.next) { opacity: .7; }
+.days li { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.days li.feita { background: var(--soft); }
+.dots { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.roteiro { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.ach { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ach li { padding: 12px; border: 1px dashed var(--line); border-radius: 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ach li span { font-size: 13px; }
+.ach li:not(.got) b { color: var(--muted); }
+.ach li.got { border-style: solid; background: var(--surface); }
+.rank li { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.rank .pos { width: 22px; color: var(--muted); font-weight: 600; }
+.rank .nm { flex: 1; min-width: 0; }
+.rank b { font: 700 18px/1 var(--f-brand); }
+.rank li.me { border: 2px solid var(--fg); padding: 9px 13px; background: var(--mine); }
+.feed li { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+.acts { display: flex; align-items: center; gap: 16px; }
+.pill { border: 1px solid var(--line); background: transparent; border-radius: 99px; padding: 4px 12px; font-size: 14px; font-weight: 500; }
+.pill.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.cmts { list-style: none; padding: 8px 0 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.code { font-family: ui-monospace, monospace; letter-spacing: .08em; color: var(--fg); }
+.trad { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 4px; }
+.trad.mine { border: 2px solid var(--fg); padding: 13px 15px; background: var(--mine); }
+.pastor { padding: 16px; border-radius: var(--r); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; gap: 6px; }
+.pastor h3 { color: var(--ouro); font-size: 17px; }
+.ai-out { display: flex; flex-direction: column; gap: 8px; }
+
+/* Cartão compartilhável */
+.share { border: 1px solid var(--line); background: var(--noite); color: var(--pergaminho); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.share .brand { color: var(--ouro); }
+.share h2 { font: 700 22px/1.2 var(--f-brand); }
+.share-n { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.share-n div { display: flex; flex-direction: column; }
+.share-n b { font: 700 30px/1.1 var(--f-brand); color: var(--ouro); }
+.share-n span { font-size: 13px; opacity: .85; }
+.share > p:last-child { font-size: 14px; opacity: .85; }
+
+/* Tela sobreposta */
+.ovh { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; display: flex; align-items: center; gap: 6px; padding-block: 8px; background: var(--bg); font-weight: 600; color: var(--muted); font-size: 15px; }
+.big-streak { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.big-streak .grao { width: 34px; height: 44px; }
+.big-streak b { font: 700 64px/1 var(--f-brand); }
+.test { border-style: dashed; }
+
+#toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(90px + env(safe-area-inset-bottom, 0px)); z-index: 20; max-width: min(440px, calc(100% - 32px)); padding: 12px 16px; border-radius: 12px; background: var(--fg); color: var(--bg); font-size: 15px; font-weight: 500; text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+@media (max-width: 360px) { .two { grid-template-columns: 1fr; } .stats3 b { font-size: 22px; } }
+</style>
+<div id="app"></div>
+<script>
+/* Manna: conteúdo da V1 de teste (trilhas, desafios, dúvidas). */
+
+const L = (ref, titulo, ctx, q, caps) => ({ ref, titulo, ctx, q, caps: caps || 1 });
+
+const TRILHAS = [
+  {
+    id: 'romanos', tipo: 'Livro', nome: 'Romanos',
+    desc: 'A carta que explica o evangelho, um capítulo por dia.',
+    licoes: [
+      L('Romanos 1', 'O evangelho é poder de Deus', 'Paulo se apresenta e mostra que toda a humanidade precisa de Deus.', 'O que significa para você não se envergonhar do evangelho (1:16)?'),
+      L('Romanos 2', 'Deus não faz acepção de pessoas', 'Paulo mostra que quem julga os outros também está debaixo do juízo.', 'Em que área você julga os outros pelo que você mesmo faz?'),
+      L('Romanos 3', 'Todos pecaram', 'Todos pecaram, e a justiça de Deus vem pela fé em Jesus.', 'Como a graça muda o jeito que você olha para os seus erros?'),
+      L('Romanos 4', 'A fé de Abraão', 'Abraão foi justificado pela fé antes de qualquer obra da lei.', 'Qual promessa de Deus você precisa crer mesmo sem ver?'),
+      L('Romanos 5', 'Paz com Deus', 'Justificados pela fé, temos paz com Deus, até na tribulação.', 'O que a tribulação já produziu em você (5:3-4)?'),
+      L('Romanos 6', 'Mortos para o pecado', 'No batismo fomos unidos a Cristo: mortos para o pecado e vivos para Deus.', 'Que hábito você precisa considerar morto em Cristo?'),
+      L('Romanos 7', 'A luta interior', 'Paulo descreve a luta entre querer o bem e fazer o mal.', 'Onde você vive o "não faço o bem que quero"?'),
+      L('Romanos 8', 'Nenhuma condenação', 'Não há condenação para quem está em Cristo, e nada nos separa do amor de Deus.', 'Qual versículo de Romanos 8 você quer guardar esta semana?'),
+      L('Romanos 9', 'A soberania de Deus', 'Paulo sofre por Israel e fala da escolha soberana de Deus.', 'O que você sente ao ler sobre a escolha de Deus?'),
+      L('Romanos 10', 'A fé vem pelo ouvir', 'Quem invocar o nome do Senhor será salvo, e a fé vem pelo ouvir.', 'Quem você conhece que ainda não ouviu o evangelho de forma clara?'),
+      L('Romanos 11', 'A oliveira e os ramos', 'Os gentios foram enxertados na oliveira, e Deus não abandonou Israel.', 'Como a humildade aparece quando lembramos que fomos enxertados?'),
+      L('Romanos 12', 'Sacrifício vivo', 'A vida cristã como culto: corpo oferecido, mente renovada, dons a serviço.', 'Que dom você tem usado, ou deixado de usar, na igreja?'),
+      L('Romanos 13', 'O amor cumpre a lei', 'Respeito às autoridades e o amor como cumprimento da lei.', 'A quem você está devendo amor hoje?'),
+      L('Romanos 14', 'Sem pedra de tropeço', 'Fortes e fracos na fé convivendo sem julgamento.', 'Em que questão de consciência você precisa respeitar o irmão?'),
+      L('Romanos 15', 'Acolhei-vos uns aos outros', 'Cristo nos acolheu; por isso acolhemos uns aos outros.', 'Quem na sua igreja precisa ser acolhido por você?'),
+      L('Romanos 16', 'Cooperadores no evangelho', 'Paulo saúda homens e mulheres que trabalharam com ele no evangelho.', 'Quem cooperou na sua fé e merece um agradecimento esta semana?'),
+    ],
+  },
+  {
+    id: 'joao', tipo: 'Livro', nome: 'Evangelho de João',
+    desc: 'Os sinais e as palavras de Jesus, em 21 capítulos.',
+    licoes: [
+      L('João 1', 'O Verbo se fez carne', 'João começa antes da criação e mostra que Jesus é Deus que veio morar entre nós.', 'O que muda em você saber que Deus se fez gente?'),
+      L('João 2', 'As bodas de Caná', 'O primeiro sinal de Jesus acontece numa festa de casamento.', 'Em que situação você precisa fazer "tudo o que ele vos disser"?'),
+      L('João 3', 'O novo nascimento', 'Nicodemos, mestre da lei, vai de noite falar com Jesus e ouve sobre nascer de novo.', 'Como você explicaria João 3:16 a um amigo, com as suas palavras?'),
+      L('João 4', 'A mulher samaritana', 'Jesus atravessa barreiras de povo e de costume para oferecer água viva.', 'Quem a sua igreja costuma evitar e Jesus procuraria?'),
+      L('João 5', 'O paralítico de Betesda', 'Um homem doente há 38 anos é curado num sábado.', 'O que você espera há muito tempo e precisa entregar a Jesus?'),
+      L('João 6', 'O pão da vida', 'Depois de alimentar a multidão, Jesus se apresenta como o pão do céu, maior que o maná.', 'O que você tem buscado para se saciar além de Jesus?'),
+      L('João 7', 'Rios de água viva', 'Na festa dos Tabernáculos, Jesus promete o Espírito a quem tem sede.', 'Onde você sente sede espiritual hoje?'),
+      L('João 8', 'A verdade vos libertará', 'Jesus perdoa a mulher adúltera e fala de liberdade verdadeira.', 'De que prisão você precisa ser liberto?'),
+      L('João 9', 'O cego de nascença', 'Um homem passa a ver e enfrenta os fariseus com o próprio testemunho.', 'Qual é o seu "eu era cego e agora vejo"?'),
+      L('João 10', 'O bom pastor', 'Jesus é o pastor que dá a vida pelas ovelhas e as conhece pelo nome.', 'Como você reconhece a voz do Pastor no dia a dia?'),
+      L('João 11', 'A ressurreição de Lázaro', 'Jesus chora com Marta e Maria e chama Lázaro para fora do túmulo.', 'O que significa para você Jesus chorar com quem sofre?'),
+      L('João 12', 'Unção em Betânia', 'Maria derrama um perfume caro nos pés de Jesus, e ele entra em Jerusalém.', 'O que você tem de valioso para entregar a Jesus?'),
+      L('João 13', 'Jesus lava os pés', 'Na última ceia, o Mestre faz o serviço do escravo e dá um novo mandamento.', 'A quem você pode servir esta semana sem esperar nada em troca?'),
+      L('João 14', 'O caminho, a verdade e a vida', 'Jesus acalma os discípulos e promete enviar o Consolador.', 'Que preocupação você precisa entregar hoje?'),
+      L('João 15', 'A videira e os ramos', 'Jesus ensina que o fruto vem de permanecer nele.', 'O que tem ajudado ou atrapalhado você a permanecer em Jesus?'),
+      L('João 16', 'A obra do Espírito Santo', 'Jesus explica que o Espírito convence, guia e glorifica a Cristo.', 'Em que decisão você precisa da direção do Espírito?'),
+      L('João 17', 'A oração de Jesus', 'Antes da cruz, Jesus ora pelos discípulos e por todos que creriam depois.', 'Como é saber que Jesus orou por você?'),
+      L('João 18', 'Prisão e negação', 'Jesus é preso no jardim e Pedro o nega três vezes.', 'Em que ambiente você tem vergonha de dizer que é de Jesus?'),
+      L('João 19', 'A cruz', 'Jesus é crucificado e diz "Está consumado".', 'O que foi consumado na cruz por você?'),
+      L('João 20', 'O túmulo vazio', 'Maria Madalena encontra o Ressuscitado, e Tomé passa da dúvida à fé.', 'Que dúvida você pode levar a Jesus com sinceridade, como Tomé?'),
+      L('João 21', 'Pedro restaurado', 'Na praia, Jesus pergunta três vezes "Tu me amas?" e restaura Pedro.', 'Em que área você precisa ser restaurado?'),
+    ],
+  },
+  {
+    id: 'proverbios', tipo: 'Livro', nome: 'Provérbios',
+    desc: '31 capítulos, um para cada dia do mês.',
+    licoes: Array.from({ length: 31 }, (_, i) => L(
+      'Provérbios ' + (i + 1),
+      'Sabedoria para o dia ' + (i + 1),
+      'Provérbios tem 31 capítulos: um por dia completa o livro em um mês.',
+      [
+        'Que provérbio deste capítulo descreve você hoje?',
+        'Escolha um versículo e escreva como aplicá-lo amanhã.',
+        'O que este capítulo diz sobre as suas palavras?',
+        'Que conselho daqui você daria a um amigo?',
+      ][i % 4]
+    )),
+  },
+  {
+    id: 'tiago', tipo: 'Livro', nome: 'Tiago',
+    desc: 'Fé que aparece na prática, em 5 capítulos.',
+    licoes: [
+      L('Tiago 1', 'Provação e sabedoria', 'Tiago diz para ter alegria nas provas e pedir sabedoria a Deus.', 'Que prova você está vivendo e que sabedoria precisa pedir?'),
+      L('Tiago 2', 'Fé e obras', 'A fé verdadeira aparece no cuidado com o pobre e no jeito de viver.', 'Onde sua fé precisa virar ação esta semana?'),
+      L('Tiago 3', 'O poder da língua', 'Uma faísca incendeia uma floresta; assim é a palavra.', 'Que conversa você precisa ter com mais cuidado?'),
+      L('Tiago 4', 'Humildade e soberba', 'Deus resiste aos soberbos e dá graça aos humildes.', 'Em que plano você deixou de dizer "se o Senhor quiser"?'),
+      L('Tiago 5', 'Paciência e oração', 'A oração do justo pode muito, como a de Elias.', 'Por quem você vai orar com perseverança esta semana?'),
+    ],
+  },
+  {
+    id: 'salmos', tipo: 'Livro', nome: 'Salmos essenciais',
+    desc: '10 salmos para orar e decorar.',
+    licoes: [
+      L('Salmos 1', 'Os dois caminhos', 'O salmo de entrada do livro contrasta o justo e o ímpio.', 'Que conselhos você tem ouvido mais: os da Palavra ou outros?'),
+      L('Salmos 8', 'Que é o homem?', 'Davi olha o céu e se espanta com o cuidado de Deus pelo ser humano.', 'Quando foi a última vez que a criação te levou a adorar?'),
+      L('Salmos 19', 'Os céus proclamam', 'Deus fala pela criação e pela sua lei.', 'Que palavra de Deus tem sido doce para você?'),
+      L('Salmos 23', 'O Senhor é o meu pastor', 'Cuidado no vale e mesa preparada diante dos inimigos.', 'Em que vale você precisa lembrar que ele está com você?'),
+      L('Salmos 27', 'O Senhor é a minha luz', 'Davi busca a presença de Deus no meio da ameaça.', 'Qual é a "uma coisa" que você pede ao Senhor?'),
+      L('Salmos 32', 'A alegria do perdão', 'O peso do pecado escondido e o alívio da confissão.', 'Existe algo que você precisa confessar e ainda não confessou?'),
+      L('Salmos 46', 'Deus é o nosso refúgio', 'Mesmo se a terra tremer, Deus é fortaleza.', 'O que significa para você "aquietai-vos" hoje?'),
+      L('Salmos 51', 'Um coração puro', 'A oração de arrependimento de Davi.', 'Que parte deste salmo você quer fazer sua oração?'),
+      L('Salmos 91', 'À sombra do Onipotente', 'Um salmo de confiança na proteção de Deus.', 'De que medo você precisa se abrigar em Deus?'),
+      L('Salmos 139', 'Tu me sondas e me conheces', 'Deus conhece cada pensamento e formou cada pessoa no ventre.', 'Como você se sente sabendo que Deus conhece tudo de você?'),
+    ],
+  },
+  {
+    id: 'davi', tipo: 'Personagem', nome: 'Davi',
+    desc: 'Do pasto ao trono: coragem, queda e arrependimento.',
+    licoes: [
+      L('1 Samuel 16', 'O menino ungido', 'Deus escolhe o caçula que cuidava das ovelhas, porque olha o coração.', 'Que aparência você tem valorizado mais do que o coração?'),
+      L('1 Samuel 17', 'Davi e Golias', 'Davi enfrenta o gigante confiando no nome do Senhor.', 'Qual gigante você está enfrentando hoje?'),
+      L('1 Samuel 24', 'Davi poupa Saul', 'Davi tem a chance de matar Saul e escolhe não tocar no ungido.', 'Com quem você precisa escolher não se vingar?'),
+      L('2 Samuel 6', 'Dança diante da arca', 'Davi celebra a chegada da arca sem se importar com a opinião dos outros.', 'O que te impede de adorar com liberdade?'),
+      L('2 Samuel 9', 'Bondade com Mefibosete', 'O rei procura o neto de Saul para mostrar bondade por amor a Jônatas.', 'Quem você pode trazer para a sua mesa?'),
+      L('2 Samuel 11-12', 'A queda e o profeta Natã', 'Davi adultera, manda matar Urias e é confrontado por Natã.', 'Quem tem liberdade para te confrontar como Natã?', 2),
+      L('Salmos 51', 'O arrependimento de Davi', 'Depois do confronto, Davi escreve sua oração de arrependimento.', 'O que o arrependimento de Davi ensina sobre recomeçar?'),
+    ],
+  },
+  {
+    id: 'paulo', tipo: 'Personagem', nome: 'Paulo',
+    desc: 'De perseguidor a apóstolo dos gentios.',
+    licoes: [
+      L('Atos 9', 'A conversão no caminho', 'Saulo, que perseguia a igreja, encontra Jesus a caminho de Damasco.', 'Como foi o seu encontro com Jesus?'),
+      L('Atos 13', 'Enviados pelo Espírito', 'A igreja de Antioquia ora, jejua e envia Barnabé e Saulo.', 'Como sua igreja ou célula pode apoiar quem é enviado?'),
+      L('Atos 16', 'Louvor na prisão', 'Em Filipos, Paulo e Silas cantam presos, e o carcereiro se converte.', 'Em que situação difícil você pode louvar?'),
+      L('Atos 17', 'Paulo em Atenas', 'Paulo fala do Deus desconhecido aos filósofos gregos.', 'Como você fala de Jesus para quem pensa muito diferente?'),
+      L('Atos 27', 'O naufrágio', 'Numa tempestade de dias, Paulo encoraja todos no navio.', 'Quem perto de você precisa de ânimo no meio da tempestade?'),
+      L('Filipenses 4', 'Aprendi a contentar-me', 'Preso, Paulo escreve sobre alegria e contentamento em toda situação.', 'Onde você precisa aprender a se contentar?'),
+      L('2 Timóteo 4', 'Combati o bom combate', 'Perto da morte, Paulo olha para trás e passa o bastão a Timóteo.', 'Como você quer terminar a sua carreira de fé?'),
+    ],
+  },
+  {
+    id: 'jose', tipo: 'Personagem', nome: 'José do Egito',
+    desc: 'Da cova ao palácio: fidelidade e perdão.',
+    licoes: [
+      L('Gênesis 37', 'Os sonhos e a cova', 'José conta seus sonhos, é odiado pelos irmãos e vendido como escravo.', 'Como você lida com a inveja, a sua e a dos outros?'),
+      L('Gênesis 39', 'Fiel na casa de Potifar', 'José foge da tentação e mesmo assim é preso injustamente.', 'De que tentação você precisa fugir, em vez de negociar?'),
+      L('Gênesis 40', 'Esquecido na prisão', 'José interpreta sonhos, mas o copeiro se esquece dele.', 'Como você reage quando parece que todos te esqueceram?'),
+      L('Gênesis 41', 'De prisioneiro a governador', 'José interpreta os sonhos do faraó e passa a governar o Egito.', 'Que preparo Deus pode estar fazendo em você nos dias difíceis?'),
+      L('Gênesis 42', 'Os irmãos no Egito', 'A fome leva os irmãos até José, sem saberem quem ele é.', 'Que relação ferida Deus pode estar trazendo de volta?'),
+      L('Gênesis 45', 'Eu sou José', 'José se revela aos irmãos, chora e os perdoa.', 'Quem você precisa perdoar?'),
+      L('Gênesis 50', 'Deus o tornou em bem', 'Depois da morte de Jacó, José garante aos irmãos que não vai se vingar.', 'Que mal na sua história Deus já transformou em bem?'),
+    ],
+  },
+  {
+    id: 'pedro', tipo: 'Personagem', nome: 'Pedro',
+    desc: 'O pescador que caiu, foi restaurado e pregou no Pentecostes.',
+    licoes: [
+      L('Lucas 5', 'A pesca maravilhosa', 'Depois de uma noite sem peixe, Pedro lança a rede pela palavra de Jesus.', 'Em que área você precisa lançar a rede de novo?'),
+      L('Mateus 14', 'Andando sobre as águas', 'Pedro anda sobre o mar enquanto olha para Jesus e afunda quando olha o vento.', 'O que tem tirado seus olhos de Jesus?'),
+      L('Mateus 16', 'Tu és o Cristo', 'Pedro confessa quem Jesus é e logo depois é repreendido.', 'Quem é Jesus para você, com as suas palavras?'),
+      L('Lucas 22', 'A negação', 'Pedro jura fidelidade e, na mesma noite, nega Jesus três vezes.', 'O que a queda de Pedro ensina sobre confiar em si mesmo?'),
+      L('João 21', 'Tu me amas?', 'Na praia, Jesus restaura Pedro e o chama de novo.', 'O que você responderia se Jesus te perguntasse "Tu me amas?"'),
+      L('Atos 2', 'O sermão de Pentecostes', 'Cheio do Espírito, Pedro prega e cerca de três mil se convertem.', 'O que o Espírito Santo mudou em Pedro, e o que pode mudar em você?'),
+      L('1 Pedro 5', 'Humilhai-vos', 'Já idoso, Pedro escreve aos líderes e aos aflitos.', 'Que ansiedade você vai lançar sobre Deus hoje?'),
+    ],
+  },
+  {
+    id: 'oracao', tipo: 'Tema', nome: 'Oração',
+    desc: 'Aprender a orar com Jesus e com os heróis da fé.',
+    licoes: [
+      L('Mateus 6:5-15', 'O Pai Nosso', 'Jesus ensina a orar sem aparência e com confiança no Pai.', 'Que parte do Pai Nosso você costuma pular?'),
+      L('Lucas 18:1-8', 'A viúva persistente', 'Uma parábola sobre orar sempre e não desanimar.', 'Por qual pedido você parou de orar?'),
+      L('Filipenses 4:6-7', 'Com ação de graças', 'Paulo troca a ansiedade pela oração com gratidão.', 'Liste três motivos de gratidão antes do seu pedido de hoje.'),
+      L('1 Reis 18', 'Elias no Carmelo', 'Elias ora e o fogo cai, diante dos profetas de Baal.', 'O que a oração de Elias mostra sobre confiar em Deus?'),
+      L('Daniel 6', 'Daniel na cova', 'Daniel mantém a rotina de oração mesmo sob ameaça de morte.', 'Qual é o seu horário de oração, e o que o ameaça?'),
+      L('Mateus 26:36-46', 'O Getsêmani', 'Jesus ora em agonia: "não seja como eu quero".', 'Em que decisão você precisa orar "seja feita a tua vontade"?'),
+      L('Tiago 5:13-18', 'Orai uns pelos outros', 'Oração no sofrimento, na doença e na confissão.', 'Com quem você pode combinar de orar esta semana?'),
+    ],
+  },
+  {
+    id: 'familia', tipo: 'Tema', nome: 'Família',
+    desc: 'Casamento, filhos e a fé dentro de casa.',
+    licoes: [
+      L('Gênesis 2', 'O primeiro casamento', 'Deus institui o casamento: deixar, unir-se, ser uma só carne.', 'O que "deixar pai e mãe" significa na prática?'),
+      L('Deuteronômio 6', 'Ensinar os filhos', 'A fé é passada em casa, no caminho, ao deitar e ao levantar.', 'Como a fé aparece nas conversas comuns da sua casa?'),
+      L('Rute 1', 'Rute e Noemi', 'Rute escolhe ficar com a sogra viúva: "o teu Deus será o meu Deus".', 'Quem da sua família precisa da sua lealdade agora?'),
+      L('Salmos 127', 'Se o Senhor não edificar a casa', 'O trabalho só vale com Deus no centro da casa.', 'O que está ocupando o lugar de Deus na rotina da sua casa?'),
+      L('Efésios 5:21-33', 'Marido e mulher', 'O casamento a partir do amor de Cristo pela igreja.', 'Que atitude de serviço você pode ter em casa esta semana?'),
+      L('Efésios 6:1-4', 'Pais e filhos', 'Filhos honram os pais, e pais não provocam os filhos à ira.', 'Como você tem honrado seus pais, ou cuidado dos seus filhos?'),
+      L('Colossenses 3:12-21', 'Revestidos de amor', 'Perdão, paciência e gratidão como roupa do lar cristão.', 'Qual dessas virtudes falta mais na sua casa?'),
+    ],
+  },
+  {
+    id: 'financas', tipo: 'Tema', nome: 'Finanças',
+    desc: 'Dinheiro, dízimo, dívidas e generosidade.',
+    licoes: [
+      L('Provérbios 3:1-10', 'Honra ao Senhor com teus bens', 'Sabedoria para confiar em Deus e honrá-lo com as primícias.', 'O que vem primeiro no seu orçamento?'),
+      L('Malaquias 3:6-12', 'Dízimos e ofertas', 'Deus chama o povo de volta e fala dos dízimos e ofertas.', 'Como você entende sua contribuição para a igreja?'),
+      L('Mateus 6:19-34', 'Tesouros no céu', 'Onde guardar tesouros e como não viver ansioso pelo amanhã.', 'Onde está o seu tesouro, olhando o seu extrato?'),
+      L('Lucas 12:13-21', 'O rico insensato', 'Um homem constrói celeiros maiores e se esquece de Deus.', 'Que "celeiro maior" você tem planejado?'),
+      L('Provérbios 22:1-9', 'O peso da dívida', 'Bom nome, generosidade e o peso de quem toma emprestado.', 'Existe alguma dívida que você precisa enfrentar com um plano?'),
+      L('1 Timóteo 6:6-19', 'Piedade com contentamento', 'Paulo alerta sobre o amor ao dinheiro e orienta os ricos a serem generosos.', 'O que é "ter o suficiente" para você?'),
+      L('2 Coríntios 9', 'Quem dá com alegria', 'Paulo incentiva a oferta para os irmãos de Jerusalém.', 'A quem você pode abençoar com generosidade este mês?'),
+    ],
+  },
+  {
+    id: 'ansiedade', tipo: 'Tema', nome: 'Ansiedade e paz',
+    desc: 'O que a Bíblia diz para a mente cansada.',
+    nota: 'Se a ansiedade estiver pesada demais, procure ajuda profissional e fale com seu pastor. CVV: ligue 188, 24 horas.',
+    licoes: [
+      L('Mateus 6:25-34', 'Olhai as aves do céu', 'Jesus ensina a buscar primeiro o Reino e não viver ansioso.', 'O que está tirando o seu sono, e o que Jesus diz sobre isso?'),
+      L('Filipenses 4:4-9', 'A paz que excede o entendimento', 'Oração com gratidão e pensamentos guardados em Cristo.', 'Que pensamento você precisa trocar por algo verdadeiro e bom?'),
+      L('1 Pedro 5:6-11', 'Ele tem cuidado de vós', 'Deus cuida de nós, e o inimigo é resistido com firmeza na fé.', 'Que ansiedade você vai entregar hoje, pelo nome?'),
+      L('Salmos 42', 'Por que estás abatida, ó minha alma?', 'O salmista conversa com a própria alma no meio da tristeza.', 'O que você diria à sua alma hoje, como o salmista?'),
+      L('1 Reis 19', 'Elias debaixo do zimbro', 'Depois da vitória, Elias foge e quer morrer, e Deus cuida dele com sono e comida.', 'Você tem cuidado do seu corpo como Deus cuidou de Elias?'),
+      L('João 14:1-27', 'Deixo-vos a paz', 'Jesus promete uma paz diferente da que o mundo dá.', 'Qual a diferença entre a paz de Jesus e a paz do mundo?'),
+      L('Isaías 41:8-13', 'Não temas, eu sou contigo', 'Deus fala ao seu povo no exílio: eu te sustento.', 'De que você tem medo, e o que esta promessa responde?'),
+    ],
+  },
+];
+
+const DESAFIOS = [
+  { id: 'evangelhos30', nome: 'Evangelhos em 30 dias', caps: 89, dias: 30 },
+  { id: 'proverbios31', nome: 'Provérbios em 31 dias', caps: 31, dias: 31 },
+  { id: 'salmos30', nome: 'Salmos em 30 dias', caps: 150, dias: 30 },
+  { id: 'nt90', nome: 'Novo Testamento em 90 dias', caps: 260, dias: 90 },
+  { id: 'biblia365', nome: 'Bíblia em 1 ano', caps: 1189, dias: 365 },
+];
+
+const DENOMINACOES = [
+  ['Assembleia de Deus', 'pentecostal'],
+  ['Batista', 'batista'],
+  ['Presbiteriana', 'reformada'],
+  ['Congregação Cristã no Brasil', 'pentecostal'],
+  ['Quadrangular', 'pentecostal'],
+  ['Igreja Universal', 'pentecostal'],
+  ['Metodista', null],
+  ['Comunidade ou igreja independente', null],
+  ['Outra', null],
+];
+
+const TRADICOES = { pentecostal: 'Pentecostal', batista: 'Batista', reformada: 'Reformada' };
+
+/* Biblioteca de dúvidas: formato fixo. Texto em linguagem própria; versículos só por referência. */
+const D = (id, q, cat, biblia, refs, pentecostal, batista, reformada, comum) =>
+  ({ id, q, cat, biblia, refs, trad: { pentecostal, batista, reformada }, comum });
+
+const DUVIDAS = [
+  D('vinho', 'Beber vinho é pecado?', 'Costumes',
+    'A Bíblia condena a embriaguez com clareza. Ao mesmo tempo, registra o vinho na mesa do povo de Deus, Jesus transforma água em vinho em Caná e Paulo orienta Timóteo a tomar um pouco por causa do estômago. Paulo também ensina a abrir mão de algo lícito para não fazer o irmão tropeçar.',
+    'Efésios 5:18; Provérbios 20:1; João 2:1-11; 1 Timóteo 5:23; Romanos 14:21',
+    'A maioria das igrejas pentecostais orienta a abstinência total, por testemunho e por cuidado com o vício.',
+    'Muitas igrejas batistas no Brasil recomendam a abstinência; algumas aceitam o uso moderado como questão de consciência.',
+    'Muitos reformados veem o uso moderado como liberdade cristã, sempre condenando a embriaguez.',
+    'Todos concordam: embriaguez é pecado, e a consciência do irmão mais fraco deve ser respeitada.'),
+  D('tatuagem', 'Cristão pode fazer tatuagem?', 'Costumes',
+    'O único texto direto é Levítico 19:28, ligado a ritos pagãos de luto em Israel. O Novo Testamento não trata do tema, mas ensina que o corpo é templo do Espírito e que Deus olha o coração.',
+    'Levítico 19:28; 1 Coríntios 6:19-20; 1 Samuel 16:7; 1 Coríntios 10:31',
+    'Muitas igrejas desaconselham, com base em Levítico 19:28 e nos usos e costumes.',
+    'A posição varia; muitas igrejas tratam como questão de consciência, avaliando motivação e mensagem.',
+    'Em geral vista como liberdade, desde que a motivação e o conteúdo honrem a Deus.',
+    'O corpo pertence a Deus. Antes de decidir, pense na motivação, no que a imagem comunica e na sua igreja.'),
+  D('dizimo', 'Dízimo é obrigatório hoje?', 'Finanças',
+    'O dízimo aparece antes da lei, com Abraão, e dentro da lei, em Malaquias. Jesus menciona o dízimo sem anulá-lo, e o Novo Testamento ensina a contribuir com regularidade, proporção e alegria.',
+    'Gênesis 14:20; Malaquias 3:10; Mateus 23:23; 1 Coríntios 16:2; 2 Coríntios 9:7',
+    'Em geral ensina o dízimo como prática de todo crente e expressão de fé.',
+    'Costuma ensinar o dízimo como base da contribuição, entregue de forma voluntária e alegre.',
+    'Muitas igrejas ensinam o dízimo como princípio; outras destacam a generosidade proporcional do Novo Testamento.',
+    'Todos concordam: o crente sustenta a obra de Deus com regularidade e alegria, sem constrangimento.'),
+  D('musica', 'Posso ouvir música secular?', 'Costumes',
+    'A Bíblia não divide a música em sacra e secular. Ela orienta o que ocupa a mente: o que é verdadeiro, honesto, justo, puro e amável, e fazer tudo para a glória de Deus.',
+    'Filipenses 4:8; Colossenses 3:16-17; 1 Coríntios 10:31',
+    'Muitas igrejas orientam evitar, principalmente letras e ambientes contrários à fé.',
+    'Em geral, questão de discernimento sobre a letra e o efeito no coração.',
+    'Tende a ver a arte como parte da graça comum, avaliando o conteúdo.',
+    'O critério comum é o que a letra e o ambiente produzem em você.'),
+  D('sexo', 'Sexo antes do casamento é pecado?', 'Relacionamentos',
+    'A Bíblia apresenta o sexo como presente de Deus para o casamento e chama a fugir da imoralidade sexual. O corpo do crente pertence ao Senhor.',
+    'Hebreus 13:4; 1 Coríntios 6:18-20; 1 Tessalonicenses 4:3-5; Gênesis 2:24',
+    'Ensina que o sexo é só para o casamento e costuma orientar namoro com limites claros.',
+    'Ensina que o sexo é só para o casamento.',
+    'Ensina que o sexo é só para o casamento.',
+    'Aqui há consenso entre as tradições. As diferenças estão no jeito de orientar o namoro, não na resposta.'),
+  D('halloween', 'Cristão pode comemorar o Halloween?', 'Costumes',
+    'A Bíblia proíbe a participação em práticas ocultistas e chama a não ter parte com as obras das trevas. Também ensina a julgar dias e costumes com consciência diante de Deus.',
+    'Deuteronômio 18:10-12; Efésios 5:11; Romanos 14:5-6',
+    'Em geral orienta não participar, pela associação com o ocultismo.',
+    'Muitos evitam; algumas igrejas fazem eventos alternativos para as crianças.',
+    'Muitos lembram 31 de outubro como o Dia da Reforma Protestante; a participação em festas varia.',
+    'Todos concordam em não se envolver com ocultismo. A diferença está em como lidar com a festa em si.'),
+  D('salvacao', 'O crente pode perder a salvação?', 'Doutrina',
+    'Há textos que destacam a segurança de quem está nas mãos de Cristo e textos que alertam sobre abandonar a fé. A Bíblia une as duas coisas: Deus guarda, e o crente é chamado a perseverar.',
+    'João 10:28-29; Romanos 8:38-39; Hebreus 6:4-6; Filipenses 2:12-13',
+    'Em geral crê que é possível cair da graça por abandono deliberado da fé.',
+    'A maioria crê na perseverança dos santos; há batistas que pensam diferente.',
+    'Crê na perseverança dos santos: quem é salvo de verdade persevera até o fim.',
+    'Todos concordam: a salvação é pela graça, e a vida do salvo mostra fruto e perseverança.'),
+  D('linguas', 'Falar em línguas é para todos hoje?', 'Doutrina',
+    'Em Atos, o falar em línguas acompanha a vinda do Espírito. Paulo trata do dom em Coríntios, pergunta se todos falam em línguas e coloca ordem no culto.',
+    'Atos 2:4; Atos 10:44-46; 1 Coríntios 12:10, 30; 1 Coríntios 14',
+    'Ensina o batismo no Espírito Santo com a evidência de falar em línguas, disponível a todo crente hoje.',
+    'Muitos são cautelosos ou entendem que esse dom cessou; batistas renovados aceitam.',
+    'Tradicionalmente entende que os dons de sinais cessaram; há reformados que pensam diferente.',
+    'Todos concordam: o Espírito Santo habita em todo crente, e o fruto do Espírito é sinal da sua obra.'),
+  D('divorcio', 'Divórcio e novo casamento: o que a Bíblia permite?', 'Relacionamentos',
+    'Jesus reafirma o casamento como aliança para a vida e menciona a infidelidade como exceção. Paulo trata do caso do cônjuge descrente que abandona.',
+    'Mateus 19:3-9; 1 Coríntios 7:10-15; Malaquias 2:16',
+    'Em geral aceita o divórcio por adultério; o novo casamento varia de igreja para igreja.',
+    'Costuma aceitar adultério e abandono como exceções; a decisão sobre novo casamento muitas vezes é da igreja local.',
+    'A Confissão de Westminster reconhece adultério e abandono como motivos legítimos.',
+    'Todos concordam: o casamento é para a vida, e há graça e acolhimento para quem passou por um divórcio.'),
+  D('pastora', 'Mulher pode ser pastora?', 'Igreja',
+    'Mulheres profetizam, servem e cooperam no evangelho no Novo Testamento. Ao mesmo tempo, Paulo dá orientações sobre ensino e autoridade na igreja que são lidas de formas diferentes.',
+    'Atos 2:17-18; Romanos 16:1-7; 1 Timóteo 2:11-12; Gálatas 3:28',
+    'Muitas Assembleias de Deus não ordenam pastoras; outras pentecostais, como a Quadrangular, ordenam.',
+    'Há igrejas batistas que ordenam pastoras e outras que não; a decisão costuma ser da igreja local.',
+    'A Igreja Presbiteriana do Brasil não ordena mulheres ao pastorado; outras igrejas reformadas ordenam.',
+    'Todos concordam que as mulheres servem e ministram na igreja. A divergência está no pastorado.'),
+  D('psicologo', 'Ir ao psicólogo ou tomar remédio é falta de fé?', 'Vida',
+    'A Bíblia valoriza o conselho e reconhece a medicina: Jesus diz que os doentes precisam de médico, e Paulo recomenda um remédio a Timóteo. A oração e o cuidado andam juntos.',
+    'Provérbios 11:14; Lucas 5:31; 1 Timóteo 5:23; Filipenses 4:6-7',
+    'Hoje muitas igrejas incentivam o tratamento junto com a oração; algumas ainda olham com desconfiança.',
+    'Em geral apoia o tratamento junto com o cuidado pastoral.',
+    'Em geral apoia; alguns preferem o aconselhamento bíblico como primeiro passo.',
+    'Buscar ajuda não é falta de fé. Em risco de vida, ligue 188 (CVV) ou procure um pronto-socorro.'),
+  D('domingo', 'Posso trabalhar no domingo?', 'Vida',
+    'O mandamento do sábado separa um dia para descanso e adoração. Jesus diz que o sábado foi feito por causa do homem, e a igreja passou a se reunir no primeiro dia da semana.',
+    'Êxodo 20:8-11; Marcos 2:27; Atos 20:7; Romanos 14:5-6',
+    'Valoriza o domingo para o culto e aceita o trabalho quando é necessário.',
+    'Valoriza o domingo como dia do Senhor e aceita o trabalho necessário.',
+    'Vê o domingo como dia do Senhor, separado para descanso e adoração, com exceção de obras de necessidade e de misericórdia.',
+    'Todos concordam: separe tempo para Deus, para a igreja e para o descanso, mesmo com uma escala difícil.'),
+  D('apostas', 'Apostas e jogos de azar são pecado?', 'Finanças',
+    'A Bíblia alerta contra o desejo de enriquecer rápido, o amor ao dinheiro e a cobiça. O ganho fácil costuma se perder, e o contentamento é ensinado como ganho.',
+    'Provérbios 13:11; 1 Timóteo 6:9-10; Hebreus 13:5',
+    'Em geral condena jogos de azar e apostas.',
+    'Em geral condena jogos de azar e apostas.',
+    'Em geral condena jogos de azar e apostas.',
+    'Há amplo consenso em evitar, inclusive as apostas online, que têm levado muitas famílias ao endividamento.'),
+  D('jugo', 'Posso namorar alguém que não é crente?', 'Relacionamentos',
+    'Paulo orienta a não se colocar em jugo desigual e diz que a viúva pode casar com quem quiser, desde que seja no Senhor.',
+    '2 Coríntios 6:14; 1 Coríntios 7:39; Amós 3:3',
+    'Orienta não namorar quem não é crente.',
+    'Orienta não namorar quem não é crente.',
+    'Orienta não namorar quem não é crente.',
+    'As tradições concordam. Se você já está num relacionamento assim, converse com seu pastor sem medo.'),
+  D('batismo', 'Batismo de criança ou só de adulto?', 'Doutrina',
+    'Jesus manda batizar os discípulos. Em Atos, pessoas são batizadas depois de crer, e famílias inteiras são batizadas juntas. Paulo liga o batismo à circuncisão.',
+    'Mateus 28:19; Atos 2:38-39; Atos 16:31-33; Colossenses 2:11-12',
+    'Batiza por imersão quem crê; as crianças são apresentadas ao Senhor.',
+    'Batiza por imersão quem crê e confessa a fé.',
+    'Batiza os filhos de crentes como sinal da aliança e os adultos que creem.',
+    'Todos concordam: o batismo é ordem de Jesus e sinal de pertencer ao povo de Deus.'),
+  D('cremacao', 'Cristão pode ser cremado?', 'Vida',
+    'A Bíblia registra o sepultamento como prática comum, mas não proíbe a cremação. A ressurreição é obra de Deus e não depende do estado do corpo.',
+    'Gênesis 3:19; Eclesiastes 12:7; 1 Coríntios 15:42-44',
+    'Historicamente prefere o sepultamento; a aceitação tem crescido.',
+    'Em geral trata como questão de consciência.',
+    'Tem preferência histórica pelo sepultamento, sem proibir a cremação.',
+    'Todos concordam: Deus ressuscita os mortos, seja qual for o destino do corpo.'),
+  D('divida', 'Cristão pode fazer empréstimo ou ter dívida?', 'Finanças',
+    'A Bíblia não proíbe o empréstimo, mas alerta que quem toma emprestado vira servo de quem empresta. Ensina a pagar o que deve e a calcular antes de construir.',
+    'Romanos 13:8; Provérbios 22:7; Salmos 37:21; Lucas 14:28',
+    'Orienta prudência e o pagamento fiel das dívidas.',
+    'Orienta prudência e o pagamento fiel das dívidas.',
+    'Orienta prudência e o pagamento fiel das dívidas.',
+    'Há consenso: dívida não é pecado em si, mas não pagar o que se deve é. Planeje antes de assumir.'),
+  D('costumes', 'Mulher pode usar calça? E os usos e costumes?', 'Costumes',
+    'Deuteronômio fala de não usar roupa do outro sexo, e Pedro e Paulo falam de modéstia e de um adorno que vem do coração. A forma de aplicar isso hoje varia muito.',
+    'Deuteronômio 22:5; 1 Timóteo 2:9-10; 1 Pedro 3:3-4; 1 Samuel 16:7',
+    'Igrejas mais tradicionais mantêm usos e costumes, como saia e cabelo comprido; muitas pentecostais hoje não exigem.',
+    'Não exige usos e costumes; destaca a modéstia.',
+    'Não exige usos e costumes; destaca a modéstia.',
+    'Todos valorizam a modéstia e o coração. Se sua igreja tem usos e costumes, converse com a liderança sobre os motivos.'),
+  D('politica', 'Crente deve participar da política?', 'Igreja',
+    'A Bíblia manda orar pelas autoridades, respeitá-las e buscar o bem da cidade. Jesus separa o que é de César do que é de Deus.',
+    'Jeremias 29:7; Mateus 22:21; Romanos 13:1-7; 1 Timóteo 2:1-2',
+    'Tem participação crescente, inclusive com candidatos ligados às igrejas.',
+    'Defende a separação entre igreja e Estado e a liberdade de consciência; o membro pode participar.',
+    'Entende que Cristo é Senhor de todas as áreas, e a política pode ser vocação.',
+    'Todos concordam: ore pelas autoridades, vote com consciência e não transforme a igreja em partido.'),
+  D('filmes', 'Posso ver filmes e séries com violência ou sexo?', 'Costumes',
+    'A Bíblia orienta guardar os olhos e o coração e ocupar a mente com o que é bom. Jesus fala do olhar com desejo como questão do coração.',
+    'Salmos 101:3; Mateus 5:28; Filipenses 4:8',
+    'Em geral orienta cautela forte e evitar conteúdo impróprio.',
+    'Em geral pede discernimento sobre o conteúdo e o efeito em você.',
+    'Pede discernimento, reconhecendo valor na arte e cuidado com o que alimenta o pecado.',
+    'O critério comum: o que isso faz com o seu coração e com a sua relação com Deus?'),
+];
+
+</script>
+<script>
+/* Manna V1 de teste: lógica do app. Estado salvo neste aparelho (localStorage). */
+
+const KEY = 'manna.v1';
+const DAY = 86400000;
+
+function fresh() {
+  return {
+    v: 1, onboarded: false, step: 0,
+    quiz: { trilhas: [] }, plano: null, nome: '',
+    progress: {}, notes: {},
+    streak: { count: 0, last: null, best: 0 }, protetores: 2,
+    days: [], points: 0, chapters: 0, chapLog: [],
+    cultos: [], ebds: [], duvidasLidas: [], perguntas: [],
+    group: null, ach: {}, offset: 0,
+  };
+}
+function load() {
+  try { const r = localStorage.getItem(KEY); if (r) return Object.assign(fresh(), JSON.parse(r)); } catch (e) {}
+  return fresh();
+}
+let S = load();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* UI (não salvo) */
+const ui = { tab: 'hoje', ov: null, domMode: 'culto', busy: false, aiText: '', aiErr: '', filtro: '', confirmReset: false, toast: '', notice: '', groupMode: null, done: null };
+
+/* Datas */
+const now = () => new Date(Date.now() + S.offset * DAY);
+const pad = n => String(n).padStart(2, '0');
+const keyOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const todayK = () => keyOf(now());
+const parseK = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const diff = (a, b) => Math.round((parseK(b) - parseK(a)) / DAY);
+const addDays = (k, n) => keyOf(new Date(parseK(k).getTime() + n * DAY + 3600000));
+const fmt = (k, o) => parseK(k).toLocaleDateString('pt-BR', o || { day: 'numeric', month: 'long' });
+const lastSunday = () => { const d = now(); return keyOf(new Date(d.getTime() - d.getDay() * DAY)); };
+
+/* Utilidades */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const $ = id => document.getElementById(id);
+const val = id => ($(id) ? $(id).value.trim() : '');
+const plural = (n, s, p) => n + ' ' + (n === 1 ? s : p);
+const trilha = id => TRILHAS.find(t => t.id === id);
+const desafio = id => DESAFIOS.find(d => d.id === id);
+const studiedToday = () => S.days.includes(todayK());
+const doneCount = id => Math.min(S.progress[id] || 0, trilha(id).licoes.length);
+const isDone = id => doneCount(id) >= trilha(id).licoes.length;
+const level = () => Math.floor(S.points / 150) + 1;
+const tradicao = () => S.quiz.tradicao || null;
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+function toast(msg) {
+  ui.toast = msg; renderToast();
+  clearTimeout(toast.t); toast.t = setTimeout(() => { ui.toast = ''; renderToast(); }, 3200);
+}
+
+/* Ofensiva e pontos */
+function study(caps, pts) {
+  const t = todayK(), st = S.streak;
+  if (st.last !== t) {
+    st.count = st.last && diff(st.last, t) === 1 ? st.count + 1 : 1;
+    st.last = t; st.best = Math.max(st.best, st.count);
+  }
+  if (!S.days.includes(t)) S.days.push(t);
+  S.points += pts;
+  if (caps) { S.chapters += caps; S.chapLog.push({ d: t, c: caps }); }
+  checkAch(); save();
+}
+function checkStreak() {
+  const st = S.streak, t = todayK();
+  if (!st.last || !st.count) return;
+  const missed = diff(st.last, t) - 1;
+  if (missed < 1) return;
+  if (missed <= S.protetores) {
+    S.protetores -= missed; st.last = addDays(t, -1);
+    ui.notice = (missed === 1 ? 'Você não estudou ontem' : 'Você ficou ' + missed + ' dias sem estudar') + ', e ' + plural(missed, 'protetor salvou', 'protetores salvaram') + ' sua ofensiva de ' + plural(st.count, 'dia', 'dias') + '.';
+  } else {
+    ui.notice = 'Sua ofensiva de ' + plural(st.count, 'dia', 'dias') + ' acabou. O maná cai de novo todo dia: comece outra hoje.';
+    st.count = 0;
+  }
+  save();
+}
+const weekChaps = () => S.chapLog.filter(x => diff(x.d, todayK()) < 7).reduce((a, x) => a + x.c, 0);
+const weekDays = () => S.days.filter(d => diff(d, todayK()) < 7).length;
+
+/* Conquistas */
+const ACH = [
+  ['primeira', 'Primeira porção', 'Fez a primeira lição.', s => s.days.length >= 1],
+  ['dias7', '7 dias seguidos', 'Uma semana sem parar.', s => s.streak.best >= 7],
+  ['dias30', '30 dias seguidos', 'Um mês sem parar.', s => s.streak.best >= 30],
+  ['livro1', 'Primeiro livro concluído', 'Terminou uma trilha de livro.', s => TRILHAS.some(t => t.tipo === 'Livro' && (s.progress[t.id] || 0) >= t.licoes.length)],
+  ['culto1', 'Domingo virou semana', 'Registrou o primeiro culto.', s => s.cultos.length >= 1],
+  ['ebd1', 'Pronto para a EBD', 'Preparou a primeira lição de EBD.', s => s.ebds.length >= 1],
+  ['duvidas5', 'Sem vergonha de perguntar', 'Estudou 5 dúvidas.', s => s.duvidasLidas.length + s.perguntas.length >= 5],
+  ['grupo', 'Junto com os irmãos', 'Entrou num grupo.', s => !!s.group],
+  ['cap50', '50 capítulos', 'Leu 50 capítulos no Manna.', s => s.chapters >= 50],
+];
+function checkAch() {
+  ACH.forEach(([id, nome, , test]) => {
+    if (!S.ach[id] && test(S)) { S.ach[id] = todayK(); setTimeout(() => toast('Conquista: ' + nome), 400); }
+  });
+}
+
+/* Plano */
+function porDia() { return S.quiz.minutos === 20 ? 2 : 1; }
+function ritmo() { return { 5: 5, 10: 6, 20: 7 }[S.quiz.minutos || 10]; }
+function nextTrail() { return S.quiz.trilhas.find(id => !isDone(id)) || null; }
+function planEnd(id) {
+  let acc = 0;
+  for (const t of S.quiz.trilhas) {
+    acc += trilha(t).licoes.length - doneCount(t);
+    if (t === id) break;
+  }
+  const weeks = acc / (ritmo() * porDia());
+  return addDays(todayK(), Math.ceil(weeks * 7));
+}
+
+/* IA (capability "sample" do Claude). Sem ela, o app usa conteúdo pronto. */
+const samplePromise = (window.claude && window.claude.use) ? window.claude.use('sample').catch(() => null) : Promise.resolve(null);
+let SAMPLE = null, aiChecked = false;
+samplePromise.then(s => { SAMPLE = s; aiChecked = true; render(); });
+const aiMsg = e => ({
+  not_granted: 'O uso da IA não foi permitido nesta página. O resto do app funciona normalmente.',
+  rate_limited: 'Muitos pedidos seguidos. Espere um minuto e tente de novo.',
+  cancelled: 'Pedido cancelado.',
+}[e && e.code] || 'Não deu para gerar agora. Tente de novo em instantes.');
+let aiCtl = null;
+
+const REGRAS = 'Você é o assistente de estudo bíblico do app Manna, para evangélicos brasileiros. Escreva em português do Brasil, com linguagem evangélica brasileira simples e respeitosa. Não use travessões. Não cite literalmente o texto de versões protegidas (ARA, ARC, NVI, NAA, NTLH): use referências (ex.: João 3:16) e explique com suas palavras. Nunca dê veredito único em tema que divide as igrejas evangélicas. Não invente fatos sobre a igreja ou o pregador.';
+
+/* Domingo: estudo da semana */
+function localStudy(c) {
+  const refs = (c.versiculos || '').split(/[;\n]+/).map(s => s.trim()).filter(Boolean);
+  const r = i => refs.length ? refs[i % refs.length] : 'Um texto ligado ao tema';
+  const T = [
+    ['O texto principal', 'Releia o texto da pregação devagar. O que chamou sua atenção no domingo?'],
+    ['O contexto', 'Leia o capítulo inteiro em volta do texto. Quem fala, para quem e por quê?'],
+    ['O que Deus revela', 'O que este texto mostra sobre quem Deus é?'],
+    ['Como viver isso', 'Que atitude concreta este tema pede de você esta semana?'],
+    ['Compartilhe', 'Com quem você vai conversar sobre esta mensagem antes do próximo culto?'],
+  ];
+  return {
+    resumo: 'Estudo montado a partir do tema "' + c.tema + '"' + (refs.length ? ' e dos textos ' + refs.join(', ') : '') + '. Sem a IA, o Manna usa um roteiro padrão de cinco dias.',
+    pontos: ['Leia os textos citados no culto.', 'Anote o que Deus falou com você.', 'Coloque uma atitude em prática.'],
+    versiculos: refs,
+    dias: T.map((t, i) => ({ titulo: t[0], referencia: r(i), pergunta: t[1] })),
+    meta: null, ia: false,
+  };
+}
+async function genStudy(c) {
+  if (!SAMPLE) return localStudy(c);
+  const metas = TRILHAS.map(t => t.id + ' (' + t.nome + ')').join(', ');
+  const prompt = REGRAS + '\n\nUma pessoa registrou o culto de domingo da igreja dela. Monte um estudo para a semana a partir das informações abaixo. Você não ouviu a pregação: trabalhe só com o tema e os textos informados, e deixe isso claro no resumo.\n\n' +
+    'Tema: ' + c.tema + '\nTextos: ' + (c.versiculos || 'não informados') + '\nPregador: ' + (c.pregador || 'não informado') + '\nAnotações da pessoa: ' + (c.notas || 'nenhuma') + '\nDenominação: ' + (S.quiz.denom || 'não informada') + '\n\n' +
+    'Responda só com JSON neste formato: {"resumo": "3 a 4 frases sobre o tema e os textos", "pontos": ["3 a 4 pontos principais curtos"], "versiculos": ["referências citadas e relacionadas"], "dias": [5 objetos {"titulo": "curto", "referencia": "texto bíblico do dia", "pergunta": "uma pergunta de reflexão"}], "meta": "id da trilha que combina com o tema, ou null. Opções: ' + metas + '"}';
+  aiCtl = new AbortController();
+  const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  return { resumo: r.resumo || '', pontos: r.pontos || [], versiculos: r.versiculos || [], dias: (r.dias || []).slice(0, 5), meta: trilha(r.meta) ? r.meta : null, ia: true };
+}
+
+/* EBD */
+function localEbd(e) {
+  const refs = (e.textos || '').split(/[;\n]+/).map(s => s.trim()).filter(Boolean);
+  return {
+    contexto: 'Leia os textos da lição com calma antes da aula. Procure quem escreveu, para quem e o que estava acontecendo. Sem a IA, o Manna mostra um roteiro padrão.',
+    versiculos: refs,
+    perguntas: ['O que o texto diz, com as suas palavras?', 'O que ele mostra sobre Deus?', 'O que ele mostra sobre nós?', 'O que muda na sua semana depois desta lição?'],
+    aplicacao: 'Escolha uma atitude prática ligada ao tema "' + e.tema + '" e conte para a classe no próximo domingo.',
+    roteiro: e.modo === 'professor' ? [
+      { etapa: 'Abertura', minutos: 5, descricao: 'Oração e uma pergunta para quebrar o gelo sobre o tema.' },
+      { etapa: 'Leitura', minutos: 10, descricao: 'Leitura dos textos em voz alta, alternando os alunos.' },
+      { etapa: 'Explicação', minutos: 15, descricao: 'Contexto e pontos principais da lição.' },
+      { etapa: 'Discussão', minutos: 15, descricao: 'Grupos de 3 respondem as perguntas e compartilham.' },
+      { etapa: 'Aplicação', minutos: 5, descricao: 'Cada um escolhe uma atitude para a semana. Oração final.' },
+    ] : [], ia: false,
+  };
+}
+async function genEbd(e) {
+  if (!SAMPLE) return localEbd(e);
+  const prompt = REGRAS + '\n\nPrepare a lição da Escola Bíblica Dominical (EBD) desta semana. Não reproduza nem imite o texto das revistas de EBD; prepare material próprio a partir do tema e dos textos bíblicos.\n\nTema: ' + e.tema + '\nTextos: ' + (e.textos || 'não informados') + '\nQuem vai usar: ' + (e.modo === 'professor' ? 'professor da classe' : 'aluno') + '\n\n' +
+    'Responda só com JSON: {"contexto": "3 a 5 frases de contexto histórico e literário", "versiculos": ["referências principais e de apoio"], "perguntas": ["4 perguntas de discussão"], "aplicacao": "2 frases de aplicação prática"' + (e.modo === 'professor' ? ', "roteiro": [5 objetos {"etapa": "nome", "minutos": número, "descricao": "o que fazer, com uma dinâmica simples quando couber"}] somando 50 minutos' : '') + '}';
+  aiCtl = new AbortController();
+  const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  return { contexto: r.contexto || '', versiculos: r.versiculos || [], perguntas: r.perguntas || [], aplicacao: r.aplicacao || '', roteiro: r.roteiro || [], ia: true };
+}
+
+/* Dúvida livre */
+async function genDuvida(q) {
+  const prompt = REGRAS + '\n\nUma pessoa fez esta pergunta, que talvez tenha vergonha de fazer ao pastor: "' + q + '"\nTradição da pessoa: ' + (TRADICOES[tradicao()] || 'não informada') + '.\n' +
+    'Se a pergunta envolver risco de vida, autolesão ou abuso, diga com clareza para buscar ajuda agora (CVV 188, ou 190 em caso de violência) e para falar com alguém de confiança.\n' +
+    'Responda só com JSON: {"biblia": "o que a Bíblia diz, 3 a 5 frases", "refs": "referências separadas por ponto e vírgula", "trad": {"pentecostal": "1 ou 2 frases", "batista": "1 ou 2 frases", "reformada": "1 ou 2 frases"}, "comum": "1 ou 2 frases sobre o que as tradições têm em comum ou onde divergem"}. Se as tradições concordam, diga isso.';
+  aiCtl = new AbortController();
+  const r = await SAMPLE.json(prompt, { signal: aiCtl.signal });
+  return { id: 'p' + uid(), q, cat: 'Sua pergunta', biblia: r.biblia || '', refs: r.refs || '', trad: r.trad || {}, comum: r.comum || '', ia: true };
+}
+
+/* Grupo (simulado neste aparelho) */
+const MEMBROS = [
+  { nome: 'Débora', base: 6, rate: 3.1 }, { nome: 'Pr. Samuel', base: 9, rate: 3.4 },
+  { nome: 'Lucas', base: 2, rate: 1.6 }, { nome: 'Raquel', base: 4, rate: 2.6 }, { nome: 'Tiago', base: 1, rate: 0.9 },
+];
+function makeGroup(nome, des) {
+  const t = todayK();
+  S.group = {
+    nome, code: Math.random().toString(36).slice(2, 8).toUpperCase(), desafio: des, start: t, chapAtStart: S.chapters,
+    feed: [
+      { id: uid(), who: 'Pr. Samuel', d: addDays(t, -1), text: 'Começamos o desafio. Leiam com calma e postem o que Deus falar com vocês.', ref: '', amem: 4, comments: [] },
+      { id: uid(), who: 'Débora', d: t, text: 'Li dois capítulos no ônibus hoje. Marcos 1 me lembrou que Jesus começou o ministério orando cedo.', ref: 'Marcos 1:35', amem: 3, comments: [] },
+    ],
+  };
+}
+function ranking() {
+  const g = S.group, days = Math.max(0, diff(g.start, todayK())) + 1;
+  const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true }));
+  rows.push({ nome: S.nome || 'Você', caps: S.chapters - g.chapAtStart, me: true });
+  return rows.sort((a, b) => b.caps - a.caps);
+}
+function postFeed(text, ref) {
+  if (!S.group) return;
+  S.group.feed.unshift({ id: uid(), who: S.nome || 'Você', me: true, d: todayK(), text, ref: ref || '', amem: 0, comments: [] });
+}
+
+/* Ícones simples (só onde ajudam a ler) */
+const I = {
+  hoje: '<path d="M4 18c3-2 6-2 8 1 2-3 5-3 8-1V7c-3-2-6-2-8 1-2-3-5-3-8-1z"/>',
+  domingo: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+  duvidas: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"/><circle cx="12" cy="16.8" r=".6" fill="currentColor"/>',
+  grupo: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M15.8 14.6c2.3 0 4 1.3 4.7 4"/>',
+  perfil: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
+  voltar: '<path d="M15 5l-7 7 7 7"/>',
+};
+const icon = (n, cls) => '<svg class="' + (cls || 'ic') + '" viewBox="0 0 24 24" aria-hidden="true">' + I[n] + '</svg>';
+const LOGO = '<svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="var(--noite)"/><path d="M12 40c6.5-3.6 13.5-3.6 20 1.6 6.5-5.2 13.5-5.2 20-1.6v9c-6.5-3.6-13.5-3.6-20 1.6-6.5-5.2-13.5-5.2-20-1.6z" fill="none" stroke="var(--ouro)" stroke-width="3.6" stroke-linejoin="round"/><path d="M32 41.6v8.4" stroke="var(--ouro)" stroke-width="3.6" stroke-linecap="round"/><ellipse cx="34" cy="21" rx="4.6" ry="7" transform="rotate(-24 34 21)" fill="var(--ouro)"/></svg>';
+const GRAO = '<svg class="grao" viewBox="0 0 12 16" aria-hidden="true"><ellipse cx="6" cy="8" rx="4" ry="6.2" transform="rotate(-22 6 8)"/></svg>';
+
+/* ---------- Onboarding ---------- */
+const QUIZ = [
+  { k: 'denom', t: 'Qual é a sua igreja ou denominação?', sub: 'As respostas das dúvidas destacam a visão da sua tradição.', opts: DENOMINACOES.map(d => d[0]) },
+  { k: 'convertido', t: 'Há quanto tempo você é convertido?', opts: ['Menos de 1 ano', 'De 1 a 5 anos', 'De 5 a 15 anos', 'Mais de 15 anos', 'Ainda estou conhecendo'] },
+  { k: 'leitura', t: 'Como está sua leitura bíblica hoje?', opts: ['Leio todo dia', 'Leio às vezes', 'Parei de ler'] },
+  { k: 'minutos', t: 'Quanto tempo você tem por dia?', sub: 'Dá para mudar depois.', opts: [[5, '5 minutos'], [10, '10 minutos'], [20, '20 minutos']] },
+  { k: 'trilhas', t: 'O que você quer aprender este ano?', sub: 'Escolha de 1 a 3 metas. A primeira vira a sua porção diária.', multi: true },
+  { k: 'celula', t: 'Você participa de célula ou EBD?', opts: ['Célula', 'EBD', 'Os dois', 'Nenhum dos dois'] },
+  { k: 'versao', t: 'Qual versão da Bíblia você usa?', sub: 'No teste, o estudo indica a referência e você lê na sua Bíblia.', opts: ['ARA', 'ARC', 'NVI', 'NAA', 'NTLH', 'Outra ou não sei'] },
+  { k: 'horario', t: 'Qual horário você prefere para o lembrete?', opts: ['6h', '7h', '12h', '19h', '21h'] },
+];
+
+function vOnboarding() {
+  const s = S.step;
+  if (s === 0) return '<main class="screen center">' + '<div class="hero">' + LOGO.replace('class="logo"', 'class="logo big"') +
+    '<h1 class="brand">manna</h1><p class="lead">Sua porção diária da Palavra</p></div>' +
+    '<p class="body-l">Suas metas do ano, o culto de domingo e suas dúvidas viram o estudo da semana. E seus amigos da igreja te ajudam a não parar.</p>' +
+    '<button class="btn" data-a="next">Montar meu plano</button><p class="fine">Leva 1 minuto. Versão de teste: nada é cobrado.</p></main>';
+  if (s >= 1 && s <= QUIZ.length) return vQuiz(QUIZ[s - 1], s);
+  if (s === QUIZ.length + 1) return vResultado();
+  if (s === QUIZ.length + 2) return vPaywall();
+  return vConvite();
+}
+function quizHead(s) {
+  const tot = QUIZ.length;
+  return '<div class="qhead"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button>' +
+    '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="' + tot + '" aria-valuenow="' + s + '"><i style="width:' + (s / tot * 100) + '%"></i></div>' +
+    '<span class="muted tnum">' + s + ' de ' + tot + '</span></div>';
+}
+function vQuiz(q, s) {
+  let h = '<main class="screen">' + quizHead(s) + '<h2 class="qt">' + q.t + '</h2>' + (q.sub ? '<p class="muted">' + q.sub + '</p>' : '');
+  if (q.multi) {
+    const sel = S.quiz.trilhas;
+    ['Livro', 'Personagem', 'Tema'].forEach(tp => {
+      h += '<h3 class="grp">' + { Livro: 'Um livro', Personagem: 'Um personagem', Tema: 'Um tema' }[tp] + '</h3><div class="opts">';
+      TRILHAS.filter(t => t.tipo === tp).forEach(t => {
+        const i = sel.indexOf(t.id);
+        h += '<button class="opt' + (i > -1 ? ' on' : '') + '" data-a="pickTrail" data-id="' + t.id + '" aria-pressed="' + (i > -1) + '"><span><b>' + t.nome + '</b><small>' + t.desc + '</small></span>' + (i > -1 ? '<em class="ord">' + (i + 1) + '</em>' : '') + '</button>';
+      });
+      h += '</div>';
+    });
+    h += '<div class="sticky-cta"><button class="btn" data-a="next"' + (sel.length ? '' : ' disabled') + '>Continuar</button></div>';
+  } else {
+    h += '<div class="opts">';
+    q.opts.forEach(o => {
+      const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
+      const on = S.quiz[q.k] === v;
+      h += '<button class="opt' + (on ? ' on' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
+    });
+    h += '</div>';
+  }
+  return h + '</main>';
+}
+function vResultado() {
+  const q = S.quiz, first = trilha(q.trilhas[0]);
+  const desafioTxt = (q.celula === 'Célula' || q.celula === 'Os dois') ? 'Convide sua célula para "Evangelhos em 30 dias".' : 'Faça sua porção 7 dias seguidos e ganhe a primeira conquista.';
+  let h = '<main class="screen">' + '<h2 class="qt">Seu plano para 2027</h2><p class="muted">Começa hoje, ' + fmt(todayK()) + '. Você chega a 2027 com o hábito formado.</p>';
+  h += '<section class="card"><h3>Suas metas</h3><ol class="metas">';
+  q.trilhas.forEach(id => {
+    const t = trilha(id);
+    h += '<li><b>' + t.nome + '</b><span class="muted">' + plural(t.licoes.length, 'lição', 'lições') + ' · até ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' }) + '</span></li>';
+  });
+  h += '</ol></section>';
+  h += '<section class="card"><h3>Seu ritmo</h3><p>' + ritmo() + ' porções por semana, de ' + q.minutos + ' minutos, com lembrete às ' + (q.horario || '7h') + '. No domingo, o culto vira o estudo da semana.</p></section>';
+  h += '<section class="card"><h3>Primeiro desafio</h3><p>' + desafioTxt + '</p></section>';
+  h += '<section class="card"><h3>Sua primeira porção</h3><p><b>' + first.licoes[0].ref + '</b>: ' + first.licoes[0].titulo + '</p></section>';
+  return h + '<div class="sticky-cta"><button class="btn" data-a="next">Começar meu plano</button></div></main>';
+}
+function vPaywall() {
+  const p = S.plano || 'anual', fim = fmt(addDays(todayK(), 7));
+  const plans = [
+    ['anual', 'Anual', 'R$ 7,49 por mês', 'R$ 89,90 cobrados uma vez por ano'],
+    ['mensal', 'Mensal', 'R$ 9,90 por mês', 'Cancele quando quiser'],
+    ['familia', 'Família ou célula', 'R$ 149,90 por ano', 'Até 5 pessoas'],
+  ];
+  const preco = { anual: 'R$ 89,90 por ano', mensal: 'R$ 9,90 por mês', familia: 'R$ 149,90 por ano' }[p];
+  let h = '<main class="screen"><button class="iconbtn" data-a="back" aria-label="Voltar">' + icon('voltar') + '</button>' +
+    '<h2 class="qt">Seu plano está pronto. Comece com 7 dias grátis.</h2>' +
+    '<ul class="checks"><li>Porção diária das suas metas do ano</li><li>Culto de domingo virando estudo da semana</li><li>Dúvidas respondidas com versículos e as visões das tradições</li><li>Preparação da EBD</li><li>Grupos com desafio e ranking, e protetor de ofensiva</li></ul><div class="opts">';
+  plans.forEach(([id, nome, preco1, det]) => {
+    h += '<button class="opt plan' + (p === id ? ' on' : '') + '" data-a="plan" data-id="' + id + '" aria-pressed="' + (p === id) + '"><span><b>' + nome + (id === 'anual' ? ' <small class="tag">Mais escolhido</small>' : '') + '</b><small>' + det + '</small></span><strong class="tnum">' + preco1 + '</strong></button>';
+  });
+  h += '</div><div class="timeline"><p><b>Hoje:</b> R$ 0,00. Acesso completo.</p><p><b>' + fmt(addDays(todayK(), 5)) + ':</b> avisamos que o teste está acabando.</p><p><b>' + fim + ':</b> começa a cobrança de ' + preco + ', se você não cancelar.</p></div>' +
+    '<button class="btn" data-a="trial">Começar 7 dias grátis</button>' +
+    '<p class="fine">Versão de teste: nenhum pagamento é pedido nem cobrado. No app final, a compra é pela loja ou por Pix e cartão no site.</p></main>';
+  return h;
+}
+function vConvite() {
+  return '<main class="screen"><h2 class="qt">Estude junto com a sua igreja</h2><p class="muted">Quem lê com os amigos da célula não para. Crie um grupo e convide pelo WhatsApp, ou entre com um código.</p>' +
+    vGroupForms(true) + '<button class="btn ghost" data-a="finish">Agora não</button></main>';
+}
+
+/* ---------- App principal ---------- */
+function vHoje() {
+  const st = S.streak, done = studiedToday(), tid = nextTrail();
+  const hour = now().getHours();
+  let h = '<header class="top"><div class="mark">' + LOGO + '<span class="brand sm">manna</span></div>' +
+    '<div class="streak" title="Ofensiva">' + GRAO + '<b class="tnum">' + st.count + '</b><span>' + (st.count === 1 ? 'dia' : 'dias') + '</span></div></header>';
+  h += '<main class="screen">';
+  if (ui.notice) h += '<div class="note" role="status">' + esc(ui.notice) + ' <button class="link" data-a="dismiss">Ok</button></div>';
+  h += '<h1 class="h1">Sua porção de hoje</h1>';
+  if (!done && st.count > 0 && hour >= 19) h += '<p class="risk">Sua ofensiva de ' + plural(st.count, 'dia', 'dias') + ' acaba à meia-noite.</p>';
+  if (tid) {
+    const t = trilha(tid), i = doneCount(tid), l = t.licoes[i];
+    if (done) {
+      h += '<section class="card porcao done"><p class="kicker">Porção colhida hoje</p><h2>O maná não se guardava. Volte amanhã para a próxima.</h2><p class="muted">Próxima: ' + l.ref + ', ' + l.titulo + '.</p><button class="btn sec" data-a="lesson" data-id="' + tid + '">Fazer mais uma agora</button></section>';
+    } else {
+      h += '<section class="card porcao"><p class="kicker">' + t.nome + ' · lição ' + (i + 1) + ' de ' + t.licoes.length + '</p><h2>' + l.titulo + '</h2><p class="ref">' + l.ref + '</p><p class="muted">' + l.ctx + '</p><button class="btn" data-a="lesson" data-id="' + tid + '">Começar · ' + (S.quiz.minutos || 10) + ' min</button></section>';
+    }
+  } else {
+    h += '<section class="card porcao"><h2>Você concluiu todas as suas metas.</h2><p class="muted">Escolha uma nova meta para continuar a porção diária.</p><button class="btn" data-a="open" data-ov="metas">Escolher meta</button></section>';
+  }
+  const c = S.cultos[0];
+  if (c && diff(c.data, todayK()) < 7) {
+    const nd = c.study.dias.findIndex((_, i) => !c.feitos.includes(i));
+    h += '<section class="card row-card" data-a="open" data-ov="culto" data-id="' + c.id + '" role="button" tabindex="0"><div><p class="kicker">Estudo do culto</p><h3>' + esc(c.tema) + '</h3><p class="muted">' + (nd === -1 ? 'Os 5 dias foram concluídos.' : 'Dia ' + (nd + 1) + ' de 5: ' + esc(c.study.dias[nd].titulo)) + '</p></div><span class="chev">›</span></section>';
+  } else {
+    h += '<section class="card row-card" data-a="tab" data-tab="domingo" role="button" tabindex="0"><div><h3>Leve o culto de domingo para a semana</h3><p class="muted">Digite o tema e os versículos e receba um estudo de 5 dias.</p></div><span class="chev">›</span></section>';
+  }
+  h += '<section class="sec"><div class="sec-h"><h2>Suas metas para 2027</h2><button class="link" data-a="open" data-ov="metas">Editar</button></div>';
+  S.quiz.trilhas.forEach(id => {
+    const t = trilha(id), d = doneCount(id), n = t.licoes.length;
+    h += '<button class="meta" data-a="open" data-ov="trilha" data-id="' + id + '"><span class="meta-t"><b>' + t.nome + '</b><span class="muted tnum">' + d + ' de ' + n + '</span></span><span class="bar"><i style="width:' + (d / n * 100) + '%"></i></span></button>';
+  });
+  h += '</section><section class="stats3"><div><b class="tnum">' + S.chapters + '</b><span>capítulos lidos</span></div><div><b class="tnum">' + S.days.length + '</b><span>dias de estudo</span></div><div><b class="tnum">' + S.points + '</b><span>pontos</span></div></section>';
+  if (tid) { const left = trilha(tid).licoes.length - doneCount(tid); h += '<p class="insight">Faltam ' + plural(left, 'lição', 'lições') + ' para concluir ' + trilha(tid).nome + '.</p>'; }
+  return h + '</main>';
+}
+
+function vDomingo() {
+  let h = '<main class="screen"><h1 class="h1">Domingo</h1><div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.domMode === 'culto') + '" data-a="dom" data-m="culto">Culto</button><button role="tab" aria-selected="' + (ui.domMode === 'ebd') + '" data-a="dom" data-m="ebd">EBD</button></div>';
+  if (ui.domMode === 'culto') {
+    h += '<p class="muted">Registre o culto e receba um estudo de segunda a sexta.</p><form class="form" data-f="culto">' +
+      '<label>Tema da pregação<input id="c-tema" required maxlength="140" placeholder="Ex.: A fé que vence o medo"></label>' +
+      '<label>Versículos citados<textarea id="c-vers" rows="2" placeholder="Ex.: Josué 1:9; Marcos 4:35-41"></textarea></label>' +
+      '<div class="two"><label>Pregador<input id="c-preg" maxlength="60" placeholder="Opcional"></label><label>Data<input id="c-data" type="date" value="' + lastSunday() + '"></label></div>' +
+      '<label>Igreja<input id="c-igreja" maxlength="80" placeholder="Opcional" value="' + esc(S.lastIgreja || '') + '"></label>' +
+      '<label>Link da live no YouTube<input id="c-link" type="url" placeholder="Opcional"></label>' +
+      '<label>Suas anotações<textarea id="c-notas" rows="3" placeholder="O que mais marcou você? (opcional)"></textarea></label>' +
+      '<p class="fine">' + (SAMPLE ? 'O estudo é montado com IA a partir do tema, dos versículos e das suas anotações. O áudio da live não é ouvido nesta versão.' : (aiChecked ? 'IA indisponível aqui: o estudo usa um roteiro padrão de 5 dias com os seus versículos.' : 'Verificando a IA...')) + '</p>' +
+      busyBtn('Montar estudo da semana') + '</form>';
+    if (S.cultos.length) {
+      h += '<section class="sec"><h2>Biblioteca de cultos</h2><ul class="list">';
+      S.cultos.forEach(c => { h += '<li><button data-a="open" data-ov="culto" data-id="' + c.id + '"><b>' + esc(c.tema) + '</b><span class="muted">' + fmt(c.data, { day: 'numeric', month: 'short' }) + (c.pregador ? ' · ' + esc(c.pregador) : '') + (c.igreja ? ' · ' + esc(c.igreja) : '') + '</span></button></li>'; });
+      h += '</ul></section>';
+    }
+  } else {
+    h += '<p class="muted">Informe o tema e os textos da lição da semana e chegue preparado.</p><form class="form" data-f="ebd">' +
+      '<label>Tema da lição<input id="e-tema" required maxlength="140" placeholder="Ex.: A paciência de Jó"></label>' +
+      '<label>Textos bíblicos<textarea id="e-textos" rows="2" placeholder="Ex.: Jó 1:1-22; Tiago 5:11"></textarea></label>' +
+      '<div class="seg small" role="radiogroup"><button type="button" role="radio" aria-checked="' + (ui.ebdModo !== 'professor') + '" data-a="ebdModo" data-m="aluno">Sou aluno</button><button type="button" role="radio" aria-checked="' + (ui.ebdModo === 'professor') + '" data-a="ebdModo" data-m="professor">Sou professor</button></div>' +
+      '<p class="fine">O Manna não reproduz as revistas de EBD. A preparação é material próprio sobre os textos bíblicos.</p>' +
+      busyBtn('Preparar a lição') + '</form>';
+    if (S.ebds.length) {
+      h += '<section class="sec"><h2>Lições preparadas</h2><ul class="list">';
+      S.ebds.forEach(e => { h += '<li><button data-a="open" data-ov="ebd" data-id="' + e.id + '"><b>' + esc(e.tema) + '</b><span class="muted">' + fmt(e.data, { day: 'numeric', month: 'short' }) + ' · ' + (e.modo === 'professor' ? 'professor' : 'aluno') + '</span></button></li>'; });
+      h += '</ul></section>';
+    }
+  }
+  return h + '</main>';
+}
+function busyBtn(label) {
+  return (ui.busy ? '<div class="busy"><button class="btn" disabled>Montando… pode levar até um minuto</button><button type="button" class="btn ghost" data-a="stopAi">Cancelar</button></div>' : '<button class="btn" type="submit">' + label + '</button>') +
+    (ui.aiErr ? '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>' : '');
+}
+
+function vDuvidas() {
+  const f = ui.filtro.toLowerCase();
+  const list = DUVIDAS.filter(d => !f || (d.q + ' ' + d.cat).toLowerCase().includes(f));
+  let h = '<main class="screen"><h1 class="h1">Dúvidas</h1><p class="muted">As perguntas que dá vergonha de fazer ao pastor, respondidas com versículos e as visões das principais tradições.</p>';
+  h += '<form class="form ask" data-f="duvida"><label>Sua pergunta<textarea id="d-q" rows="2" maxlength="300" placeholder="Ex.: Posso ser padrinho de casamento numa igreja católica?"></textarea></label>' +
+    (SAMPLE ? busyBtn('Perguntar') : '<p class="fine">' + (aiChecked ? 'A pergunta livre usa IA e não está disponível aqui. A biblioteca abaixo funciona normalmente.' : 'Verificando a IA...') + '</p>') + '</form>';
+  if (S.perguntas.length) {
+    h += '<section class="sec"><h2>Suas perguntas</h2><ul class="list">';
+    S.perguntas.forEach(p => { h += '<li><button data-a="open" data-ov="duvida" data-id="' + p.id + '"><b>' + esc(p.q) + '</b></button></li>'; });
+    h += '</ul></section>';
+  }
+  h += '<section class="sec"><div class="sec-h"><h2>Biblioteca</h2><span class="muted tnum">' + list.length + ' de ' + DUVIDAS.length + '</span></div>' +
+    '<input id="d-filtro" class="search" type="search" placeholder="Buscar: vinho, dízimo, namoro…" value="' + esc(ui.filtro) + '" aria-label="Buscar dúvidas"><ul class="list">';
+  list.forEach(d => { h += '<li><button data-a="open" data-ov="duvida" data-id="' + d.id + '"><b>' + d.q + '</b><span class="muted">' + d.cat + (S.duvidasLidas.includes(d.id) ? ' · estudada' : '') + '</span></button></li>'; });
+  if (!list.length) h += '<li class="empty">Nada encontrado. Faça a pergunta no campo acima.</li>';
+  return h + '</ul></section></main>';
+}
+
+function vGroupForms(onb) {
+  const m = ui.groupMode;
+  let h = '<div class="opts"><button class="opt' + (m === 'criar' ? ' on' : '') + '" data-a="gmode" data-m="criar"><span><b>Criar um grupo</b><small>Célula, família, ministério ou amigos</small></span></button>' +
+    '<button class="opt' + (m === 'entrar' ? ' on' : '') + '" data-a="gmode" data-m="entrar"><span><b>Entrar com um código</b><small>Recebeu o convite de alguém</small></span></button></div>';
+  if (m === 'criar') {
+    h += '<form class="form" data-f="gcriar"><label>Nome do grupo<input id="g-nome" required maxlength="40" placeholder="Ex.: Célula Esperança"></label><label>Desafio<select id="g-des">' +
+      DESAFIOS.map(d => '<option value="' + d.id + '">' + d.nome + '</option>').join('') + '</select></label><label>Seu nome no grupo<input id="g-eu" maxlength="30" value="' + esc(S.nome) + '" placeholder="Como os irmãos te chamam"></label><button class="btn" type="submit">Criar grupo</button></form>';
+  } else if (m === 'entrar') {
+    h += '<form class="form" data-f="gentrar"><label>Código do convite<input id="g-code" required maxlength="8" placeholder="Ex.: K7Q2MD" autocapitalize="characters"></label><label>Seu nome no grupo<input id="g-eu" maxlength="30" value="' + esc(S.nome) + '"></label><button class="btn" type="submit">Entrar no grupo</button></form>';
+  }
+  return h + (onb ? '' : '<p class="fine">No teste, o grupo funciona neste aparelho, com membros de exemplo. A sincronização entre celulares vem na próxima versão.</p>');
+}
+function vGrupo() {
+  const g = S.group;
+  if (!g) return '<main class="screen"><h1 class="h1">Grupo</h1><p class="muted">Leia com os amigos da igreja, com desafio, ranking e check-in diário.</p>' + vGroupForms(false) + '</main>';
+  const d = desafio(g.desafio), dia = Math.min(d.dias, diff(g.start, todayK()) + 1), meus = S.chapters - g.chapAtStart;
+  const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
+  let h = '<main class="screen"><h1 class="h1">' + esc(g.nome) + '</h1>';
+  h += '<section class="card"><p class="kicker">Desafio · dia ' + dia + ' de ' + d.dias + '</p><h2>' + d.nome + '</h2><p>Você leu ' + plural(meus, 'capítulo', 'capítulos') + ' de ' + d.caps + '. O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' por dia.</p><span class="bar"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span></section>';
+  h += '<section class="sec"><h2>Ranking por capítulos</h2><ol class="rank">';
+  ranking().forEach((r, i) => { h += '<li class="' + (r.me ? 'me' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="nm">' + esc(r.nome) + (r.ex ? ' <small class="muted">exemplo</small>' : '') + '</span><b class="tnum">' + r.caps + '</b></li>'; });
+  h += '</ol></section>';
+  h += '<section class="sec"><h2>Check-in de hoje</h2><form class="form" data-f="checkin"><div class="two"><label>Capítulos lidos fora do app<input id="ck-caps" type="number" min="0" max="50" value="1" inputmode="numeric"></label><label>Versículo<input id="ck-ref" maxlength="40" placeholder="Ex.: Salmos 23:1"></label></div><label>Reflexão curta<textarea id="ck-txt" rows="2" maxlength="280" placeholder="O que Deus falou com você hoje? (opcional)"></textarea></label><button class="btn" type="submit">Marcar leitura de hoje</button></form></section>';
+  h += '<section class="sec"><h2>Feed do grupo</h2><ul class="feed">';
+  g.feed.forEach(p => {
+    h += '<li><p class="who"><b>' + esc(p.who) + '</b><span class="muted"> · ' + fmt(p.d, { day: 'numeric', month: 'short' }) + '</span></p>' + (p.ref ? '<p class="ref">' + esc(p.ref) + '</p>' : '') + '<p>' + esc(p.text) + '</p>' +
+      '<div class="acts"><button class="pill' + (p.amei ? ' on' : '') + '" data-a="amem" data-id="' + p.id + '" aria-pressed="' + !!p.amei + '">Amém <span class="tnum">' + p.amem + '</span></button><button class="link" data-a="cmt" data-id="' + p.id + '">Comentar</button></div>';
+    if (p.comments.length) h += '<ul class="cmts">' + p.comments.map(c => '<li><b>' + esc(c.who) + '</b> ' + esc(c.text) + '</li>').join('') + '</ul>';
+    if (ui.cmt === p.id) h += '<form class="form inline" data-f="cmt" data-id="' + p.id + '"><input id="cmt-txt" maxlength="200" placeholder="Escreva um comentário" aria-label="Comentário"><button class="btn sm" type="submit">Enviar</button></form>';
+    h += '</li>';
+  });
+  h += '</ul></section>';
+  h += '<section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + g.code + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener">Abrir WhatsApp</a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div><p class="fine">No teste, o grupo funciona só neste aparelho e os outros membros são exemplos.</p></section>';
+  h += '<button class="link danger" data-a="leaveGroup">Sair do grupo</button>';
+  return h + '</main>';
+}
+
+function vPerfil() {
+  const st = S.streak, lv = level(), into = S.points % 150;
+  const resumo = 'Minha semana no Manna: ofensiva de ' + plural(st.count, 'dia', 'dias') + ', ' + plural(weekChaps(), 'capítulo lido', 'capítulos lidos') + ' e ' + weekDays() + ' de 7 dias de estudo. Sua porção diária da Palavra.';
+  let h = '<main class="screen"><h1 class="h1">Perfil</h1>';
+  h += '<section class="stats2"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span><small class="muted">recorde: ' + st.best + '</small></div><div><b class="tnum">' + S.protetores + '</b><span>protetores de ofensiva</span><small class="muted">salvam um dia perdido</small></div></section>';
+  h += '<section class="card"><div class="sec-h"><h3>Nível ' + lv + '</h3><span class="muted tnum">' + S.points + ' pontos</span></div><span class="bar"><i style="width:' + (into / 150 * 100) + '%"></i></span><p class="fine">Faltam ' + (150 - into) + ' pontos para o nível ' + (lv + 1) + '. Lição vale 15 mais 10 por capítulo, culto vale 30, dúvida vale 5.</p></section>';
+  h += '<section class="share"><p class="brand sm">manna</p><h2>Minha semana</h2><div class="share-n"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + weekChaps() + '</b><span>capítulos</span></div><div><b class="tnum">' + weekDays() + '/7</b><span>dias de estudo</span></div></div><p>Sua porção diária da Palavra</p></section>';
+  h += '<button class="btn sec" data-a="copy" data-t="' + esc(resumo) + '">Copiar resumo para o Status</button>';
+  h += '<section class="sec"><h2>Conquistas</h2><ul class="ach">';
+  ACH.forEach(([id, nome, desc]) => { const got = S.ach[id]; h += '<li class="' + (got ? 'got' : '') + '"><b>' + nome + '</b><span class="muted">' + (got ? 'Desde ' + fmt(got, { day: 'numeric', month: 'short' }) : desc) + '</span></li>'; });
+  h += '</ul></section>';
+  h += '<section class="sec"><h2>Ajustes</h2><form class="form" data-f="ajustes"><label>Seu nome no grupo<input id="p-nome" maxlength="30" value="' + esc(S.nome) + '"></label><div class="two"><label>Tempo por dia<select id="p-min">' + [5, 10, 20].map(m => '<option value="' + m + '"' + (S.quiz.minutos === m ? ' selected' : '') + '>' + m + ' minutos</option>').join('') + '</select></label><label>Lembrete<select id="p-hor">' + ['6h', '7h', '12h', '19h', '21h'].map(x => '<option' + (S.quiz.horario === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label></div><p class="fine">Na versão de teste não enviamos notificações. No app, o lembrete sai no horário escolhido e outro à noite se a ofensiva estiver em risco.</p><button class="btn sec" type="submit">Salvar ajustes</button></form></section>';
+  h += '<section class="card"><h3>Assinatura</h3><p>' + ({ anual: 'Anual', mensal: 'Mensal', familia: 'Família ou célula' }[S.plano] || 'Anual') + ', em teste grátis até ' + fmt(addDays(S.trialStart || todayK(), 7)) + '.</p><p class="fine">Versão de teste: nada é cobrado.</p></section>';
+  h += '<section class="card test"><h3>Ferramentas de teste</h3><p class="fine">Para testar a ofensiva e o protetor sem esperar.</p><p class="muted">Data simulada: ' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><div class="row"><button class="btn sec" data-a="nextDay">Avançar um dia</button><button class="btn sec" data-a="redoQuiz">Refazer o quiz</button></div>' +
+    (ui.confirmReset ? '<div class="row"><button class="btn danger-btn" data-a="reset">Apagar tudo</button><button class="btn ghost" data-a="cancelReset">Cancelar</button></div>' : '<button class="link danger" data-a="askReset">Apagar meus dados deste aparelho</button>') + '</section>';
+  h += '<p class="fine center-t">Textos bíblicos indicados por referência. Bíblia Livre: Diego Santos, Mario Sérgio e Marco Teles, licença CC BY 4.0.</p>';
+  return h + '</main>';
+}
+
+/* ---------- Telas sobrepostas ---------- */
+function ovHead(title) { return '<header class="ovh"><button class="iconbtn" data-a="close" aria-label="Voltar">' + icon('voltar') + '</button><span>' + title + '</span></header>'; }
+
+function vLesson(id) {
+  const t = trilha(id), i = doneCount(id);
+  if (ui.done) {
+    const d = ui.done;
+    return ovHead(t.nome) + '<main class="screen center"><div class="big-streak">' + GRAO + '<b class="tnum">' + S.streak.count + '</b></div><h2 class="qt">Porção colhida</h2><p class="body-l">Ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + '. Você ganhou ' + d.pts + ' pontos e leu ' + plural(d.caps, 'capítulo', 'capítulos') + '.</p>' +
+      '<p class="muted">"O maná não se guardava." Amanhã tem porção nova.</p>' + (S.group ? '<p class="fine">Seu check-in foi postado no grupo ' + esc(S.group.nome) + '.</p>' : '') +
+      '<button class="btn" data-a="close">Voltar para Hoje</button></main>';
+  }
+  if (i >= t.licoes.length) return ovHead(t.nome) + '<main class="screen"><h2 class="qt">Trilha concluída</h2><p>Você terminou ' + t.nome + '. Escolha uma nova meta no Hoje.</p><button class="btn" data-a="close">Voltar</button></main>';
+  const l = t.licoes[i], ver = S.quiz.versao && S.quiz.versao !== 'Outra ou não sei' ? S.quiz.versao : 'sua Bíblia';
+  let h = ovHead(t.nome + ' · ' + (i + 1) + ' de ' + t.licoes.length) + '<main class="screen lesson">';
+  h += '<h1 class="h1">' + l.titulo + '</h1><p class="ref big">' + l.ref + '</p><p class="body-l">' + l.ctx + '</p>';
+  if (t.nota) h += '<p class="note">' + t.nota + '</p>';
+  h += '<section class="card"><h3>1. Leia</h3><p>Abra ' + (ver === 'sua Bíblia' ? 'sua Bíblia' : 'a ' + ver) + ' em <b>' + l.ref + '</b> e leia com calma.</p><label class="check"><input type="checkbox" id="l-lido"' + (ui.lido ? ' checked' : '') + '> Li o texto</label></section>';
+  h += '<section class="card"><h3>2. Entenda</h3>';
+  if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).replace(/\n+/g, '</p><p>').replace(/^/, '<p>') + '</p></div>';
+  if (SAMPLE) h += ui.busy ? '<div class="busy"><button class="btn sec" disabled>Explicando…</button><button class="btn ghost" data-a="stopAi">Parar</button></div>' : (ui.aiText ? '' : '<button class="btn sec" data-a="explain" data-id="' + id + '">Explicar este texto</button>');
+  else h += '<p class="muted">' + (aiChecked ? 'Leia o capítulo pensando em quem escreveu, para quem e por quê.' : 'Verificando a IA...') + '</p>';
+  if (ui.aiErr) h += '<p class="err">' + esc(ui.aiErr) + '</p>';
+  h += '</section><section class="card"><h3>3. Reflita</h3><p>' + l.q + '</p><textarea id="l-nota" rows="3" placeholder="Escreva sua resposta (fica só com você)">' + esc(S.notes[id + i] || '') + '</textarea></section>';
+  h += '<div class="sticky-cta"><button class="btn" data-a="complete" data-id="' + id + '">Colhi minha porção</button></div></main>';
+  return h;
+}
+
+function vTrilha(id) {
+  const t = trilha(id), d = doneCount(id);
+  let h = ovHead(t.tipo) + '<main class="screen"><h1 class="h1">' + t.nome + '</h1><p class="muted">' + t.desc + '</p><p class="tnum">' + d + ' de ' + t.licoes.length + ' lições · previsão de término: ' + fmt(planEnd(id), { day: 'numeric', month: 'short', year: 'numeric' }) + '</p><ol class="lessons">';
+  t.licoes.forEach((l, i) => {
+    const st = i < d ? 'feita' : i === d ? 'next' : '';
+    h += '<li class="' + st + '">' + (i === d ? '<button data-a="lesson" data-id="' + id + '">' : '<div>') + '<span class="n tnum">' + (i + 1) + '</span><span><b>' + l.titulo + '</b><small class="muted">' + l.ref + (i < d ? ' · feita' : '') + '</small></span>' + (i === d ? '</button>' : '</div>') + '</li>';
+  });
+  return h + '</ol></main>';
+}
+
+function vMetas() {
+  const sel = S.quiz.trilhas;
+  let h = ovHead('Metas do ano') + '<main class="screen"><h1 class="h1">Suas metas</h1><p class="muted">Até 5 metas. A primeira não concluída é a sua porção diária. Toque para adicionar ou remover.</p>';
+  ['Livro', 'Personagem', 'Tema'].forEach(tp => {
+    h += '<h3 class="grp">' + tp + '</h3><div class="opts">';
+    TRILHAS.filter(t => t.tipo === tp).forEach(t => {
+      const i = sel.indexOf(t.id);
+      h += '<button class="opt' + (i > -1 ? ' on' : '') + '" data-a="toggleMeta" data-id="' + t.id + '" aria-pressed="' + (i > -1) + '"><span><b>' + t.nome + '</b><small>' + t.desc + (isDone(t.id) ? ' Concluída.' : '') + '</small></span>' + (i > -1 ? '<em class="ord">' + (i + 1) + '</em>' : '') + '</button>';
+    });
+    h += '</div>';
+  });
+  return h + '</main>';
+}
+
+function vCulto(id) {
+  const c = S.cultos.find(x => x.id === id); if (!c) return '';
+  const s = c.study;
+  let h = ovHead('Culto de ' + fmt(c.data, { day: 'numeric', month: 'short' })) + '<main class="screen"><h1 class="h1">' + esc(c.tema) + '</h1><p class="muted">' + [c.pregador, c.igreja].filter(Boolean).map(esc).join(' · ') + '</p>';
+  if (c.link) h += '<p><a class="link" href="' + esc(c.link) + '" target="_blank" rel="noopener">Abrir a live</a></p>';
+  if (!s.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
+  h += '<section class="card"><h3>Resumo</h3><p>' + esc(s.resumo) + '</p>' + (s.pontos.length ? '<h3>Pontos principais</h3><ul class="dots">' + s.pontos.map(p => '<li>' + esc(p) + '</li>').join('') + '</ul>' : '') + (s.versiculos.length ? '<h3>Versículos</h3><p class="ref">' + s.versiculos.map(esc).join('; ') + '</p>' : '') + '</section>';
+  if (s.meta) h += '<p class="insight">Este tema combina com a meta ' + trilha(s.meta).nome + '. ' + (S.quiz.trilhas.includes(s.meta) ? 'O estudo conta para ela.' : '<button class="link" data-a="addMeta" data-id="' + s.meta + '">Adicionar às metas</button>') + '</p>';
+  h += '<section class="sec"><h2>Estudo da semana</h2><ol class="days">';
+  const nomes = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+  s.dias.forEach((d, i) => {
+    const f = c.feitos.includes(i);
+    h += '<li class="' + (f ? 'feita' : '') + '"><p class="kicker">' + nomes[i] + '</p><h3>' + esc(d.titulo) + '</h3><p class="ref">' + esc(d.referencia) + '</p><p>' + esc(d.pergunta) + '</p>' + (f ? '<p class="muted">Feito</p>' : '<button class="btn sec sm" data-a="cultoDia" data-id="' + c.id + '" data-i="' + i + '">Marcar como feito</button>') + '</li>';
+  });
+  h += '</ol></section>';
+  if (S.group) h += '<button class="btn sec" data-a="shareCulto" data-id="' + c.id + '">Compartilhar com ' + esc(S.group.nome) + '</button>';
+  h += '<button class="link danger" data-a="delCulto" data-id="' + c.id + '">Apagar este culto</button>';
+  return h + '</main>';
+}
+
+function vEbd(id) {
+  const e = S.ebds.find(x => x.id === id); if (!e) return '';
+  const p = e.prep;
+  let h = ovHead('EBD · ' + (e.modo === 'professor' ? 'professor' : 'aluno')) + '<main class="screen"><h1 class="h1">' + esc(e.tema) + '</h1>' + (e.textos ? '<p class="ref">' + esc(e.textos) + '</p>' : '');
+  if (!p.ia) h += '<p class="note">Montado sem IA, com um roteiro padrão.</p>';
+  h += '<section class="card"><h3>Contexto</h3><p>' + esc(p.contexto) + '</p>' + (p.versiculos.length ? '<h3>Versículos</h3><p class="ref">' + p.versiculos.map(esc).join('; ') + '</p>' : '') + '</section>';
+  h += '<section class="card"><h3>Perguntas para discussão</h3><ol class="dots">' + p.perguntas.map(q => '<li>' + esc(q) + '</li>').join('') + '</ol></section>';
+  h += '<section class="card"><h3>Aplicação</h3><p>' + esc(p.aplicacao) + '</p></section>';
+  if (p.roteiro && p.roteiro.length) h += '<section class="card"><h3>Roteiro da aula</h3><ol class="roteiro">' + p.roteiro.map(r => '<li><b>' + esc(r.etapa) + '</b> <span class="muted tnum">' + esc(r.minutos) + ' min</span><p>' + esc(r.descricao) + '</p></li>').join('') + '</ol></section>';
+  return h + '<button class="link danger" data-a="delEbd" data-id="' + e.id + '">Apagar esta lição</button></main>';
+}
+
+function vDuvida(id) {
+  const d = DUVIDAS.find(x => x.id === id) || S.perguntas.find(x => x.id === id); if (!d) return '';
+  const minha = tradicao();
+  let h = ovHead(d.cat) + '<main class="screen"><h1 class="h1">' + esc(d.q) + '</h1>';
+  h += '<section class="card"><h3>O que a Bíblia diz</h3><p>' + esc(d.biblia) + '</p><p class="ref">' + esc(d.refs) + '</p></section>';
+  h += '<section class="sec"><h2>Como as tradições interpretam</h2>';
+  const order = minha ? [minha].concat(Object.keys(TRADICOES).filter(k => k !== minha)) : Object.keys(TRADICOES);
+  order.forEach(k => { if (d.trad[k]) h += '<div class="trad' + (k === minha ? ' mine' : '') + '"><p class="who"><b>' + TRADICOES[k] + '</b>' + (k === minha ? ' <span class="muted">· sua tradição</span>' : '') + '</p><p>' + esc(d.trad[k]) + '</p></div>'; });
+  if (!minha) h += '<p class="fine">Sua igreja pode ter uma posição própria sobre isso.</p>';
+  h += '</section><section class="card"><h3>Ponto em comum</h3><p>' + esc(d.comum) + '</p></section>';
+  h += '<section class="pastor"><h3>Converse com seu pastor</h3><p>Esta resposta ajuda você a estudar, mas não substitui o cuidado de quem conhece você e a sua igreja. Leve a dúvida para ele com estes versículos.</p></section>';
+  if (d.ia) h += '<p class="fine">Resposta gerada por IA. Confira os versículos na sua Bíblia.</p>';
+  return h + '</main>';
+}
+
+/* ---------- Render ---------- */
+const TABS = [['hoje', 'Hoje'], ['domingo', 'Domingo'], ['duvidas', 'Dúvidas'], ['grupo', 'Grupo'], ['perfil', 'Perfil']];
+function render() {
+  const app = $('app'); if (!app) return;
+  const scrollY = window.scrollY;
+  if (!S.onboarded) { app.innerHTML = vOnboarding(); return; }
+  let h = '';
+  if (ui.ov) {
+    const o = ui.ov;
+    h = '<div class="ov">' + ({ lesson: vLesson, trilha: vTrilha, metas: vMetas, culto: vCulto, ebd: vEbd, duvida: vDuvida }[o.type])(o.id) + '</div>';
+  } else {
+    h = ({ hoje: vHoje, domingo: vDomingo, duvidas: vDuvidas, grupo: vGrupo, perfil: vPerfil }[ui.tab])();
+    h += '<nav class="tabs" aria-label="Seções">' + TABS.map(([k, n]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(k) + '<span>' + n + '</span></button>').join('') + '</nav>';
+  }
+  app.innerHTML = h;
+  if (render.keep) window.scrollTo(0, scrollY);
+  render.keep = false;
+}
+function renderToast() {
+  let t = $('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = ui.toast; t.hidden = !ui.toast;
+}
+function go(fn) { fn(); save(); render(); }
+function openOv(type, id) { ui.ov = { type, id }; ui.aiText = ''; ui.aiErr = ''; ui.done = null; ui.lido = false; ui.busy = false; window.scrollTo(0, 0); render(); }
+
+/* ---------- Ações ---------- */
+const A = {
+  next() { if (S.step === QUIZ.length + 1 && !S.plano) S.plano = 'anual'; go(() => { S.step++; }); window.scrollTo(0, 0); },
+  back() { go(() => { S.step = Math.max(0, S.step - 1); }); },
+  answer(el) {
+    const k = el.dataset.k; let v = el.dataset.v;
+    if (k === 'minutos') v = Number(v);
+    S.quiz[k] = v;
+    if (k === 'denom') { const d = DENOMINACOES.find(x => x[0] === v); S.quiz.tradicao = d ? d[1] : null; }
+    render(); setTimeout(() => A.next(), 180);
+  },
+  pickTrail(el) {
+    const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
+    if (i > -1) a.splice(i, 1); else if (a.length < 3) a.push(id); else toast('Escolha até 3 metas agora. Dá para adicionar mais depois.');
+    render.keep = true; go(() => {});
+  },
+  plan(el) { render.keep = true; go(() => { S.plano = el.dataset.id; }); },
+  trial() { go(() => { S.trialStart = todayK(); S.step++; }); window.scrollTo(0, 0); },
+  finish() { go(() => { S.onboarded = true; ui.tab = 'hoje'; }); window.scrollTo(0, 0); },
+  tab(el) { ui.tab = el.dataset.tab; ui.aiErr = ''; ui.confirmReset = false; window.scrollTo(0, 0); render(); },
+  open(el) { openOv(el.dataset.ov, el.dataset.id); },
+  close() { ui.ov = null; ui.done = null; if (aiCtl) aiCtl.abort(); ui.busy = false; window.scrollTo(0, 0); render(); },
+  dismiss() { ui.notice = ''; render(); },
+  lesson(el) { openOv('lesson', el.dataset.id); },
+  complete(el) {
+    const id = el.dataset.id, t = trilha(id), i = doneCount(id), l = t.licoes[i];
+    if ($('l-lido') && !$('l-lido').checked) { toast('Marque "Li o texto" depois de ler ' + l.ref + '.'); return; }
+    const nota = val('l-nota'); if (nota) S.notes[id + i] = nota;
+    S.progress[id] = i + 1;
+    const pts = 15 + 10 * l.caps;
+    study(l.caps, pts);
+    if (S.group) postFeed(nota ? nota.slice(0, 280) : 'Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
+    ui.done = { pts, caps: l.caps };
+    if (isDone(id)) setTimeout(() => toast('Trilha concluída: ' + t.nome), 900);
+    save(); window.scrollTo(0, 0); render();
+  },
+  async explain(el) {
+    const t = trilha(el.dataset.id), l = t.licoes[doneCount(t.id)];
+    ui.busy = true; ui.aiErr = ''; ui.aiText = ''; render.keep = true; render();
+    aiCtl = new AbortController();
+    try {
+      await SAMPLE(REGRAS + '\n\nExplique ' + l.ref + ' para um crente que vai ler o texto hoje, em ' + (S.quiz.minutos || 10) + ' minutos de estudo. Tema da lição: ' + l.titulo + '. Em 2 parágrafos curtos: o contexto (quem, para quem, quando) e a ideia central. Depois, uma frase de aplicação. Texto corrido, sem títulos, sem listas, sem markdown.', {
+        signal: aiCtl.signal, modelTier: 'quick',
+        onText: ({ text }) => { ui.aiText = text; render.keep = true; render(); },
+      });
+    } catch (e) { ui.aiText = e.text || ui.aiText; if (e.code !== 'cancelled') ui.aiErr = aiMsg(e); }
+    ui.busy = false; render.keep = true; render();
+  },
+  stopAi() { if (aiCtl) aiCtl.abort(); },
+  toggleMeta(el) {
+    const id = el.dataset.id, a = S.quiz.trilhas, i = a.indexOf(id);
+    if (i > -1) { if (a.length === 1) { toast('Mantenha pelo menos uma meta.'); return; } a.splice(i, 1); }
+    else if (a.length < 5) a.push(id); else { toast('Você já tem 5 metas.'); return; }
+    render.keep = true; go(() => {});
+  },
+  addMeta(el) { if (S.quiz.trilhas.length < 5) { S.quiz.trilhas.push(el.dataset.id); toast('Meta adicionada.'); } else toast('Você já tem 5 metas.'); render.keep = true; go(() => {}); },
+  dom(el) { ui.domMode = el.dataset.m; ui.aiErr = ''; render(); },
+  ebdModo(el) { ui.ebdModo = el.dataset.m; render.keep = true; render(); },
+  cultoDia(el) {
+    const c = S.cultos.find(x => x.id === el.dataset.id), i = Number(el.dataset.i);
+    if (c.feitos.includes(i)) return;
+    c.feitos.push(i); study(1, 15);
+    if (c.feitos.length === 5) toast('Estudo da semana concluído.'); else toast('Dia marcado. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.');
+    render.keep = true; go(() => {});
+  },
+  shareCulto(el) {
+    const c = S.cultos.find(x => x.id === el.dataset.id);
+    postFeed('Compartilhei o estudo do culto "' + c.tema + '". ' + (c.study.resumo || '').slice(0, 180), (c.study.versiculos || []).slice(0, 2).join('; '));
+    toast('Estudo compartilhado no grupo.'); render.keep = true; go(() => {});
+  },
+  delCulto(el) { S.cultos = S.cultos.filter(x => x.id !== el.dataset.id); A.close(); save(); },
+  delEbd(el) { S.ebds = S.ebds.filter(x => x.id !== el.dataset.id); A.close(); save(); },
+  gmode(el) { ui.groupMode = el.dataset.m; render.keep = true; render(); },
+  amem(el) {
+    const p = S.group.feed.find(x => x.id === el.dataset.id);
+    p.amei = !p.amei; p.amem += p.amei ? 1 : -1; render.keep = true; go(() => {});
+  },
+  cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; render.keep = true; render(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
+  leaveGroup() { if (ui.confirmLeave) { ui.confirmLeave = false; go(() => { S.group = null; }); toast('Você saiu do grupo.'); } else { ui.confirmLeave = true; toast('Toque de novo em "Sair do grupo" para confirmar.'); setTimeout(() => { ui.confirmLeave = false; }, 4000); } },
+  copy(el) {
+    const t = el.dataset.t;
+    const fallback = () => { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Copiado.'); } catch (e) { toast('Selecione e copie o texto.'); } ta.remove(); };
+    try { navigator.clipboard.writeText(t).then(() => toast('Copiado.'), fallback); } catch (e) { fallback(); }
+  },
+  nextDay() { S.offset++; ui.notice = ''; checkStreak(); save(); toast('Agora é ' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '.'); render.keep = true; render(); },
+  redoQuiz() { go(() => { S.onboarded = false; S.step = 1; }); window.scrollTo(0, 0); },
+  askReset() { ui.confirmReset = true; render.keep = true; render(); },
+  cancelReset() { ui.confirmReset = false; render.keep = true; render(); },
+  reset() { try { localStorage.removeItem(KEY); } catch (e) {} S = fresh(); Object.assign(ui, { tab: 'hoje', ov: null, confirmReset: false, notice: '' }); save(); window.scrollTo(0, 0); render(); },
+};
+
+const F = {
+  async culto() {
+    const c = { id: uid(), tema: val('c-tema'), versiculos: val('c-vers'), pregador: val('c-preg'), data: val('c-data') || lastSunday(), igreja: val('c-igreja'), link: val('c-link'), notas: val('c-notas'), feitos: [] };
+    if (!c.tema) { toast('Digite o tema da pregação.'); return; }
+    if (c.link && !/^https?:\/\//i.test(c.link)) c.link = '';
+    S.lastIgreja = c.igreja;
+    ui.busy = true; ui.aiErr = ''; render.keep = true; render();
+    try { c.study = await genStudy(c); }
+    catch (e) { ui.busy = false; if (e.code !== 'cancelled') ui.aiErr = aiMsg(e) + ' Montei com o roteiro padrão.'; if (e.code === 'cancelled') { render.keep = true; render(); return; } c.study = localStudy(c); }
+    ui.busy = false;
+    S.cultos.unshift(c); S.points += 30; checkAch(); save();
+    openOv('culto', c.id);
+  },
+  async ebd() {
+    const e = { id: uid(), tema: val('e-tema'), textos: val('e-textos'), modo: ui.ebdModo === 'professor' ? 'professor' : 'aluno', data: todayK() };
+    if (!e.tema) { toast('Digite o tema da lição.'); return; }
+    ui.busy = true; ui.aiErr = ''; render.keep = true; render();
+    try { e.prep = await genEbd(e); }
+    catch (err) { ui.busy = false; if (err.code === 'cancelled') { render.keep = true; render(); return; } ui.aiErr = aiMsg(err) + ' Montei com o roteiro padrão.'; e.prep = localEbd(e); }
+    ui.busy = false;
+    S.ebds.unshift(e); S.points += 20; checkAch(); save();
+    openOv('ebd', e.id);
+  },
+  async duvida() {
+    const q = val('d-q'); if (q.length < 6) { toast('Escreva a sua pergunta.'); return; }
+    const local = DUVIDAS.find(d => d.q.toLowerCase().replace(/[?!.]/g, '') === q.toLowerCase().replace(/[?!.]/g, ''));
+    if (local) { openOv('duvida', local.id); return; }
+    ui.busy = true; ui.aiErr = ''; render.keep = true; render();
+    try { const d = await genDuvida(q); S.perguntas.unshift(d); S.points += 5; checkAch(); save(); ui.busy = false; openOv('duvida', d.id); }
+    catch (e) { ui.busy = false; if (e.code !== 'cancelled') ui.aiErr = aiMsg(e); render.keep = true; render(); }
+  },
+  gcriar() {
+    const nome = val('g-nome'); if (!nome) { toast('Dê um nome ao grupo.'); return; }
+    S.nome = val('g-eu') || S.nome;
+    makeGroup(nome, val('g-des') || 'evangelhos30'); checkAch();
+    if (!S.onboarded) S.onboarded = true;
+    ui.tab = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Grupo criado. Agora convide pelo WhatsApp.');
+  },
+  gentrar() {
+    const code = val('g-code').toUpperCase(); if (code.length < 4) { toast('Digite o código do convite.'); return; }
+    S.nome = val('g-eu') || S.nome;
+    makeGroup('Célula Esperança', 'evangelhos30'); S.group.code = code; S.group.exemplo = true; checkAch();
+    if (!S.onboarded) S.onboarded = true;
+    ui.tab = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Você entrou num grupo de exemplo.');
+  },
+  checkin() {
+    const caps = Math.max(0, Math.min(50, parseInt(val('ck-caps'), 10) || 0)), ref = val('ck-ref'), txt = val('ck-txt');
+    if (!caps && !txt) { toast('Informe os capítulos ou escreva uma reflexão.'); return; }
+    if (caps) study(caps, 10 * caps);
+    postFeed(txt || ('Li ' + plural(caps, 'capítulo', 'capítulos') + ' hoje.'), ref);
+    toast(caps ? 'Leitura marcada. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.' : 'Reflexão postada.');
+    render.keep = true; go(() => {});
+  },
+  cmt(form) {
+    const t = val('cmt-txt'); if (!t) return;
+    const p = S.group.feed.find(x => x.id === form.dataset.id);
+    p.comments.push({ who: S.nome || 'Você', text: t }); ui.cmt = null; render.keep = true; go(() => {});
+  },
+  ajustes() {
+    S.nome = val('p-nome'); S.quiz.minutos = Number(val('p-min')) || 10; S.quiz.horario = val('p-hor');
+    save(); toast('Ajustes salvos.'); render.keep = true; render();
+  },
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
+  const fn = A[el.dataset.a]; if (!fn) return;
+  if (el.tagName === 'A') return;
+  e.preventDefault(); fn(el);
+});
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"][data-a]')) { e.preventDefault(); A[e.target.dataset.a](e.target); }
+});
+document.addEventListener('submit', e => {
+  e.preventDefault(); const f = e.target.dataset.f; if (F[f]) F[f](e.target);
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'd-filtro') {
+    ui.filtro = e.target.value; const pos = e.target.selectionStart;
+    render.keep = true; render();
+    const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
+  }
+  if (e.target.id === 'l-nota' && ui.ov) S.notes[ui.ov.id + doneCount(ui.ov.id)] = e.target.value, save();
+  if (e.target.id === 'l-lido') ui.lido = e.target.checked;
+});
+document.addEventListener('change', e => { if (e.target.id === 'l-lido') ui.lido = e.target.checked; });
+
+checkStreak();
+render();
+renderToast();
+
+</script>
