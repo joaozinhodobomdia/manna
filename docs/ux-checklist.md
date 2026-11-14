@@ -210,6 +210,14 @@ O João abriu a branch num iPhone de cerca de 390 px, dentro de um navegador com
 - Correção: nada a mudar nesse encaixe. A Leitora continua ao lado do balão, no fundo noite, sem espelhar a Bíblia.
 - Situação: feito
 
+### 33. Mani andando no mapa
+- Gravidade: média
+- Onde: mapa da jornada, no dia atual
+- Problema: o mapa só tinha o número do dia. Faltava a Mani marcando "você está aqui" e o passo de um dia para o outro.
+- Correção: a pose Animado (asas levantadas, sem Bíblia, então não precisa espelhar) fica pequena ao lado do nó, fora do número e do rótulo. Ao concluir a lição, ela anda pela curva da estrada até o nó novo, em cerca de um segundo. Com movimento reduzido, ela só aparece no lugar novo.
+- Escolha de uma Mani por tela: a Mani com balão continua no topo. A do mapa só aparece quando a de cima sai da tela. Depois da lição do dia, o balão do topo some (a porção já foi colhida) e a do mapa faz a caminhada.
+- Situação: feito
+
 ## Pendências que não são do mascote
 
 ### 26. Título "Seu plano para 2027"

@@ -359,6 +359,8 @@ function render() {
     const b = dlg.querySelector('button, [href], input, textarea, select');
     if (b) b.focus();
   }
+  if (ui.andar && !ui.andando && document.getElementById('mani-mapa')) andarMani();
+  else if (typeof syncManiMapa === 'function') syncManiMapa();
 }
 function renderToast() {
   let t = $('toast');
@@ -507,7 +509,12 @@ const A = {
   stopAi() { if (aiCtl) aiCtl.abort(); },
   finishLesson() { finishLesson(); },
   afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
-  closeLesson() { ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false; window.scrollTo(0, 0); render(); },
+  closeLesson() {
+    ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false;
+    const andar = ui.andar;
+    render();
+    if (!andar) window.scrollTo(0, 0);
+  },
   lessonExit() { const L = ui.L; if (L.i === 0 && !L.lido) return A.closeLesson(); L.prev = L.phase; L.phase = 'sair'; renderLesson(); },
   lessonStay() { ui.L.phase = ui.L.prev || 'steps'; renderLesson(); },
   lessonQuit() { if (aiCtl) aiCtl.abort(); A.closeLesson(); },
@@ -717,6 +724,7 @@ render(); renderToast();
 
 /* O mapa é desenhado em pixels: redesenha quando a largura muda */
 let lastW = 0;
+window.addEventListener('scroll', () => { if (typeof syncManiMapa === 'function') syncManiMapa(); }, { passive: true });
 window.addEventListener('resize', () => {
   clearTimeout(window.__rz); window.__rz = setTimeout(() => {
     const w = mapWidth(); if (Math.abs(w - lastW) > 8 && S.onboarded && !ui.L && !ui.ov && ui.tab === 'jornada') { lastW = w; keep(); }

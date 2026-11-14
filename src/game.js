@@ -89,8 +89,34 @@ function mapWidth() {
   const app = $('app'); const w = app ? app.clientWidth - 32 : 358;
   return Math.max(288, Math.min(488, w || 358));
 }
+function pontoCurva(p0, c1, c2, p3, t) {
+  const u = 1 - t, uu = u * u, tt = t * t;
+  return [
+    uu * u * p0[0] + 3 * uu * t * c1[0] + 3 * u * tt * c2[0] + tt * t * p3[0],
+    uu * u * p0[1] + 3 * uu * t * c1[1] + 3 * u * tt * c2[1] + tt * t * p3[1],
+  ];
+}
+function amostraCaminho(pts) {
+  if (!pts || pts.length < 2) return pts ? pts.slice() : [];
+  const out = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    for (let s = 0; s < 8; s++) out.push(pontoCurva(p1, c1, c2, p2, s / 8));
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+/* Ao lado da estrada, para o lado de fora, longe do número e do rótulo. */
+function aoLadoDaEstrada(p, W) {
+  const t = Math.max(-1, Math.min(1, (p[0] - W / 2) / 40));
+  return [p[0] + t * 56, p[1] + 6];
+}
 function vMapa(t, id, d) {
-  const n = t.licoes.length, US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
+  const n = t.licoes.length, US = t.unit || UNIT, units = Math.ceil(n / US);
+  let cu = Math.floor(Math.min(Math.max(d, 0), Math.max(n - 1, 0)) / US);
+  if (ui.andar && ui.andar.id === id && ui.andar.de >= 0) cu = Math.min(cu, Math.floor(ui.andar.de / US));
   const u0 = cu, u1 = Math.min(units, cu + 3), W = mapWidth(), A = W * 0.25;
   const xOf = k => Math.round(W / 2 + A * Math.sin(k * 0.95 + 0.4));
   const STEP = 86, CAMP = 132;
@@ -150,7 +176,68 @@ function vMapa(t, id, d) {
       destino = '<section class="destino"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></section>';
     }
   });
+  const aqui = d < n ? items.find(it => it.k === 'lic' && it.i === d) : items.find(it => it.k === 'destino');
+  if (aqui && aqui.x != null) {
+    let trilhaPts = null;
+    if (ui.andar && ui.andar.id === id && ui.andar.de < ui.andar.para) {
+      const iDe = items.findIndex(it => it.k === 'lic' && it.i === ui.andar.de);
+      let iPara = items.findIndex(it => it.k === 'lic' && it.i === ui.andar.para);
+      if (iPara < 0) iPara = items.findIndex(it => it.k === 'destino');
+      if (iDe >= 0 && iPara > iDe) {
+        const brutos = items.slice(iDe, iPara + 1).filter(it => (it.k === 'lic' || it.k === 'vaso' || it.k === 'destino') && it.x != null).map(it => [it.x, it.y]);
+        if (brutos.length >= 2) trilhaPts = amostraCaminho(brutos).map(p => aoLadoDaEstrada(p, W));
+      }
+    }
+    const fim = aoLadoDaEstrada([aqui.x, aqui.y], W);
+    const reduz = reduceMotion();
+    const pos = trilhaPts && !reduz ? trilhaPts[0] : fim;
+    ui.andarPts = trilhaPts;
+    if (reduz) ui.andar = null;
+    h += '<figure class="mani-mapa" id="mani-mapa" style="left:' + pos[0].toFixed(1) + 'px;top:' + pos[1].toFixed(1) + 'px"><img src="mani/mani-animado@2x.png" srcset="mani/mani-animado@2x.png 2x, mani/mani-animado@3x.png 3x" width="48" height="48" alt="Mani no caminho, no dia de hoje"></figure>';
+  }
   return h + '</section>' + destino;
+}
+function porManiMapa(el, p) {
+  el.style.left = p[0].toFixed(1) + 'px';
+  el.style.top = p[1].toFixed(1) + 'px';
+}
+function syncManiMapa() {
+  const mapa = document.getElementById('mani-mapa');
+  if (!mapa || ui.andando) return;
+  const topo = document.querySelector('.topo-j .mani');
+  if (!topo) { mapa.classList.remove('espera'); return; }
+  const r = topo.getBoundingClientRect();
+  mapa.classList.toggle('espera', r.bottom > 0 && r.top < window.innerHeight);
+}
+function andarMani() {
+  const el = document.getElementById('mani-mapa');
+  const pts = ui.andarPts;
+  if (!el) { ui.andar = null; ui.andarPts = null; return; }
+  const topo = document.querySelector('.topo-j .mani');
+  const box = el.getBoundingClientRect();
+  let top = box.top + window.scrollY - window.innerHeight * 0.38;
+  if (topo) top = Math.max(top, topo.getBoundingClientRect().bottom + window.scrollY + 8);
+  window.scrollTo(0, Math.max(0, top));
+  if (reduceMotion() || !pts || pts.length < 2) {
+    if (pts && pts.length) porManiMapa(el, pts[pts.length - 1]);
+    ui.andar = null; ui.andarPts = null; ui.andando = false; syncManiMapa();
+    return;
+  }
+  ui.andando = true;
+  el.classList.remove('espera');
+  const dur = 1100, t0 = performance.now();
+  cancelAnimationFrame(ui.andarFrame || 0);
+  const frame = (now) => {
+    if (!el.isConnected) { ui.andando = false; return; }
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    const x = e * (pts.length - 1), i = Math.max(0, Math.min(pts.length - 2, Math.floor(x))), f = x - i;
+    const a = pts[i], b = pts[Math.min(pts.length - 1, i + 1)] || a;
+    if (!a || !b) { porManiMapa(el, pts[pts.length - 1]); ui.andar = null; ui.andarPts = null; ui.andando = false; syncManiMapa(); return; }
+    porManiMapa(el, [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]);
+    if (p < 1) ui.andarFrame = requestAnimationFrame(frame);
+    else { porManiMapa(el, pts[pts.length - 1]); ui.andar = null; ui.andarPts = null; ui.andando = false; syncManiMapa(); }
+  };
+  ui.andarFrame = requestAnimationFrame(frame);
 }
 
 /* ---------- Construção dos exercícios ---------- */
@@ -361,7 +448,10 @@ function finishLesson() {
   const boost = boostOn(), xp = addXP(base);
   let grains = 0, up = false;
   if (!L.review) {
-    S.progress[L.id] = Math.max(S.progress[L.id] || 0, L.idx + 1);
+    const antes = S.progress[L.id] || 0;
+    const depois = Math.max(antes, L.idx + 1);
+    if (depois > antes) ui.andar = { id: L.id, de: antes, para: depois };
+    S.progress[L.id] = depois;
     S.lessons++; if (perfect) { S.perfect++; bump('perfeita', 1); }
     bump('licoes', 1); grains = perfect ? 8 : 5; S.grains += grains;
     up = study(l.caps);
