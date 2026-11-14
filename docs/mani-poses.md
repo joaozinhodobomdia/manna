@@ -10,6 +10,29 @@ Prompts montados a partir do manual do mascote (texto-base + emoção). Gere 4 o
 
 Poses já no app: Leitora, Grata e Joinha.
 
+## Onde cada pose entra no app
+
+| Pose | Onde aparece | Fala de Mani |
+| --- | --- | --- |
+| Leitora (pronta) | Boas-vindas, porção do dia, tela do culto | Oi! Eu sou Mani. Vamos colher sua porção de hoje? |
+| Grata (pronta) | Plano montado, fim da lição, trilha concluída | Glória a Deus! Porção colhida. |
+| Joinha (pronta) | Ofensiva mantida, porção já colhida, grupo, convite | 7 dias seguidos! Continue firme. |
+| Animado | Recorde de ofensiva, subir de liga | Recorde novo! |
+| Feliz | Meta do dia cumprida | Meta de hoje cumprida! |
+| Curioso | Aba Dúvidas | Pode perguntar. Só você vê. |
+| Pensativo | IA montando estudo, trilha ou sugestões | Estou preparando seu estudo. |
+| Surpreso | Conquista nova, vaso de maná aberto | Olha o que você ganhou! |
+| Determinado | Começo de desafio do grupo | Bora começar o desafio? |
+| Ansioso | Ofensiva em risco (depois das 19h) | Ainda dá tempo de ler hoje. |
+| Triste | Ofensiva perdida | Tudo bem. Amanhã a gente recomeça. |
+| Sonolento | Lembrete da noite | Antes de dormir, só um versículo? |
+| Bravinho | Erro do app (nunca contra a pessoa) | Ops, algo travou aqui. Tenta de novo? |
+| Orando | Pergunta de reflexão no fim da lição | Vamos guardar isso no coração. |
+| Acolhedor | Recomeço depois de dias parado | Que bom te ver de volta. |
+| Com ramo de oliveira | Trilha concluída, vida nova (pedido no manual) | Você chegou ao destino! |
+
+Formato: PNG com fundo transparente (ou creme liso #FDEFE2), pelo menos 480 px de largura, Mani inteiro sem cortes e com respiro em volta.
+
 ## Feliz (`feliz`)
 
 Uso: Estudo do dia concluído.

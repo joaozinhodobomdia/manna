@@ -776,6 +776,66 @@ canvas.rain { opacity: .9; }
 .quote { font-size: 17px; }
 #toast { border-bottom: 0; border-radius: var(--pill); }
 .selbar { border-radius: var(--pill); }
+
+/* ===== v6: abertura sem vão e mapa da jornada ===== */
+.onb-hero { justify-content: center; gap: 18px; padding-top: calc(76px + env(safe-area-inset-top, 0px)); position: relative; }
+.onb-top { position: absolute; top: calc(20px + env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); }
+.onb-c { margin-top: 6px; }
+.m-hero .m-tile { width: min(200px, 52vw); }
+
+.mapa { position: relative; margin-top: 4px; }
+.mapa-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.topo ellipse { fill: none; stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.estrada { fill: none; stroke: var(--line-dk); stroke-width: 3; stroke-dasharray: 1 9; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.estrada.feita { stroke: var(--ouro); stroke-width: 7; stroke-dasharray: none; }
+.marco { position: absolute; z-index: 2; transform: translate(-50%, -50%); border: 0; background: none; padding: 0; display: grid; place-items: center; }
+.m-dot { width: 38px; height: 48px; display: grid; place-items: center; border-radius: 50%; transform: rotate(-16deg); background: var(--bg); border: 2px dashed var(--line-dk); color: var(--muted); }
+.m-dot > * { transform: rotate(16deg); }
+.m-dot i { font: 700 14px/1 var(--f-body); font-style: normal; }
+.marco.done .m-dot { background: var(--ouro); border: 2px solid var(--ouro-dk); color: var(--noite); }
+.marco.done .m-dot .ic { stroke-width: 3.5; width: 16px; height: 16px; }
+.marco.cur .m-dot { width: 52px; height: 66px; background: var(--noite); border: 3px solid var(--ouro); color: var(--ouro); outline: 6px solid color-mix(in srgb, var(--ouro) 28%, transparent); outline-offset: 3px; }
+.marco.cur .m-dot i { font-size: 18px; }
+.pin { position: absolute; bottom: calc(100% + 6px); left: 50%; width: 30px; height: 40px; transform: translateX(-50%); }
+.pin svg { width: 100%; height: 100%; }
+.pin path { fill: var(--noite); stroke: var(--pergaminho); stroke-width: 2; }
+.pin ellipse { fill: var(--ouro); }
+@media (prefers-reduced-motion: no-preference) { .pin { animation: pin 2.4s ease-in-out infinite; } }
+@keyframes pin { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+.m-lbl { position: absolute; z-index: 1; display: flex; flex-direction: column; gap: 1px; max-width: 40%; font-size: 13px; line-height: 1.3; pointer-events: none; }
+.m-lbl.dir { transform: translate(36px, -50%); text-align: left; }
+.m-lbl.esq { transform: translate(-36px, -50%); text-align: right; align-items: flex-end; }
+.m-lbl b { font-weight: 700; font-size: 14px; color: var(--fg); }
+.m-lbl small { color: var(--muted); font-size: 12px; }
+.m-lbl em { font-style: normal; font-weight: 800; font-size: 12px; color: var(--ouro-dk); }
+.m-lbl.cur.dir { transform: translate(44px, -50%); } .m-lbl.cur.esq { transform: translate(-44px, -50%); }
+.m-lbl.lock b { color: var(--muted); font-weight: 600; }
+.m-lbl.done b { font-weight: 600; }
+.camp { position: absolute; z-index: 2; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px; max-width: 86%; padding: 7px 16px 7px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line-dk); }
+.camp-ic svg { width: 30px; height: 26px; display: block; }
+.camp > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.camp b { font-size: 13px; font-weight: 800; }
+.camp small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-deco { position: absolute; z-index: 0; width: 56px; height: 56px; transform: translateY(-50%); opacity: .85; pointer-events: none; }
+.m-deco.l { left: -6px; } .m-deco.r { right: -6px; }
+.m-nota { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--muted); transform: translateY(-50%); }
+.m-nota::before { content: ""; display: block; width: 2px; height: 14px; margin: 0 auto 6px; border-left: 2px dotted var(--line-dk); }
+.m-vaso { width: 34px; height: 38px; display: block; }
+.marco.vasoM { width: 52px; height: 52px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--line-dk); }
+.marco.vasoM.ready { border: 2px solid var(--ouro-dk); background: var(--mine); outline: 5px solid color-mix(in srgb, var(--ouro) 25%, transparent); }
+.marco.vasoM.lock .m-vaso { opacity: .4; filter: grayscale(1); }
+.marco.vasoM.opened { opacity: .55; }
+.destino { position: absolute; z-index: 2; left: 50%; transform: translateX(-50%); width: min(320px, 92%); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 16px; text-align: center; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); }
+.flag { width: 34px; height: 46px; }
+.flag svg { width: 100%; height: 100%; }
+.flag path:first-child { stroke: var(--noite); stroke-width: 3; stroke-linecap: round; fill: none; }
+.flag path:last-child { fill: var(--ouro); stroke: var(--noite); stroke-width: 2; stroke-linejoin: round; }
+:root[data-theme="dark"] .flag path:first-child { stroke: var(--pergaminho); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flag path:first-child { stroke: var(--pergaminho); } }
+.destino b { font-size: 17px; }
+.destino small { color: var(--muted); }
+.destino .btn { margin-top: 8px; min-height: 44px; width: auto; }
+.sheet-panel h2 + .ref { margin-top: -6px; }
 </style>
 <div id="app"></div>
 <script>
@@ -1228,6 +1288,7 @@ ART.deco = {
   fogo: decoSvg('<ellipse cx="45" cy="84" rx="16" ry="4" fill="var(--areia)"/><path d="M45 82 C28 78 26 58 36 44 C38 54 42 56 44 56 C40 40 46 22 58 12 C56 26 66 34 66 54 C66 72 58 82 45 82Z" fill="var(--fogo)"/><path d="M46 80 C38 78 36 68 41 60 C43 66 46 66 48 64 C47 56 50 50 55 46 C56 56 60 60 59 68 C58 76 53 80 46 80Z" fill="var(--ouro)"/>'),
   vasoGrande: decoSvg('<ellipse cx="45" cy="82" rx="24" ry="5" fill="var(--areia)"/><g transform="translate(17 18) scale(1.75)">' + '<path d="M9 12C3 15 2 20 2 24c0 7 6 10 14 10s14-3 14-10c0-4-1-9-7-12Z" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="9" y="8" width="14" height="5" rx="1.5" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="6" y="3" width="20" height="6" rx="3" fill="var(--ouro-dk)" stroke="var(--tronco)" stroke-width="1.6"/></g>'),
 };
+ART.tendinha = () => '<svg viewBox="0 0 34 30" aria-hidden="true"><path d="M3 27 L17 5 L31 27 Z" fill="var(--tenda)"/><path d="M17 5 L12 27 H22 Z" fill="var(--tenda-dk)"/><path d="M17 5 V1" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/><path d="M17 1.5 L23 3.5 L17 5.5" fill="var(--ouro)"/><path d="M1 27.5 H33" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/></svg>';
 ART.decoOrder = ['tenda', 'palmeira', 'nuvem', 'fogo', 'tabuas', 'vasoGrande'];
 
 /* Faixa da unidade: dunas e grãos caindo */
@@ -1859,23 +1920,76 @@ function vJornada() {
   }
   h += vTarefas();
 
-  /* Sumário da trilha */
-  const US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
-  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
-  h += '<section class="sumario"><h2>Sumário de ' + esc(t.nome) + '</h2>';
-  if (u0 > 0) h += '<p class="muted small">' + plural(u0 * US, 'lição anterior feita', 'lições anteriores feitas') + '</p>';
-  for (let u = u0; u < u1; u++) {
-    const a = u * US, b = Math.min(n, a + US), unitDone = d >= b;
-    h += '<div class="parte"><h3>' + (US === 7 ? 'Semana ' : 'Parte ') + (u + 1) + '<span>' + (US === 7 ? esc(t.licoes[a].ref.split(';')[0]) + ' a ' + esc(t.licoes[b - 1].ref.split(';').pop().trim()) : esc(t.licoes[a].titulo)) + '</span></h3><ol>';
-    for (let i = a; i < b; i++) {
-      const l = t.licoes[i], st = i < d ? 'done' : i === d ? 'cur' : 'lock';
-      h += '<li><button class="li-row ' + st + '" data-a="lrow" data-i="' + i + '" data-st="' + st + '">' + grainMark(st, i + 1) + '<span class="li-t"><b>' + esc(l.titulo) + '</b><small>' + (l.titulo !== l.ref ? esc(l.ref) + ' · ' : '') + (st === 'done' ? 'feita · toque para revisar' : st === 'cur' ? 'é a de hoje' : 'abre depois da anterior') + '</small></span>' + (st === 'lock' ? icon('cadeado', 'ic sm muted') : icon('voltar', 'ic sm flip')) + '</button></li>';
-    }
-    const ck = id + ':' + u, opened = S.chests[ck];
-    h += '<li><button class="li-row vaso-row' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '">' + ART.vaso('vaso gm-v') + '<span class="li-t"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : unitDone ? 'pronto: toque para abrir' : 'abre ao terminar a ' + (US === 7 ? 'semana' : 'parte')) + '</small></span></button></li></ol></div>';
+  /* Mapa da jornada */
+  h += vMapa(t, id, d);
+  return h + '</main>';
+}
+
+/* Mapa topográfico: estrada em curva, acampamentos por parte, marcos com o nome das lições e o destino no fim */
+function catmull(pts) {
+  if (pts.length < 2) return '';
+  let p = 'M' + pts[0][0].toFixed(2) + ' ' + pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    p += ' C' + c1[0].toFixed(2) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(2) + ' ' + c2[1].toFixed(1) + ' ' + p2[0].toFixed(2) + ' ' + p2[1];
   }
-  if (u1 < units) h += '<p class="muted small">Mais ' + plural(n - u1 * US, 'lição', 'lições') + ' depois destas.</p>';
-  return h + '</section></main>';
+  return p;
+}
+function vMapa(t, id, d) {
+  const n = t.licoes.length, US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
+  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
+  const STEP = 84, CAMP = 84, TOP = 34;
+  const items = []; let y = TOP;
+  const xOf = k => 50 + 30 * Math.sin(k * 0.9 + 0.6);
+  if (u0 > 0) { items.push({ k: 'antes', y }); y += 56; }
+  for (let u = u0; u < u1; u++) {
+    const a = u * US, b = Math.min(n, a + US);
+    items.push({ k: 'camp', u, a, b, y }); y += CAMP;
+    for (let i = a; i < b; i++) { items.push({ k: 'lic', i, x: xOf(i), y }); y += STEP; }
+    items.push({ k: 'vaso', u, x: xOf(b), y, done: d >= b }); y += STEP;
+  }
+  const resto = n - u1 * US;
+  if (resto > 0) { items.push({ k: 'depois', y, resto }); y += 70; }
+  items.push({ k: 'destino', x: 50, y: y + 20 }); y += 190;
+  const H = y;
+  const road = items.filter(it => it.x != null);
+  const ptsAll = road.map(it => [it.x, it.y]);
+  const curIdx = road.findIndex(it => it.k === 'lic' && it.i === d);
+  const lastDone = curIdx === -1 ? (d >= n ? road.length - 1 : 0) : curIdx;
+  /* contornos de relevo no fundo */
+  let topo = '';
+  for (let k = 0; k < Math.ceil(H / 260); k++) {
+    const yy = 120 + k * 260, side = k % 2 ? 78 : 14;
+    topo += '<ellipse cx="' + side + '" cy="' + yy + '" rx="22" ry="70" /><ellipse cx="' + side + '" cy="' + yy + '" rx="14" ry="44" /><ellipse cx="' + side + '" cy="' + yy + '" rx="6" ry="18" />';
+  }
+  let h = '<section class="mapa" style="height:' + H + 'px" aria-label="Mapa da jornada de ' + esc(t.nome) + '">' +
+    '<svg class="mapa-svg" viewBox="0 0 100 ' + H + '" preserveAspectRatio="none" aria-hidden="true"><g class="topo">' + topo + '</g>' +
+    '<path class="estrada" d="' + catmull(ptsAll) + '"/>' + (lastDone > 0 ? '<path class="estrada feita" d="' + catmull(ptsAll.slice(0, lastDone + 1)) + '"/>' : '') + '</svg>';
+  const deco = ['palmeira', 'tenda', 'nuvem', 'fogo', 'tabuas'];
+  items.forEach((it, j) => {
+    if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + ' acima</p>';
+    else if (it.k === 'depois') h += '<p class="m-nota" style="top:' + it.y + 'px">mais ' + plural(it.resto, 'lição', 'lições') + ' até o destino</p>';
+    else if (it.k === 'camp') {
+      const nome = US === 7 ? t.licoes[it.a].ref.split(';')[0] + ' a ' + t.licoes[it.b - 1].ref.split(';').pop().trim() : t.licoes[it.a].titulo;
+      h += '<div class="camp" style="top:' + it.y + 'px"><span class="camp-ic">' + ART.tendinha() + '</span><span><b>' + (US === 7 ? 'Semana ' : 'Acampamento ') + (it.u + 1) + '</b><small>' + esc(nome) + '</small></span></div>';
+      h += '<span class="m-deco ' + (it.u % 2 ? 'l' : 'r') + '" style="top:' + (it.y + 120) + 'px">' + ART.deco[deco[(it.u + hash(id)) % deco.length]] + '</span>';
+    } else if (it.k === 'lic') {
+      const l = t.licoes[it.i], st = it.i < d ? 'done' : it.i === d ? 'cur' : 'lock';
+      const lado = it.x > 50 ? 'esq' : 'dir';
+      h += '<button class="marco ' + st + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="Lição ' + (it.i + 1) + ': ' + esc(l.titulo) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
+        (st === 'cur' ? '<span class="pin" aria-hidden="true"><svg viewBox="0 0 40 52"><path d="M20 51C20 51 3 31 3 19a17 17 0 0 1 34 0c0 12-17 32-17 32z"/><ellipse cx="20" cy="19" rx="6" ry="9" transform="rotate(-18 20 19)"/></svg></span>' : '') +
+        '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span></button>' +
+        '<span class="m-lbl ' + lado + ' ' + st + '" style="' + (lado === 'esq' ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px">' + (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(l.plano ? 'Dia ' + (it.i + 1) : l.titulo) + '</b>' + (l.plano || l.titulo !== l.ref ? '<small>' + esc(l.ref) + '</small>' : '') + '</span>';
+    } else if (it.k === 'vaso') {
+      const ck = id + ':' + it.u, opened = S.chests[ck];
+      h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
+        '<span class="m-lbl ' + (it.x > 50 ? 'esq' : 'dir') + (it.done && !opened ? ' cur' : ' lock') + '" style="' + (it.x > 50 ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small></span>';
+    } else if (it.k === 'destino') {
+      h += '<div class="destino" style="top:' + it.y + 'px"><span class="flag" aria-hidden="true"><svg viewBox="0 0 40 56"><path d="M8 54V4"/><path d="M8 6h26l-7 9 7 9H8z"/></svg></span><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Jornada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + ' para chegar') + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
+    }
+  });
+  return h + '</section>';
 }
 
 /* ---------- Construção dos exercícios ---------- */
@@ -2547,6 +2661,10 @@ function vSheet() {
     h += '</ul><h3 class="grp">Adicionar meta</h3><div class="addm">';
     TRILHAS.filter(t => !S.quiz.trilhas.includes(t.id)).forEach(t => { h += '<button class="pill" data-a="addMeta" data-id="' + t.id + '">+ ' + t.nome + '</button>'; });
     h += '</div>';
+  } else if (s === 'licao') {
+    const t = trilha(curTrail()), i = ui.sheetI, l = t.licoes[i], feita = i < doneCount(t.id), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+    h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2>' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
+      '<button class="btn" data-a="sheetStart" data-i="' + i + '" data-r="' + (feita ? 1 : 0) + '">' + (feita ? 'Revisar · +5 XP' : 'Colher a porção · +15 XP') + '</button>';
   } else if (s === 'ofensiva') {
     h += '<div class="center-col">' + '<div class="big-streak sm">' + ART.grao('grao huge') + '<b class="tnum">' + S.streak.count + '</b></div><h2>' + plural(S.streak.count, 'dia', 'dias') + ' de ofensiva</h2><p class="muted">' + (studiedToday() ? 'Você já colheu a porção de hoje.' : 'Faça uma lição hoje para manter a ofensiva.') + '</p>' + weekRow() + '<p class="fine">Recorde: ' + plural(S.streak.best, 'dia', 'dias') + ' · protetores: ' + S.protetores + '</p></div>';
   }
@@ -2657,6 +2775,7 @@ const A = {
   close() { ui.ov = null; if (aiCtl) aiCtl.abort(); ui.busy = false; window.scrollTo(0, 0); render(); },
   dismiss() { ui.notice = ''; keep(); },
   sheet(el) { ui.sheet = el.dataset.s; keep(); },
+  sheetStart(el) { ui.sheet = null; startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
   closeSheet() { ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
   goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
@@ -2664,6 +2783,11 @@ const A = {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
+  },
+  marco(el) {
+    const i = Number(el.dataset.i), st = el.dataset.st;
+    if (st === 'lock') { toast('Esse trecho abre depois da lição anterior.'); return; }
+    ui.sheet = 'licao'; ui.sheetI = i; keep();
   },
   lrow(el) {
     const i = Number(el.dataset.i), st = el.dataset.st;

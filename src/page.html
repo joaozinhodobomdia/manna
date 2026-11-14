@@ -767,6 +767,66 @@ canvas.rain { opacity: .9; }
 .quote { font-size: 17px; }
 #toast { border-bottom: 0; border-radius: var(--pill); }
 .selbar { border-radius: var(--pill); }
+
+/* ===== v6: abertura sem vão e mapa da jornada ===== */
+.onb-hero { justify-content: center; gap: 18px; padding-top: calc(76px + env(safe-area-inset-top, 0px)); position: relative; }
+.onb-top { position: absolute; top: calc(20px + env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); }
+.onb-c { margin-top: 6px; }
+.m-hero .m-tile { width: min(200px, 52vw); }
+
+.mapa { position: relative; margin-top: 4px; }
+.mapa-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.topo ellipse { fill: none; stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.estrada { fill: none; stroke: var(--line-dk); stroke-width: 3; stroke-dasharray: 1 9; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.estrada.feita { stroke: var(--ouro); stroke-width: 7; stroke-dasharray: none; }
+.marco { position: absolute; z-index: 2; transform: translate(-50%, -50%); border: 0; background: none; padding: 0; display: grid; place-items: center; }
+.m-dot { width: 38px; height: 48px; display: grid; place-items: center; border-radius: 50%; transform: rotate(-16deg); background: var(--bg); border: 2px dashed var(--line-dk); color: var(--muted); }
+.m-dot > * { transform: rotate(16deg); }
+.m-dot i { font: 700 14px/1 var(--f-body); font-style: normal; }
+.marco.done .m-dot { background: var(--ouro); border: 2px solid var(--ouro-dk); color: var(--noite); }
+.marco.done .m-dot .ic { stroke-width: 3.5; width: 16px; height: 16px; }
+.marco.cur .m-dot { width: 52px; height: 66px; background: var(--noite); border: 3px solid var(--ouro); color: var(--ouro); outline: 6px solid color-mix(in srgb, var(--ouro) 28%, transparent); outline-offset: 3px; }
+.marco.cur .m-dot i { font-size: 18px; }
+.pin { position: absolute; bottom: calc(100% + 6px); left: 50%; width: 30px; height: 40px; transform: translateX(-50%); }
+.pin svg { width: 100%; height: 100%; }
+.pin path { fill: var(--noite); stroke: var(--pergaminho); stroke-width: 2; }
+.pin ellipse { fill: var(--ouro); }
+@media (prefers-reduced-motion: no-preference) { .pin { animation: pin 2.4s ease-in-out infinite; } }
+@keyframes pin { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+.m-lbl { position: absolute; z-index: 1; display: flex; flex-direction: column; gap: 1px; max-width: 40%; font-size: 13px; line-height: 1.3; pointer-events: none; }
+.m-lbl.dir { transform: translate(36px, -50%); text-align: left; }
+.m-lbl.esq { transform: translate(-36px, -50%); text-align: right; align-items: flex-end; }
+.m-lbl b { font-weight: 700; font-size: 14px; color: var(--fg); }
+.m-lbl small { color: var(--muted); font-size: 12px; }
+.m-lbl em { font-style: normal; font-weight: 800; font-size: 12px; color: var(--ouro-dk); }
+.m-lbl.cur.dir { transform: translate(44px, -50%); } .m-lbl.cur.esq { transform: translate(-44px, -50%); }
+.m-lbl.lock b { color: var(--muted); font-weight: 600; }
+.m-lbl.done b { font-weight: 600; }
+.camp { position: absolute; z-index: 2; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 10px; max-width: 86%; padding: 7px 16px 7px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line-dk); }
+.camp-ic svg { width: 30px; height: 26px; display: block; }
+.camp > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.camp b { font-size: 13px; font-weight: 800; }
+.camp small { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.m-deco { position: absolute; z-index: 0; width: 56px; height: 56px; transform: translateY(-50%); opacity: .85; pointer-events: none; }
+.m-deco.l { left: -6px; } .m-deco.r { right: -6px; }
+.m-nota { position: absolute; left: 0; right: 0; text-align: center; font-size: 13px; color: var(--muted); transform: translateY(-50%); }
+.m-nota::before { content: ""; display: block; width: 2px; height: 14px; margin: 0 auto 6px; border-left: 2px dotted var(--line-dk); }
+.m-vaso { width: 34px; height: 38px; display: block; }
+.marco.vasoM { width: 52px; height: 52px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--line-dk); }
+.marco.vasoM.ready { border: 2px solid var(--ouro-dk); background: var(--mine); outline: 5px solid color-mix(in srgb, var(--ouro) 25%, transparent); }
+.marco.vasoM.lock .m-vaso { opacity: .4; filter: grayscale(1); }
+.marco.vasoM.opened { opacity: .55; }
+.destino { position: absolute; z-index: 2; left: 50%; transform: translateX(-50%); width: min(320px, 92%); display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px 16px; text-align: center; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); }
+.flag { width: 34px; height: 46px; }
+.flag svg { width: 100%; height: 100%; }
+.flag path:first-child { stroke: var(--noite); stroke-width: 3; stroke-linecap: round; fill: none; }
+.flag path:last-child { fill: var(--ouro); stroke: var(--noite); stroke-width: 2; stroke-linejoin: round; }
+:root[data-theme="dark"] .flag path:first-child { stroke: var(--pergaminho); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flag path:first-child { stroke: var(--pergaminho); } }
+.destino b { font-size: 17px; }
+.destino small { color: var(--muted); }
+.destino .btn { margin-top: 8px; min-height: 44px; width: auto; }
+.sheet-panel h2 + .ref { margin-top: -6px; }
 </style>
 <div id="app"></div>
 <script>

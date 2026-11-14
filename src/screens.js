@@ -270,6 +270,10 @@ function vSheet() {
     h += '</ul><h3 class="grp">Adicionar meta</h3><div class="addm">';
     TRILHAS.filter(t => !S.quiz.trilhas.includes(t.id)).forEach(t => { h += '<button class="pill" data-a="addMeta" data-id="' + t.id + '">+ ' + t.nome + '</button>'; });
     h += '</div>';
+  } else if (s === 'licao') {
+    const t = trilha(curTrail()), i = ui.sheetI, l = t.licoes[i], feita = i < doneCount(t.id), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+    h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2>' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
+      '<button class="btn" data-a="sheetStart" data-i="' + i + '" data-r="' + (feita ? 1 : 0) + '">' + (feita ? 'Revisar · +5 XP' : 'Colher a porção · +15 XP') + '</button>';
   } else if (s === 'ofensiva') {
     h += '<div class="center-col">' + '<div class="big-streak sm">' + ART.grao('grao huge') + '<b class="tnum">' + S.streak.count + '</b></div><h2>' + plural(S.streak.count, 'dia', 'dias') + ' de ofensiva</h2><p class="muted">' + (studiedToday() ? 'Você já colheu a porção de hoje.' : 'Faça uma lição hoje para manter a ofensiva.') + '</p>' + weekRow() + '<p class="fine">Recorde: ' + plural(S.streak.best, 'dia', 'dias') + ' · protetores: ' + S.protetores + '</p></div>';
   }
@@ -380,6 +384,7 @@ const A = {
   close() { ui.ov = null; if (aiCtl) aiCtl.abort(); ui.busy = false; window.scrollTo(0, 0); render(); },
   dismiss() { ui.notice = ''; keep(); },
   sheet(el) { ui.sheet = el.dataset.s; keep(); },
+  sheetStart(el) { ui.sheet = null; startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
   closeSheet() { ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
   goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
@@ -387,6 +392,11 @@ const A = {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
     toast('Meta adicionada: ' + trilha(el.dataset.id).nome); save(); keep();
+  },
+  marco(el) {
+    const i = Number(el.dataset.i), st = el.dataset.st;
+    if (st === 'lock') { toast('Esse trecho abre depois da lição anterior.'); return; }
+    ui.sheet = 'licao'; ui.sheetI = i; keep();
   },
   lrow(el) {
     const i = Number(el.dataset.i), st = el.dataset.st;

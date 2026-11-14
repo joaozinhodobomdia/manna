@@ -52,23 +52,76 @@ function vJornada() {
   }
   h += vTarefas();
 
-  /* Sumário da trilha */
-  const US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
-  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
-  h += '<section class="sumario"><h2>Sumário de ' + esc(t.nome) + '</h2>';
-  if (u0 > 0) h += '<p class="muted small">' + plural(u0 * US, 'lição anterior feita', 'lições anteriores feitas') + '</p>';
-  for (let u = u0; u < u1; u++) {
-    const a = u * US, b = Math.min(n, a + US), unitDone = d >= b;
-    h += '<div class="parte"><h3>' + (US === 7 ? 'Semana ' : 'Parte ') + (u + 1) + '<span>' + (US === 7 ? esc(t.licoes[a].ref.split(';')[0]) + ' a ' + esc(t.licoes[b - 1].ref.split(';').pop().trim()) : esc(t.licoes[a].titulo)) + '</span></h3><ol>';
-    for (let i = a; i < b; i++) {
-      const l = t.licoes[i], st = i < d ? 'done' : i === d ? 'cur' : 'lock';
-      h += '<li><button class="li-row ' + st + '" data-a="lrow" data-i="' + i + '" data-st="' + st + '">' + grainMark(st, i + 1) + '<span class="li-t"><b>' + esc(l.titulo) + '</b><small>' + (l.titulo !== l.ref ? esc(l.ref) + ' · ' : '') + (st === 'done' ? 'feita · toque para revisar' : st === 'cur' ? 'é a de hoje' : 'abre depois da anterior') + '</small></span>' + (st === 'lock' ? icon('cadeado', 'ic sm muted') : icon('voltar', 'ic sm flip')) + '</button></li>';
-    }
-    const ck = id + ':' + u, opened = S.chests[ck];
-    h += '<li><button class="li-row vaso-row' + (opened ? ' opened' : unitDone ? ' ready' : ' lock') + '" data-a="chest" data-u="' + u + '">' + ART.vaso('vaso gm-v') + '<span class="li-t"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : unitDone ? 'pronto: toque para abrir' : 'abre ao terminar a ' + (US === 7 ? 'semana' : 'parte')) + '</small></span></button></li></ol></div>';
+  /* Mapa da jornada */
+  h += vMapa(t, id, d);
+  return h + '</main>';
+}
+
+/* Mapa topográfico: estrada em curva, acampamentos por parte, marcos com o nome das lições e o destino no fim */
+function catmull(pts) {
+  if (pts.length < 2) return '';
+  let p = 'M' + pts[0][0].toFixed(2) + ' ' + pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    p += ' C' + c1[0].toFixed(2) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(2) + ' ' + c2[1].toFixed(1) + ' ' + p2[0].toFixed(2) + ' ' + p2[1];
   }
-  if (u1 < units) h += '<p class="muted small">Mais ' + plural(n - u1 * US, 'lição', 'lições') + ' depois destas.</p>';
-  return h + '</section></main>';
+  return p;
+}
+function vMapa(t, id, d) {
+  const n = t.licoes.length, US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
+  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
+  const STEP = 84, CAMP = 84, TOP = 34;
+  const items = []; let y = TOP;
+  const xOf = k => 50 + 30 * Math.sin(k * 0.9 + 0.6);
+  if (u0 > 0) { items.push({ k: 'antes', y }); y += 56; }
+  for (let u = u0; u < u1; u++) {
+    const a = u * US, b = Math.min(n, a + US);
+    items.push({ k: 'camp', u, a, b, y }); y += CAMP;
+    for (let i = a; i < b; i++) { items.push({ k: 'lic', i, x: xOf(i), y }); y += STEP; }
+    items.push({ k: 'vaso', u, x: xOf(b), y, done: d >= b }); y += STEP;
+  }
+  const resto = n - u1 * US;
+  if (resto > 0) { items.push({ k: 'depois', y, resto }); y += 70; }
+  items.push({ k: 'destino', x: 50, y: y + 20 }); y += 190;
+  const H = y;
+  const road = items.filter(it => it.x != null);
+  const ptsAll = road.map(it => [it.x, it.y]);
+  const curIdx = road.findIndex(it => it.k === 'lic' && it.i === d);
+  const lastDone = curIdx === -1 ? (d >= n ? road.length - 1 : 0) : curIdx;
+  /* contornos de relevo no fundo */
+  let topo = '';
+  for (let k = 0; k < Math.ceil(H / 260); k++) {
+    const yy = 120 + k * 260, side = k % 2 ? 78 : 14;
+    topo += '<ellipse cx="' + side + '" cy="' + yy + '" rx="22" ry="70" /><ellipse cx="' + side + '" cy="' + yy + '" rx="14" ry="44" /><ellipse cx="' + side + '" cy="' + yy + '" rx="6" ry="18" />';
+  }
+  let h = '<section class="mapa" style="height:' + H + 'px" aria-label="Mapa da jornada de ' + esc(t.nome) + '">' +
+    '<svg class="mapa-svg" viewBox="0 0 100 ' + H + '" preserveAspectRatio="none" aria-hidden="true"><g class="topo">' + topo + '</g>' +
+    '<path class="estrada" d="' + catmull(ptsAll) + '"/>' + (lastDone > 0 ? '<path class="estrada feita" d="' + catmull(ptsAll.slice(0, lastDone + 1)) + '"/>' : '') + '</svg>';
+  const deco = ['palmeira', 'tenda', 'nuvem', 'fogo', 'tabuas'];
+  items.forEach((it, j) => {
+    if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + ' acima</p>';
+    else if (it.k === 'depois') h += '<p class="m-nota" style="top:' + it.y + 'px">mais ' + plural(it.resto, 'lição', 'lições') + ' até o destino</p>';
+    else if (it.k === 'camp') {
+      const nome = US === 7 ? t.licoes[it.a].ref.split(';')[0] + ' a ' + t.licoes[it.b - 1].ref.split(';').pop().trim() : t.licoes[it.a].titulo;
+      h += '<div class="camp" style="top:' + it.y + 'px"><span class="camp-ic">' + ART.tendinha() + '</span><span><b>' + (US === 7 ? 'Semana ' : 'Acampamento ') + (it.u + 1) + '</b><small>' + esc(nome) + '</small></span></div>';
+      h += '<span class="m-deco ' + (it.u % 2 ? 'l' : 'r') + '" style="top:' + (it.y + 120) + 'px">' + ART.deco[deco[(it.u + hash(id)) % deco.length]] + '</span>';
+    } else if (it.k === 'lic') {
+      const l = t.licoes[it.i], st = it.i < d ? 'done' : it.i === d ? 'cur' : 'lock';
+      const lado = it.x > 50 ? 'esq' : 'dir';
+      h += '<button class="marco ' + st + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="Lição ' + (it.i + 1) + ': ' + esc(l.titulo) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
+        (st === 'cur' ? '<span class="pin" aria-hidden="true"><svg viewBox="0 0 40 52"><path d="M20 51C20 51 3 31 3 19a17 17 0 0 1 34 0c0 12-17 32-17 32z"/><ellipse cx="20" cy="19" rx="6" ry="9" transform="rotate(-18 20 19)"/></svg></span>' : '') +
+        '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span></button>' +
+        '<span class="m-lbl ' + lado + ' ' + st + '" style="' + (lado === 'esq' ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px">' + (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(l.plano ? 'Dia ' + (it.i + 1) : l.titulo) + '</b>' + (l.plano || l.titulo !== l.ref ? '<small>' + esc(l.ref) + '</small>' : '') + '</span>';
+    } else if (it.k === 'vaso') {
+      const ck = id + ':' + it.u, opened = S.chests[ck];
+      h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
+        '<span class="m-lbl ' + (it.x > 50 ? 'esq' : 'dir') + (it.done && !opened ? ' cur' : ' lock') + '" style="' + (it.x > 50 ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small></span>';
+    } else if (it.k === 'destino') {
+      h += '<div class="destino" style="top:' + it.y + 'px"><span class="flag" aria-hidden="true"><svg viewBox="0 0 40 56"><path d="M8 54V4"/><path d="M8 6h26l-7 9 7 9H8z"/></svg></span><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Jornada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + ' para chegar') + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
+    }
+  });
+  return h + '</section>';
 }
 
 /* ---------- Construção dos exercícios ---------- */
