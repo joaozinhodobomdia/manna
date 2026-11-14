@@ -2,7 +2,8 @@
 from pathlib import Path
 root = Path(__file__).parent
 page = (root / "src/page.html").read_text()
-page = page.replace("/*DATA*/", (root / "src/data.js").read_text()).replace("/*APP*/", (root / "src/app.js").read_text())
+js = "\n".join((root / "src" / f).read_text() for f in ["data.js", "art.js", "core.js", "content.js", "game.js", "screens.js"])
+page = page.replace("/*JS*/", js)
 (root / "dist").mkdir(exist_ok=True)
 (root / "dist/manna.html").write_text(page)
 full = ('<!doctype html>\n<html lang="pt-BR">\n<head>\n<meta charset="utf-8">\n'
