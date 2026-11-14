@@ -17,108 +17,121 @@ function grainMark(state, n) {
 }
 function vTarefas() {
   ensureQuests();
-  const xpd = todayXP();
-  let h = '<section class="tarefas"><div class="t-h"><h2>' + (xpd >= S.goal ? 'Meta do dia cumprida' : 'Hoje: ' + xpd + ' de ' + S.goal + ' XP') + '</h2>' + (boostOn() ? '<span class="boost">XP em dobro por ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</span>' : '') + '</div><span class="line"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><ul>';
+  let h = '<section class="tarefas"><div class="sec-h"><h2>Desafios de hoje</h2>' + (boostOn() ? '<span class="boost">XP em dobro por ' + Math.ceil((S.boostUntil - Date.now()) / 60000) + ' min</span>' : '') + '</div><ul>';
   S.quests.list.forEach((q, i) => {
     const def = questDef(q.id), ok = q.p >= q.n;
     h += '<li class="' + (ok ? 'ok' : '') + '"><span class="tk">' + (ok ? icon('check', 'ic xs') : '') + '</span><span class="tt">' + def.t(q.n) + '</span>' +
-      (q.claimed ? '<span class="muted">+10 grãos</span>' : ok ? '<button class="btn chip-btn" data-a="claim" data-i="' + i + '">Pegar 10 grãos</button>' : '<span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span>') + '</li>';
+      (q.claimed ? '<span class="muted">+10 grãos</span>' : ok ? '<button class="btn mini" data-a="claim" data-i="' + i + '">Pegar 10 grãos</button>' : '<span class="muted tnum">' + Math.min(q.p, q.n) + '/' + q.n + '</span>') + '</li>';
   });
   return h + '</ul></section>';
 }
-function vJornada() {
-  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length;
-  const extra = '<button class="trail-sw" data-a="open" data-ov="plano"><span><b>' + esc(t.nome) + '</b><small>' + d + ' de ' + n + (t.tipo === 'Plano' ? ' leituras' : ' lições') + ' · trocar ou ver o plano</small></span>' + icon('voltar', 'ic flip') + '</button><span class="line on-dark"><i style="width:' + (d / n * 100) + '%"></i></span>';
-  let h = capa('Sua porção de hoje', fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }), extra) + '<main class="screen sheet-top">';
-  if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
-  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva de ' + plural(S.streak.count, 'dia', 'dias') + ' acaba à meia-noite.</p></div>';
 
-  /* Porção do dia */
+/* Jornada: topo curto (até 2/5 da tela), mapa logo abaixo, desafios depois do mapa */
+function vJornada() {
+  const id = curTrail(), t = trilha(id), d = doneCount(id), n = t.licoes.length, xpd = todayXP();
+  let h = '<header class="topo-j"><div class="tj-row"><button class="trail-chip" data-a="open" data-ov="plano" aria-label="Meu plano: ' + esc(t.nome) + '">' + ART.logo('logo sm') + '<span><b>' + esc(t.nome) + '</b><small class="tnum">' + d + ' de ' + n + '</small></span>' + icon('voltar', 'ic xs down') + '</button>' + statusPills() + '</div>';
   if (d < n) {
-    const l = t.licoes[d], ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    if (studiedToday()) {
-      h += '<section class="porcao done"><div class="p-txt"><h2>Porção colhida hoje</h2><p class="muted">O maná não se guardava. A próxima é ' + esc(l.ref) + '.</p><button class="btn sec" data-a="startLesson" data-i="' + d + '">Ler mais uma agora</button></div>' + ART.mani('mani m-md', 'joinha', 'Porção colhida!') + '</section>';
-    } else {
-      h += '<section class="porcao">' + ART.mani('mani m-md', 'leitora', 'Sua porção de hoje está pronta.') + '<div class="p-txt"><p class="p-ref">' + esc(l.ref) + '</p><h2>' + esc(l.titulo) + '</h2>' + (ctx ? '<p class="muted">' + esc(ctx) + '</p>' : '') +
-        '<button class="btn" data-a="startLesson" data-i="' + d + '">Colher a porção' + icon('voltar', 'ic flip') + '</button><p class="fine">' + (S.quiz.minutos || 10) + ' minutos · +15 XP</p></div></section>';
-    }
-  } else {
-    h += '<section class="porcao done"><div class="p-txt"><h2>Glória a Deus! Você terminou ' + esc(t.nome) + '.</h2><button class="btn" data-a="open" data-ov="plano">Escolher a próxima etapa</button></div>' + ART.mani('mani m-md', 'grata', 'Glória a Deus!') + '</section>';
-  }
+    const l = t.licoes[d];
+    h += studiedToday()
+      ? '<div class="hoje done"><div><small>Porção de hoje colhida</small><b>Próxima: ' + esc(l.plano ? 'Dia ' + (d + 1) : l.titulo) + '</b></div><button class="btn mini sec-dark" data-a="startLesson" data-i="' + d + '">Ler mais uma</button></div>'
+      : '<div class="hoje"><div><small>Sua porção de hoje · ' + esc(l.ref) + '</small><b>' + esc(l.plano ? 'Dia ' + (d + 1) : l.titulo) + '</b></div><button class="btn mini" data-a="startLesson" data-i="' + d + '">Colher</button></div>';
+  } else h += '<div class="hoje done"><div><small>Glória a Deus!</small><b>Você terminou ' + esc(t.nome) + '</b></div><button class="btn mini" data-a="open" data-ov="plano">Próxima etapa</button></div>';
+  h += '<div class="xp-row"><span class="line on-dark"><i style="width:' + Math.min(100, xpd / S.goal * 100) + '%"></i></span><small class="tnum">' + Math.min(xpd, S.goal) + '/' + S.goal + ' XP hoje</small></div></header>';
+  h += '<main class="screen jornada">';
+  if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
+  if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19) h += '<div class="note warn"><p>Ainda dá tempo de ler hoje. Sua ofensiva acaba à meia-noite.</p></div>';
+  h += vMapa(t, id, d);
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
     const nd = c.study.dias.findIndex((_, i) => !c.feitos.includes(i));
     h += '<button class="row-link" data-a="open" data-ov="culto" data-id="' + c.id + '"><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo da pregação concluído' : 'Estudo da pregação · dia ' + (nd + 1) + ' de 5') + '</small></span>' + icon('voltar', 'ic flip') + '</button>';
   }
-  h += vTarefas();
-
-  /* Mapa da jornada */
-  h += vMapa(t, id, d);
-  return h + '</main>';
+  return h + vTarefas() + '</main>';
 }
 
-/* Mapa topográfico: estrada em curva, acampamentos por parte, marcos com o nome das lições e o destino no fim */
+/* ---------- Mapa da caminhada ---------- */
 function catmull(pts) {
   if (pts.length < 2) return '';
-  let p = 'M' + pts[0][0].toFixed(2) + ' ' + pts[0][1];
+  let p = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1];
   for (let i = 0; i < pts.length - 1; i++) {
     const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
-    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
-    p += ' C' + c1[0].toFixed(2) + ' ' + c1[1].toFixed(1) + ' ' + c2[0].toFixed(2) + ' ' + c2[1].toFixed(1) + ' ' + p2[0].toFixed(2) + ' ' + p2[1];
+    p += ' C' + (p1[0] + (p2[0] - p0[0]) / 6).toFixed(1) + ' ' + (p1[1] + (p2[1] - p0[1]) / 6).toFixed(1) + ' ' + (p2[0] - (p3[0] - p1[0]) / 6).toFixed(1) + ' ' + (p2[1] - (p3[1] - p1[1]) / 6).toFixed(1) + ' ' + p2[0].toFixed(1) + ' ' + p2[1];
   }
   return p;
 }
+/* Região da Bíblia de cada parte, pelo primeiro texto da parte */
+function regiao(ref) {
+  const s = parseRef(ref)[0]; if (!s) return 'reino';
+  const b = s.b;
+  if (b <= 6) return 'deserto';            /* Gênesis a Juízes */
+  if (b < NT) return 'reino';              /* Rute a Malaquias */
+  if (b <= NT + 3) return 'galileia';      /* Evangelhos */
+  if (b === 65) return 'ceu';              /* Apocalipse */
+  return 'cidades';                        /* Atos e cartas */
+}
+const REGIAO_NOME = { deserto: 'Deserto', reino: 'Terra de Israel', galileia: 'Galileia', cidades: 'Igrejas do caminho', ceu: 'Nova Jerusalém' };
+function mapWidth() {
+  const app = $('app'); const w = app ? app.clientWidth - 32 : 358;
+  return Math.max(288, Math.min(488, w || 358));
+}
 function vMapa(t, id, d) {
   const n = t.licoes.length, US = t.unit || UNIT, units = Math.ceil(n / US), cu = Math.floor(Math.min(d, n - 1) / US);
-  const u0 = Math.max(0, cu - 1), u1 = Math.min(units, cu + 3);
-  const STEP = 84, CAMP = 84, TOP = 34;
-  const items = []; let y = TOP;
-  const xOf = k => 50 + 30 * Math.sin(k * 0.9 + 0.6);
-  if (u0 > 0) { items.push({ k: 'antes', y }); y += 56; }
+  const u0 = cu, u1 = Math.min(units, cu + 3), W = mapWidth(), A = W * 0.25;
+  const xOf = k => Math.round(W / 2 + A * Math.sin(k * 0.95 + 0.4));
+  const STEP = 86, CAMP = 132;
+  const items = []; let y = 24;
+  if (u0 > 0) { items.push({ k: 'antes', y }); y += 40; }
+  const bands = [];
   for (let u = u0; u < u1; u++) {
-    const a = u * US, b = Math.min(n, a + US);
-    items.push({ k: 'camp', u, a, b, y }); y += CAMP;
+    const a = u * US, b = Math.min(n, a + US), y0 = y - 18;
+    items.push({ k: 'camp', u, a, b, y: y + 18, x: xOf(a - 0.5) }); y += CAMP;
     for (let i = a; i < b; i++) { items.push({ k: 'lic', i, x: xOf(i), y }); y += STEP; }
-    items.push({ k: 'vaso', u, x: xOf(b), y, done: d >= b }); y += STEP;
+    items.push({ k: 'vaso', u, x: xOf(b), y, done: d >= b }); y += STEP - 10;
+    bands.push({ y0, y1: y, r: regiao(t.licoes[a].ref), u, a, b });
   }
   const resto = n - u1 * US;
-  if (resto > 0) { items.push({ k: 'depois', y, resto }); y += 70; }
-  items.push({ k: 'destino', x: 50, y: y + 20 }); y += 190;
-  const H = y;
-  const road = items.filter(it => it.x != null);
-  const ptsAll = road.map(it => [it.x, it.y]);
-  const curIdx = road.findIndex(it => it.k === 'lic' && it.i === d);
-  const lastDone = curIdx === -1 ? (d >= n ? road.length - 1 : 0) : curIdx;
-  /* contornos de relevo no fundo */
-  let topo = '';
-  for (let k = 0; k < Math.ceil(H / 260); k++) {
-    const yy = 120 + k * 260, side = k % 2 ? 78 : 14;
-    topo += '<ellipse cx="' + side + '" cy="' + yy + '" rx="22" ry="70" /><ellipse cx="' + side + '" cy="' + yy + '" rx="14" ry="44" /><ellipse cx="' + side + '" cy="' + yy + '" rx="6" ry="18" />';
-  }
-  let h = '<section class="mapa" style="height:' + H + 'px" aria-label="Mapa da jornada de ' + esc(t.nome) + '">' +
-    '<svg class="mapa-svg" viewBox="0 0 100 ' + H + '" preserveAspectRatio="none" aria-hidden="true"><g class="topo">' + topo + '</g>' +
-    '<path class="estrada" d="' + catmull(ptsAll) + '"/>' + (lastDone > 0 ? '<path class="estrada feita" d="' + catmull(ptsAll.slice(0, lastDone + 1)) + '"/>' : '') + '</svg>';
-  const deco = ['palmeira', 'tenda', 'nuvem', 'fogo', 'tabuas'];
-  items.forEach((it, j) => {
-    if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição anterior concluída', 'lições anteriores concluídas') + ' acima</p>';
+  if (resto > 0) { items.push({ k: 'depois', y: y + 6, resto }); y += 48; }
+  const yDest = y + 40; items.push({ k: 'destino', x: W / 2, y: yDest }); y = yDest + 210;
+  const H = y; if (bands.length) bands[bands.length - 1].y1 = H;
+  const road = items.filter(it => it.k === 'lic' || it.k === 'vaso' || it.k === 'destino').map(it => [it.x, it.y]);
+  road.unshift([xOf(u0 * US - 1), 0]);
+  const curPos = items.findIndex(it => it.k === 'lic' && it.i === d);
+  const roadIdx = curPos === -1 ? (d >= n ? road.length - 1 : 0) : items.filter((it, j) => j <= curPos && (it.k === 'lic' || it.k === 'vaso')).length;
+  /* fundo por região */
+  let g = '';
+  bands.forEach((bd, k) => {
+    const y0 = bd.y0, w4 = W / 4;
+    g += '<path class="rg ' + bd.r + '" d="M0 ' + (y0 + 10) + ' Q' + w4 + ' ' + (y0 - 8) + ' ' + (W / 2) + ' ' + (y0 + 6) + ' T' + W + ' ' + y0 + ' V' + bd.y1 + ' H0 Z"/>';
+  });
+  bands.forEach(bd => {
+    const midY = bd.y0 + (bd.y1 - bd.y0) * 0.5, rx = xOf(bd.a + (bd.b - bd.a) / 2);
+    const side = rx > W / 2 ? W * 0.14 : W * 0.86;
+    g += ART.cena(bd.r, side, bd.y0 + 92, 'marco', bd.u) + ART.cena(bd.r, rx > W / 2 ? W * 0.12 : W * 0.88, midY + 70, 'gente', bd.u);
+  });
+  const dRoad = catmull(road);
+  g += '<path class="estrada-borda" d="' + dRoad + '"/><path class="estrada" d="' + dRoad + '"/><path class="estrada-meio" d="' + dRoad + '"/>';
+  if (roadIdx > 0) g += '<path class="estrada-feita" d="' + catmull(road.slice(0, roadIdx + 1)) + '"/>';
+  g += ART.cena('destino', W / 2, yDest + 34, 'destino');
+  let h = '<section class="mapa" style="height:' + H + 'px;width:' + W + 'px" aria-label="Mapa da caminhada de ' + esc(t.nome) + '"><svg class="mapa-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true">' + g + '</svg>';
+  const lbl = (x, yy, cls, inner) => '<span class="m-lbl ' + cls + (x > W / 2 ? ' esq" style="right:' + (W - x) : ' dir" style="left:' + x) + 'px;top:' + yy + 'px">' + inner + '</span>';
+  items.forEach(it => {
+    if (it.k === 'antes') h += '<p class="m-nota" style="top:' + it.y + 'px">' + plural(u0 * US, 'lição já percorrida', 'lições já percorridas') + '</p>';
     else if (it.k === 'depois') h += '<p class="m-nota" style="top:' + it.y + 'px">mais ' + plural(it.resto, 'lição', 'lições') + ' até o destino</p>';
     else if (it.k === 'camp') {
       const nome = US === 7 ? t.licoes[it.a].ref.split(';')[0] + ' a ' + t.licoes[it.b - 1].ref.split(';').pop().trim() : t.licoes[it.a].titulo;
-      h += '<div class="camp" style="top:' + it.y + 'px"><span class="camp-ic">' + ART.tendinha() + '</span><span><b>' + (US === 7 ? 'Semana ' : 'Acampamento ') + (it.u + 1) + '</b><small>' + esc(nome) + '</small></span></div>';
-      h += '<span class="m-deco ' + (it.u % 2 ? 'l' : 'r') + '" style="top:' + (it.y + 120) + 'px">' + ART.deco[deco[(it.u + hash(id)) % deco.length]] + '</span>';
+      h += '<div class="camp" style="top:' + it.y + 'px"><b>' + (US === 7 ? 'Semana ' : 'Parte ') + (it.u + 1) + ' · ' + REGIAO_NOME[regiao(t.licoes[it.a].ref)] + '</b><small>' + esc(nome) + '</small></div>';
     } else if (it.k === 'lic') {
       const l = t.licoes[it.i], st = it.i < d ? 'done' : it.i === d ? 'cur' : 'lock';
-      const lado = it.x > 50 ? 'esq' : 'dir';
-      h += '<button class="marco ' + st + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="Lição ' + (it.i + 1) + ': ' + esc(l.titulo) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
-        (st === 'cur' ? '<span class="pin" aria-hidden="true"><svg viewBox="0 0 40 52"><path d="M20 51C20 51 3 31 3 19a17 17 0 0 1 34 0c0 12-17 32-17 32z"/><ellipse cx="20" cy="19" rx="6" ry="9" transform="rotate(-18 20 19)"/></svg></span>' : '') +
-        '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span></button>' +
-        '<span class="m-lbl ' + lado + ' ' + st + '" style="' + (lado === 'esq' ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px">' + (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(l.plano ? 'Dia ' + (it.i + 1) : l.titulo) + '</b>' + (l.plano || l.titulo !== l.ref ? '<small>' + esc(l.ref) + '</small>' : '') + '</span>';
+      const nome = l.plano ? 'Dia ' + (it.i + 1) : l.titulo, sub = l.plano || l.titulo !== l.ref ? l.ref : '';
+      h += '<button class="marco ' + st + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="marco" data-i="' + it.i + '" data-st="' + st + '" aria-label="' + (it.i + 1) + ': ' + esc(nome) + (st === 'done' ? ', concluída' : st === 'cur' ? ', a de hoje' : ', ainda fechada') + '">' +
+        (st === 'cur' ? ART.mani('mani m-pin', 'leitora') : '<span class="m-dot">' + (st === 'done' ? icon('check', 'ic xs') : '<i class="tnum">' + (it.i + 1) + '</i>') + '</span>') + '</button>' +
+        lbl(it.x, it.y, st, (st === 'cur' ? '<em>Você está aqui</em>' : '') + '<b>' + esc(nome) + '</b>' + (sub ? '<small>' + esc(sub) + '</small>' : ''));
     } else if (it.k === 'vaso') {
-      const ck = id + ':' + it.u, opened = S.chests[ck];
-      h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + '%;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
-        '<span class="m-lbl ' + (it.x > 50 ? 'esq' : 'dir') + (it.done && !opened ? ' cur' : ' lock') + '" style="' + (it.x > 50 ? 'right:' + (100 - it.x) : 'left:' + it.x) + '%;top:' + it.y + 'px"><b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small></span>';
+      const opened = S.chests[id + ':' + it.u];
+      h += '<button class="marco vasoM' + (opened ? ' opened' : it.done ? ' ready' : ' lock') + '" style="left:' + it.x + 'px;top:' + it.y + 'px" data-a="chest" data-u="' + it.u + '" aria-label="Vaso de maná' + (opened ? ', aberto' : it.done ? ', pronto para abrir' : ', fechado') + '">' + ART.vaso('vaso m-vaso') + '</button>' +
+        lbl(it.x, it.y, it.done && !opened ? 'cur' : 'lock', '<b>Vaso de maná</b><small>' + (opened ? 'aberto' : it.done ? 'toque para abrir' : 'no fim da ' + (US === 7 ? 'semana' : 'parte')) + '</small>');
     } else if (it.k === 'destino') {
-      h += '<div class="destino" style="top:' + it.y + 'px"><span class="flag" aria-hidden="true"><svg viewBox="0 0 40 56"><path d="M8 54V4"/><path d="M8 6h26l-7 9 7 9H8z"/></svg></span><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Jornada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + ' para chegar') + '</small><button class="btn sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
+      h += '<div class="destino" style="top:' + (it.y + 96) + 'px"><b>' + (d >= n ? 'Você chegou: ' : 'Destino: ') + esc(t.nome) + '</b><small>' + (d >= n ? 'Caminhada completa.' : 'Faltam ' + plural(n - d, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições')) + '</small><button class="btn mini sec" data-a="open" data-ov="plano">Ver o plano do ano</button></div>';
     }
   });
   return h + '</section>';
@@ -196,7 +209,7 @@ async function aiQuestions(L) {
 
 async function startLesson(id, idx, review) {
   const t = trilha(id);
-  ui.pop = null; ui.aiText = ''; ui.aiErr = '';
+  ui.aiText = ''; ui.aiErr = '';
   ui.L = { id, idx, review: !!review, phase: 'load', steps: [], vs: [] };
   render();
   try { await loadBiblia(); } catch (e) { /* sem o texto, a lição usa a referência */ }

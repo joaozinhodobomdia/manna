@@ -25,8 +25,8 @@ const goalFor = m => ({ 5: 20, 10: 30, 20: 50 }[m] || 30);
 
 function vOnboarding() {
   const s = S.step;
-  if (s === 0) return '<main class="onb-hero"><div class="onb-top">' + ART.logo('logo md') + '<span class="brand">manna</span></div>' + ART.mani('mani m-hero', 'leitora', 'Oi! Eu sou Mani. Vamos colher sua porção de hoje?') +
-    '<div class="onb-c"><h1>Sua porção diária da Palavra</h1><p>Lições curtas na Bíblia, a pregação do culto virando estudo e os irmãos da sua igreja junto com você.</p>' +
+  if (s === 0) return '<main class="onb-hero"><div class="onb-top">' + ART.logo('logo md') + '<span class="brand">manna</span></div><div class="onb-mid">' + ART.mani('mani m-hero', 'leitora', 'Oi! Eu sou Mani. Vamos colher sua porção de hoje?') +
+    '<h1>Sua porção diária da Palavra</h1><p>Lições curtas na Bíblia, a pregação do culto virando estudo e os irmãos da sua igreja junto com você.</p>' +
     '<button class="btn" data-a="next">Montar meu plano' + icon('voltar', 'ic flip') + '</button><p class="fine">Leva 1 minuto.</p></div></main>';
   if (s >= 1 && s <= QUIZ.length) return QUIZ[s - 1].k === 'objetivo' ? vObjetivo(s) : QUIZ[s - 1].k === 'sugestoes' ? vQuizSug(s) : vQuiz(QUIZ[s - 1], s);
   if (s === QUIZ.length + 1) return vResultado();
@@ -264,13 +264,7 @@ function vLoja() {
 function vSheet() {
   const s = ui.sheet;
   let h = '<div class="scrim" data-a="closeSheet"></div><div class="sheet-panel" role="dialog" aria-modal="true">';
-  if (s === 'trilhas') {
-    h += '<h2>Suas metas</h2><p class="muted">Toque para ir para a jornada da meta. Até 5 metas.</p><ul class="mt">';
-    S.quiz.trilhas.forEach(id => { const t = trilha(id), d = doneCount(id); h += '<li><button class="mt-b' + (id === curTrail() ? ' on' : '') + '" data-a="goTrail" data-id="' + id + '"><span><b>' + t.nome + '</b><small class="muted">' + t.tipo + ' · ' + d + ' de ' + t.licoes.length + '</small></span><span class="bar"><i style="width:' + d / t.licoes.length * 100 + '%"></i></span></button></li>'; });
-    h += '</ul><h3 class="grp">Adicionar meta</h3><div class="addm">';
-    TRILHAS.filter(t => !S.quiz.trilhas.includes(t.id)).forEach(t => { h += '<button class="pill" data-a="addMeta" data-id="' + t.id + '">+ ' + t.nome + '</button>'; });
-    h += '</div>';
-  } else if (s === 'licao') {
+  if (s === 'licao') {
     const t = trilha(curTrail()), i = ui.sheetI, l = t.licoes[i], feita = i < doneCount(t.id), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
     h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2>' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
       '<button class="btn" data-a="sheetStart" data-i="' + i + '" data-r="' + (feita ? 1 : 0) + '">' + (feita ? 'Revisar · +5 XP' : 'Colher a porção · +15 XP') + '</button>';
@@ -398,15 +392,6 @@ const A = {
     if (st === 'lock') { toast('Esse trecho abre depois da lição anterior.'); return; }
     ui.sheet = 'licao'; ui.sheetI = i; keep();
   },
-  lrow(el) {
-    const i = Number(el.dataset.i), st = el.dataset.st;
-    if (st === 'lock') { toast('Esta lição abre depois da anterior.'); return; }
-    startLesson(curTrail(), i, st === 'done'); window.scrollTo(0, 0);
-  },
-  pop(el) {
-    const i = Number(el.dataset.i);
-    ui.pop = ui.pop === i ? null : i; keep();
-  },
   startLesson(el) { startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
   chest(el) {
     const id = curTrail(), u = Number(el.dataset.u), ck = id + ':' + u;
@@ -442,7 +427,6 @@ const A = {
     [a[i], a[j]] = [a[j], a[i]]; save(); keep();
   },
   objToggle(el) { S.objSel = S.objSel || []; const i = S.objSel.indexOf(el.dataset.id); if (i > -1) S.objSel.splice(i, 1); else S.objSel.push(el.dataset.id); ui.sug = null; save(); keep(); },
-  objChip(el) { S.objetivo = (S.objetivo.trim() ? S.objetivo.trim().replace(/[.]$/, '') + '. ' : '') + el.dataset.t + '.'; save(); keep(); },
   objNext() { if ($('obj')) S.objetivo = val('obj'); ui.sug = null; ui.sugInit = false; S.quiz.trilhas = []; save(); A.next(); },
   sugIA() { sugerirIA(); },
   async genTema(el) {
@@ -668,3 +652,11 @@ openOv = function (type, id) {
 
 ensureQuests(); checkStreak(); checkLeague(); save();
 render(); renderToast();
+
+/* O mapa é desenhado em pixels: redesenha quando a largura muda */
+let lastW = 0;
+window.addEventListener('resize', () => {
+  clearTimeout(window.__rz); window.__rz = setTimeout(() => {
+    const w = mapWidth(); if (Math.abs(w - lastW) > 8 && S.onboarded && !ui.L && !ui.ov && ui.tab === 'jornada') { lastW = w; keep(); }
+  }, 150);
+});

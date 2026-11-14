@@ -41,6 +41,48 @@ ART.deco = {
   vasoGrande: decoSvg('<ellipse cx="45" cy="82" rx="24" ry="5" fill="var(--areia)"/><g transform="translate(17 18) scale(1.75)">' + '<path d="M9 12C3 15 2 20 2 24c0 7 6 10 14 10s14-3 14-10c0-4-1-9-7-12Z" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="9" y="8" width="14" height="5" rx="1.5" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="6" y="3" width="20" height="6" rx="3" fill="var(--ouro-dk)" stroke="var(--tronco)" stroke-width="1.6"/></g>'),
 };
 ART.tendinha = () => '<svg viewBox="0 0 34 30" aria-hidden="true"><path d="M3 27 L17 5 L31 27 Z" fill="var(--tenda)"/><path d="M17 5 L12 27 H22 Z" fill="var(--tenda-dk)"/><path d="M17 5 V1" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/><path d="M17 1.5 L23 3.5 L17 5.5" fill="var(--ouro)"/><path d="M1 27.5 H33" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/></svg>';
+
+/* Cenas do mapa da caminhada: paisagens bíblicas e personagens, em pixels, cores chapadas */
+const G = (x, y, inner, s) => '<g transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')' + (s ? ' scale(' + s + ')' : '') + '">' + inner + '</g>';
+const SV = {
+  sombra: (w) => '<ellipse cx="0" cy="0" rx="' + w + '" ry="' + (w / 5) + '" fill="var(--chao)"/>',
+  tenda: '<path d="M-26 0 L0 -36 L26 0 Z" fill="var(--tenda)"/><path d="M0 -36 L-8 0 H8 Z" fill="var(--tenda-dk)"/><path d="M0 -36 V-44" stroke="var(--tenda-dk)" stroke-width="2.5" stroke-linecap="round"/><path d="M0 -44 L9 -41 L0 -38" fill="var(--ouro)"/>',
+  palmeira: '<path d="M2 0 C0 -14 -2 -26 3 -40" stroke="var(--tronco)" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M3 -40 C-6 -50 -18 -50 -26 -42 C-14 -45 -6 -43 3 -38Z" fill="var(--folha)"/><path d="M3 -40 C12 -52 24 -52 32 -44 C20 -47 12 -44 3 -38Z" fill="var(--folha)"/><path d="M3 -40 C-6 -40 -15 -32 -16 -22 C-10 -30 -3 -35 3 -38Z" fill="var(--folha-dk)"/><path d="M3 -40 C12 -40 21 -32 22 -22 C16 -30 9 -35 3 -38Z" fill="var(--folha-dk)"/>',
+  oliveira: '<path d="M0 0 C-2 -8 2 -14 0 -22" stroke="var(--tronco)" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="-10" cy="-28" r="13" fill="var(--folha-dk)"/><circle cx="8" cy="-32" r="15" fill="var(--folha)"/><circle cx="-2" cy="-42" r="12" fill="var(--folha)"/>',
+  casa: '<rect x="-16" y="-22" width="32" height="22" fill="var(--parede)" stroke="var(--pedra-dk)" stroke-width="1.5"/><rect x="-18" y="-26" width="36" height="5" fill="var(--pedra-dk)"/><rect x="-4" y="-12" width="8" height="12" fill="var(--tenda-dk)"/><rect x="7" y="-17" width="5" height="5" fill="var(--noite)"/>',
+  monte: '<path d="M-40 0 L-10 -46 L6 -26 L16 -38 L44 0 Z" fill="var(--monte)"/><path d="M-10 -46 L-2 0 L-40 0 Z" fill="var(--monte-dk)"/><path d="M-16 -37 L-10 -46 L-5 -38 Z" fill="var(--parede)"/>',
+  ovelha: '<g><path d="M-6 6 v6 M5 6 v6" stroke="var(--noite)" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="0" cy="0" rx="12" ry="9" fill="var(--ovelha)" stroke="var(--pedra-dk)" stroke-width="1.2"/><circle cx="-8" cy="-5" r="5" fill="var(--ovelha)" stroke="var(--pedra-dk)" stroke-width="1.2"/><circle cx="7" cy="-6" r="5" fill="var(--ovelha)" stroke="var(--pedra-dk)" stroke-width="1.2"/><ellipse cx="13" cy="-2" rx="5" ry="6" fill="var(--noite)"/></g>',
+  pastor: '<path d="M-9 0 L-6 -22 C-4 -26 4 -26 6 -22 L9 0 Z" fill="var(--manto)"/><path d="M-6 -22 L6 -22 L4 -10 L-4 -10 Z" fill="var(--manto2)"/><circle cx="0" cy="-30" r="6" fill="var(--pele)"/><path d="M-7 -30 C-7 -40 7 -40 7 -30 L8 -24 L-8 -24 Z" fill="var(--parede)"/><path d="M13 2 V-34 C13 -42 21 -42 21 -35" stroke="var(--tronco)" stroke-width="2.5" fill="none" stroke-linecap="round"/>',
+  pessoa: (c) => '<path d="M-7 0 L-5 -18 C-3 -21 3 -21 5 -18 L7 0 Z" fill="' + c + '"/><circle cx="0" cy="-25" r="5" fill="var(--pele)"/>',
+  lago: '<path d="M-46 4 C-48 -14 -26 -24 -2 -22 C24 -20 48 -12 46 4 C44 18 18 24 -6 22 C-30 20 -44 16 -46 4Z" fill="var(--agua)"/><path d="M-30 8 q6 -4 12 0 M8 12 q6 -4 12 0 M-10 -10 q6 -4 12 0" stroke="var(--agua-dk)" stroke-width="2" fill="none" stroke-linecap="round"/>',
+  barco: '<path d="M-18 -4 H18 L12 6 H-12 Z" fill="var(--tenda-dk)"/><path d="M0 -4 V-30" stroke="var(--tronco)" stroke-width="2.2"/><path d="M1 -29 L16 -8 H1 Z" fill="var(--parede)" stroke="var(--pedra-dk)" stroke-width="1"/><circle cx="-8" cy="-10" r="3.6" fill="var(--pele)"/><path d="M-12 -4 L-11 -7 C-10 -9 -6 -9 -5 -7 L-4 -4Z" fill="var(--manto)"/>',
+  igrejinha: '<rect x="-20" y="-28" width="40" height="28" fill="var(--parede)" stroke="var(--pedra-dk)" stroke-width="1.5"/><path d="M-24 -26 L0 -46 L24 -26 Z" fill="var(--telha)"/><rect x="-6" y="-58" width="12" height="16" fill="var(--parede)" stroke="var(--pedra-dk)" stroke-width="1.5"/><path d="M-8 -58 L0 -66 L8 -58Z" fill="var(--telha)"/><path d="M0 -74 V-64 M-4 -70 H4" stroke="var(--ouro-dk)" stroke-width="2.4" stroke-linecap="round"/><path d="M-6 0 V-12 a6 6 0 0 1 12 0 V0Z" fill="var(--noite)"/><rect x="-15" y="-21" width="6" height="7" rx="3" fill="var(--agua)"/><rect x="9" y="-21" width="6" height="7" rx="3" fill="var(--agua)"/>',
+  portao: '<rect x="-30" y="-40" width="14" height="40" fill="var(--parede)" stroke="var(--ouro-dk)" stroke-width="1.5"/><rect x="16" y="-40" width="14" height="40" fill="var(--parede)" stroke="var(--ouro-dk)" stroke-width="1.5"/><path d="M-16 0 V-26 a16 16 0 0 1 32 0 V0" fill="var(--ouro)" stroke="var(--ouro-dk)" stroke-width="1.5"/><path d="M-30 -40 h14 v-6 h-14z M16 -40 h14 v-6 h-14z" fill="var(--ouro-dk)"/>',
+};
+ART.cena = (r, x, y, tipo, u) => {
+  if (tipo === 'destino') {
+    return G(x, y, SV.sombra(58) + G(-46, -2, SV.oliveira, .8) + G(48, -2, SV.oliveira, .7) + G(0, 0, SV.igrejinha, 1.5) + G(-24, 4, SV.pessoa('var(--manto2)'), .9) + G(-12, 6, SV.pessoa('var(--manto)'), .8) + G(24, 5, SV.pessoa('var(--telha)'), .85));
+  }
+  const S2 = SV;
+  const emb = (k, sz) => ART.deco[k].replace('<svg class="deco"', '<svg x="' + (-sz / 2) + '" y="' + (-sz * .9) + '" width="' + sz + '" height="' + sz + '"');
+  const opcoes = {
+    deserto: [SV.sombra(34) + G(-16, 0, S2.tenda, .9) + G(14, 4, S2.tenda, .7) + G(30, -2, S2.palmeira, .7), SV.sombra(40) + G(0, 2, S2.monte, .9) + G(30, 6, emb('tabuas', 40)), emb('nuvem', 70) + G(30, 4, S2.tenda, .6), emb('fogo', 64) + G(-28, 4, S2.tenda, .6)],
+    reino: [SV.sombra(34) + G(-20, 0, S2.monte, .55) + G(12, 4, S2.casa, .9) + G(30, 2, S2.oliveira, .6), SV.sombra(34) + G(-12, 2, S2.casa, .8) + G(12, 4, S2.casa, .7) + G(-34, 2, S2.oliveira, .55), SV.sombra(30) + G(0, 4, emb('tabuas', 60))],
+    galileia: [G(0, 0, S2.lago, .95) + G(4, -2, S2.barco, .9), SV.sombra(34) + G(0, 2, S2.monte, .7) + G(-26, 4, S2.oliveira, .6) + G(26, 6, S2.oliveira, .5), G(0, 0, S2.lago, .8) + G(-30, 2, S2.palmeira, .6)],
+    cidades: [SV.sombra(30) + G(0, 4, S2.igrejinha, .9) + G(-30, 6, S2.oliveira, .55), G(0, 0, S2.lago, 1.05) + G(0, -2, S2.barco, 1.2), SV.sombra(34) + G(-14, 2, S2.casa, .8) + G(14, 4, S2.igrejinha, .7)],
+    ceu: [SV.sombra(32) + G(0, 4, S2.portao, .9)],
+  }[r] || [''];
+  const marco = opcoes[(typeof u === 'number' ? u : 0) % opcoes.length];
+  const gente = {
+    deserto: G(-14, 0, S2.ovelha, .9) + G(10, 6, S2.ovelha, .75) + G(26, 4, S2.pastor, .85),
+    reino: G(-18, 2, S2.pastor, .85) + G(4, 6, S2.ovelha, .8) + G(22, 2, S2.ovelha, .7),
+    galileia: G(-12, 2, S2.ovelha, .8) + G(14, 4, S2.oliveira, .55),
+    cidades: G(-10, 2, S2.pessoa('var(--manto)'), .9) + G(4, 4, S2.pessoa('var(--manto2)'), .85) + G(18, 2, S2.pessoa('var(--telha)'), .8),
+    ceu: G(0, 0, S2.palmeira, .7),
+  }[r] || '';
+  return G(x, y, tipo === 'gente' ? gente : marco);
+};
+
 ART.decoOrder = ['tenda', 'palmeira', 'nuvem', 'fogo', 'tabuas', 'vasoGrande'];
 
 /* Faixa da unidade: dunas e grãos caindo */
