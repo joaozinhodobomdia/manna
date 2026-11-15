@@ -1,7 +1,6 @@
 /* Manna: jornada (sumário de lições) e motor da lição com exercícios. */
 
 const UNIT = 5;
-const STOP = new Set('quando sobre entre depois antes mesmo porque pelos pelas pelo pela como todos todas também ainda outro outra outros outras nossa nosso deles dele dela onde cada muito mostra diz para esta este essa esse isso aquele seus suas qualquer'.split(' '));
 
 /* ---------- Jornada ---------- */
 function capa(titulo, sub, extra) {
@@ -240,96 +239,68 @@ function andarMani() {
   ui.andarFrame = requestAnimationFrame(frame);
 }
 
-/* ---------- Construção dos exercícios ---------- */
-function pickOthers(arr, exclude, n) {
-  const seen = new Set([exclude]);
-  return shuffle(arr).filter(x => { if (seen.has(x)) return false; seen.add(x); return true; }).slice(0, n);
-}
+/* ---------- Devocional da porção: ler, meditar, refletir, orar e levar para o dia ---------- */
 const words = s => s.replace(/[.,;:"()?!]/g, '').split(/\s+/).filter(Boolean);
-const escapeRe = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-function findWord(text, word) {
-  const re = new RegExp('(^|[^\\p{L}\\p{N}])(' + escapeRe(word) + ')(?![\\p{L}\\p{N}])', 'u');
-  const m = re.exec(String(text || ''));
-  return m ? m.index + m[1].length : -1;
-}
 const vref = x => LIVROS[x.b][0] + ' ' + x.c + ':' + x.v;
-const GENQ = ['O que este texto mostra sobre quem Deus é?', 'Que versículo daqui você quer guardar hoje, e por quê?', 'Que atitude este texto pede de você esta semana?', 'O que mais chamou sua atenção nesta leitura?', 'Por quem você pode orar a partir deste texto?'];
-function buildSteps(t, i, vs) {
-  const l = t.licoes[i], all = TRILHAS.flatMap(x => x.licoes), steps = [{ k: 'leia' }];
-  const curado = !!l.ctx;
-  if (curado) steps.push({ k: 'mc', q: 'Qual destes títulos resume ' + l.ref + '?', opts: shuffle([l.titulo, ...pickOthers((t.licoes.length >= 5 ? t.licoes : all).map(x => x.titulo), l.titulo, 3)]), ans: l.titulo, exp: l.ctx });
-  const good = vs.filter(x => { const n = words(x.t).length; return n >= 7 && n <= 34; });
-  const pool = shuffle(good);
-  const allWords = vs.flatMap(x => words(x.t)).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()));
-  /* Complete o versículo */
-  const vf = pool[0];
-  if (vf) {
-    const cand = words(vf.t).filter(w => w.length >= 5 && !STOP.has(w.toLowerCase()) && findWord(vf.t, w) >= 0);
-    if (cand.length) {
-      const w = cand[Math.floor(Math.random() * cand.length)], at = findWord(vf.t, w);
-      const outros = allWords.concat(TRILHAS.flatMap(x => x.licoes.flatMap(y => words(y.ctx || '')))).filter(x => x.length >= 5 && x.toLowerCase() !== w.toLowerCase() && !vf.t.includes(x));
-      const ops = pickOthers(outros, w, 3);
-      if (ops.length === 3) steps.push({ k: 'fill', q: 'Complete o versículo', hint: vref(vf), before: vf.t.slice(0, at), after: vf.t.slice(at + w.length), opts: shuffle([w, ...ops]), ans: w });
-    }
-  }
-  /* Monte o final do versículo */
-  const vt = pool.find(x => x !== vf && words(x.t).length <= 18) || pool[1];
-  if (vt) {
-    const ws = vt.t.replace(/\s+/g, ' ').trim().split(' '), cut = Math.max(2, ws.length - Math.min(7, Math.ceil(ws.length / 2)));
-    const target = ws.slice(cut), extra = pickOthers(allWords.filter(x => !target.includes(x)), null, 2);
-    steps.push({ k: 'tiles', prompt: 'Monte o final do versículo', hint: vref(vt) + ': ' + ws.slice(0, cut).join(' ') + '…', target, bank: shuffle([...target, ...extra].map((w, j) => ({ w, id: j }))) });
-  }
-  /* Em que versículo está */
-  const vm = pool.find(x => x !== vf && x !== vt) || pool[2];
-  if (vm && vs.length >= 4) {
-    const outros = vs.filter(x => x !== vm).map(vref);
-    const trecho = words(vm.t).slice(0, 12).join(' ');
-    steps.push({ k: 'mc', q: 'Em que versículo está este trecho?', quote: trecho + '…', opts: shuffle([vref(vm), ...pickOthers(outros, vref(vm), 3)]), ans: vref(vm) });
-  }
-  if (!vs.length) {
-    steps.push({ k: 'mc', q: 'Em que texto você encontra "' + l.titulo + '"?', opts: shuffle([l.ref, ...pickOthers((t.licoes.length >= 5 ? t.licoes : all).map(x => x.ref), l.ref, 3)]), ans: l.ref });
-    const tw = l.titulo.split(' ');
-    if (tw.length >= 3) steps.push({ k: 'tiles', prompt: 'Monte o título desta lição', hint: l.ref, target: tw, bank: shuffle([...tw, ...pickOthers(all.flatMap(x => x.titulo.split(' ')).filter(x => !tw.includes(x) && x.length > 2), null, 2)].map((w, j) => ({ w, id: j }))) });
-  }
-  steps.push({ k: 'reflita', q: l.q || (S.gen[l.ref] && S.gen[l.ref].pergunta) || GENQ[(i + l.ref.length) % GENQ.length] });
-  return steps;
+const PERGUNTAS_BASE = [
+  'Em que área da sua vida este texto toca hoje: família, trabalho, decisões ou medos?',
+  'O que este texto mostra sobre o caráter de Deus, e como isso muda o jeito como você enxerga o seu momento?',
+  'Se você levasse esta palavra a sério hoje, o que faria diferente?',
+];
+function versoChave(vs) {
+  if (!vs.length) return null;
+  const cand = vs.filter(x => { const n = words(x.t).length; return n >= 8 && n <= 34; });
+  const v = cand.find(x => /\b(Deus|Senhor|SENHOR|Jesus|Cristo|amor|fé|graça|paz|esperança)\b/.test(x.t)) || cand[0] || vs[0];
+  return { ref: vref(v), t: v.t };
 }
-async function aiQuestions(L) {
-  if (!SAMPLE || L.review) return;
-  const l = trilha(L.id).licoes[L.idx];
+/* Devocional sem IA: usa o contexto da lição e um versículo-chave do próprio texto */
+function devLocal(t, i, vs) {
+  const l = t.licoes[i], v = versoChave(vs), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
+  return {
+    tema: l.plano ? 'O que Deus fala em ' + l.ref : l.titulo, verso: v,
+    meditacao: [
+      ctx || 'Leia de novo ' + l.ref + ' sem pressa. Antes de pensar no que fazer, pergunte o que este texto mostra sobre quem Deus é.',
+      'A Bíblia não foi escrita só para informar, mas para transformar. Talvez algo nesta leitura tenha incomodado, consolado ou surpreendido você. Pare um pouco nisso: muitas vezes é por aí que o Espírito Santo fala.',
+      v ? 'Fique com o versículo destacado durante o dia. Leia em voz alta, escreva num papel, repita antes de dormir. A Palavra guardada no coração continua trabalhando em silêncio.' : 'Escolha uma frase deste texto e leve com você durante o dia. A Palavra guardada no coração continua trabalhando em silêncio.',
+    ],
+    perguntas: [l.q].filter(Boolean).concat(PERGUNTAS_BASE).slice(0, 4),
+    oracao: 'Senhor, obrigado pela tua Palavra de hoje. Abre os meus olhos para enxergar o que tu queres me mostrar em ' + l.ref + '. Onde eu estou resistindo, me dá um coração ensinável. Que esta leitura não fique só na minha cabeça, mas vire atitude. Em nome de Jesus, amém.',
+    hoje: 'Escolha um versículo de ' + l.ref + ' e mande para alguém que precisa ouvir isso hoje.',
+    ia: false,
+  };
+}
+async function devIA(L) {
+  const t = trilha(L.id), l = t.licoes[L.idx], key = 'dev:' + l.ref;
   const texto = L.vs.map(x => x.v + ' ' + x.t).join('\n').slice(0, 9000);
   try {
-    const r = await SAMPLE.json(REGRAS + '\n\nTexto bíblico (Bíblia Livre, ' + l.ref + '):\n' + (texto || '(texto indisponível; use seu conhecimento de ' + l.ref + ')') + '\n\nCrie 2 perguntas de múltipla escolha sobre fatos explícitos deste texto, uma frase de contexto (quem escreveu ou fala, para quem, quando) e uma pergunta de reflexão pessoal. Opções curtas, no máximo 8 palavras. Responda só com JSON: {"contexto": "2 frases", "pergunta": "reflexão", "questoes": [{"pergunta": "...", "opcoes": ["4 opções"], "correta": 0, "explicacao": "1 frase com o versículo"}]}', { modelTier: 'quick' });
-    if (!r) return;
-    if (r.contexto && !l.ctx) { S.gen[l.ref] = { contexto: String(r.contexto), pergunta: r.pergunta ? String(r.pergunta) : '' }; save(); }
-    if (ui.L !== L || L.phase !== 'steps') return;
-    if (L.steps[L.i] && L.steps[L.i].k === 'reflita') return;
-    const last = L.steps[L.steps.length - 1];
-    if (last.k === 'reflita' && !l.q && r.pergunta) last.q = String(r.pergunta);
-    const qs = (Array.isArray(r.questoes) ? r.questoes : []).filter(q => q && q.pergunta && Array.isArray(q.opcoes) && q.opcoes.length >= 3 && q.opcoes[q.correta]).slice(0, 2)
-      .map(q => ({ k: 'mc', q: String(q.pergunta), opts: shuffle(q.opcoes.map(String)), ans: String(q.opcoes[q.correta]), exp: q.explicacao ? String(q.explicacao) : '', ia: true }));
-    if (qs.length) {
-      L.steps.splice(Math.min(Math.max(L.i + 1, 2), L.steps.length - 1), 0, qs[0]);
-      if (qs[1]) L.steps.splice(L.steps.length - 1, 0, qs[1]);
-      L.total += qs.length;
-      if (L.i === 0) renderLesson();
-    }
-  } catch (e) { /* sem IA, segue com os exercícios prontos */ }
+    const r = await SAMPLE.json(REGRAS + '\n\nTexto bíblico de hoje (Bíblia Livre, ' + l.ref + '):\n' + (texto || '(use o seu conhecimento de ' + l.ref + ')') +
+      '\n\nTrilha: ' + t.nome + '. Tema da lição: ' + l.titulo + '.\n\nEscreva o devocional de hoje para um crente brasileiro adulto, no estilo de um devocional diário, como uma conversa à mesa com Deus: acolhedor, profundo e prático, falando com "você". Traga um tema central que nasce deste texto e mostre como ele toca a vida real (família, trabalho, ansiedade, perdão, decisões, fé no dia a dia). Nada de perguntas de memorização ou de fatos do texto. Sem moralismo, sem clichês, sem veredito em temas que dividem as igrejas. Não copie devocionais publicados.\n\n' +
+      'Responda só com JSON: {"tema": "título do devocional, até 8 palavras", "versiculo": "referência de UM versículo-chave deste texto, ex.: Mateus 1:23", "meditacao": ["4 parágrafos de 3 a 5 frases"], "perguntas": ["3 ou 4 perguntas abertas de reflexão pessoal, que levam a pensar no tema e em como ele muda a vida"], "oracao": "oração em primeira pessoa, 4 a 6 frases", "para_hoje": "uma atitude concreta e simples para hoje, 1 frase"}');
+    const med = (Array.isArray(r.meditacao) ? r.meditacao : []).map(String).filter(Boolean).slice(0, 5);
+    const pq = (Array.isArray(r.perguntas) ? r.perguntas : []).map(String).filter(Boolean).slice(0, 4);
+    if (!med.length || !pq.length) throw new Error('vazio');
+    const vv = r.versiculo ? versesOf(String(r.versiculo)) : [];
+    const dev = { tema: String(r.tema || l.titulo), verso: vv.length ? { ref: vref(vv[0]), t: vv[0].t } : versoChave(L.vs), meditacao: med, perguntas: pq, oracao: String(r.oracao || ''), hoje: String(r.para_hoje || ''), ia: true };
+    S.gen[key] = dev; save();
+    if (ui.L === L) { L.dev = dev; L.devCarregando = false; if (L.steps[L.i] && L.steps[L.i].k !== 'reflita') renderLesson(); }
+  } catch (e) {
+    if (ui.L === L && !L.dev) { L.dev = devLocal(t, L.idx, L.vs); L.devCarregando = false; renderLesson(); }
+  }
 }
 
 async function startLesson(id, idx, review) {
   const t = trilha(id);
-  ui.aiText = ''; ui.aiErr = '';
   ui.L = { id, idx, review: !!review, phase: 'load', steps: [], vs: [] };
   render();
   try { await loadBiblia(); } catch (e) { /* sem o texto, a lição usa a referência */ }
   if (!ui.L || ui.L.id !== id) return;
-  const vs = versesOf(t.licoes[idx].ref);
-  const steps = buildSteps(t, idx, vs);
-  ui.L = { id, idx, review: !!review, steps, vs, total: steps.length, i: 0, phase: 'steps', pick: null, built: [], checked: null, combo: 0, best: 0, right: 0, wrong: 0, t0: Date.now(), lido: false };
+  const vs = versesOf(t.licoes[idx].ref), key = 'dev:' + t.licoes[idx].ref;
+  const steps = [{ k: 'leia', n: 'Leitura' }, { k: 'devo', n: 'Meditação' }, { k: 'reflita', n: 'Reflexão' }, { k: 'ore', n: 'Oração' }, { k: 'hoje', n: 'Para hoje' }];
+  const L = ui.L = { id, idx, review: !!review, steps, vs, i: 0, phase: 'steps', t0: Date.now(), lido: false, orou: false, dev: S.gen[key] || null };
+  if (!L.dev) { if (SAMPLE) { L.devCarregando = true; devIA(L); } else L.dev = devLocal(t, idx, vs); }
   render();
-  aiQuestions(ui.L);
 }
+const respostas = L => { S.reflex = S.reflex || {}; return (S.reflex[L.id + ':' + L.idx] = S.reflex[L.id + ':' + L.idx] || []); };
 function bibleText(vs, opts) {
   if (!vs.length) return '';
   let h = '', lastC = null;
@@ -342,69 +313,46 @@ function bibleText(vs, opts) {
 
 /* ---------- Telas da lição ---------- */
 function lessonTop(L, t, l) {
-  const tot = L.steps.length, segs = Array.from({ length: tot }, (_, i) => '<i class="' + (i < L.i ? 'on' : i === L.i ? 'now' : '') + '"></i>').join('');
-  return '<header class="ltop"><div class="lt-row"><span class="lt-t"><b>' + esc(l.ref) + '</b><small class="tnum">' + (L.review ? 'Revisão · ' : '') + 'etapa ' + Math.min(L.i + 1, tot) + ' de ' + tot + (L.combo >= 3 ? ' · ' + L.combo + ' acertos seguidos' : '') + '</small></span><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button></div><div class="segs">' + segs + '</div></header>';
+  const segs = L.steps.map((s, i) => '<i class="' + (i < L.i ? 'on' : i === L.i ? 'now' : '') + '"></i>').join('');
+  return '<header class="ltop"><div class="lt-row"><span class="lt-t"><b>' + esc(l.ref) + '</b><small>' + (L.review ? 'Revisão · ' : '') + esc(L.steps[L.i].n) + ' · ' + (L.i + 1) + ' de ' + L.steps.length + '</small></span><button class="iconbtn" data-a="lessonExit" aria-label="Sair da lição">' + icon('fechar') + '</button></div><div class="segs">' + segs + '</div></header>';
 }
 function vLessonScreen() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
   if (L.phase === 'load') return '<div class="lesson"><main class="lz center-col"><p class="body-l">Abrindo a Bíblia…</p></main></div>';
   if (L.phase === 'fim') return vFim(L);
   if (L.phase === 'ofensiva') return vOfensivaUp();
-  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col"><h2 class="qt">Sair da lição?</h2><p class="body-l">O que você fez nesta lição não fica salvo.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar estudando</button><button class="btn sec" data-a="lessonQuit">Sair</button></footer></div>';
-  const s = L.steps[L.i];
+  if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col"><h2 class="qt">Sair da porção?</h2><p class="body-l">Suas reflexões ficam guardadas, mas a porção só conta quando você concluir.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar</button><button class="btn sec" data-a="lessonQuit">Sair</button></footer></div>';
+  const s = L.steps[L.i], dev = L.dev;
   let h = '<div class="lesson">' + lessonTop(L, t, l) + '<main class="lz">';
+  const foot = (label, extra) => '</main><footer class="lfoot">' + (extra || '') + '<button class="btn" data-a="next">' + label + icon('voltar', 'ic flip') + '</button></footer></div>';
   if (s.k === 'leia') {
     const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
-    const ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
-    h += '<article class="intro"><h1 class="sc-t">' + esc(l.titulo) + '</h1>' + (ctx ? '<p class="sc-ctx">' + esc(ctx) + '</p>' : '') + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
-    if (L.vs.length) h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>';
-    else h += '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
-    if (SAMPLE) {
-      if (ui.aiText) h += '<div class="ai-out">' + esc(ui.aiText).split(/\n+/).map(p => '<p>' + p + '</p>').join('') + '</div>';
-      if (ui.busy) h += '<button class="btn sec" data-a="stopAi">Parar a explicação</button>';
-      else if (!ui.aiText) h += '<button class="btn sec" data-a="explain">Explicar este texto</button>';
-      if (ui.aiErr) h += ART.mani('mani m-sm row', 'bravinho', 'Ops, algo travou aqui. Tenta de novo?') + '<p class="err" role="alert">' + esc(ui.aiErr) + '</p>';
-    }
-    h += '</main>';
-    return h + '<footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Praticar o que li' + icon('voltar', 'ic flip') + '</button></footer></div>';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.plano ? l.ref : l.titulo) + '</h1><p class="sc-ctx">Leia com calma, como quem senta à mesa com Deus.</p>' + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
+    h += L.vs.length ? '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>' : '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
+    return h + '</main><footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Ir para a meditação' + icon('voltar', 'ic flip') + '</button></footer></div>';
+  }
+  if (!dev) {
+    h += '<div class="center-col pad-y">' + ART.mani('mani m-lg', 'pensativo', 'Estou preparando a sua meditação.') + '<p class="muted">Leva alguns segundos.</p></div>';
+    return h + '</main><footer class="lfoot"><button class="btn sec" data-a="semEsperar">Seguir sem esperar</button></footer></div>';
+  }
+  if (s.k === 'devo') {
+    h += '<article class="devo"><h1 class="sc-t">' + esc(dev.tema) + '</h1>' + (dev.verso ? '<blockquote class="vchave"><p>' + esc(dev.verso.t) + '</p><cite>' + esc(dev.verso.ref) + '</cite></blockquote>' : '') +
+      dev.meditacao.map(p => '<p class="med">' + esc(p) + '</p>').join('') + (dev.ia ? '<p class="fine">Meditação escrita com IA a partir do texto. Confira tudo na Palavra.</p>' : '') + '</article>';
+    return h + foot('Refletir');
   }
   if (s.k === 'reflita') {
-    h += ART.mani('mani m-md', 'orando', 'Vamos guardar isso no coração.') + '<article class="intro"><p class="muted">Para guardar no coração</p><h1 class="sc-q">' + esc(s.q) + '</h1><label class="field" for="l-nota">Sua resposta fica só neste aparelho</label><textarea id="l-nota" rows="5" placeholder="Escreva sua resposta. Fica só com você.">' + esc(lessonNote(L.id, L.idx)) + '</textarea></article></main>';
-    return h + '<footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
+    const rs = respostas(L);
+    h += ART.mani('mani m-sm row', 'orando', 'Vamos guardar isso no coração.') + '<h1 class="sc-t">Para refletir</h1><p class="muted">Escreva o que vier ao coração. Suas respostas ficam só neste aparelho.</p><div class="reflex">' +
+      dev.perguntas.map((q, j) => '<label class="rq" for="rf-' + j + '"><b>' + esc(q) + '</b><textarea id="rf-' + j + '" rows="3" placeholder="Opcional">' + esc(rs[j] || '') + '</textarea></label>').join('') + '</div>';
+    return h + foot('Ir para a oração');
   }
-  const ck = L.checked;
-  if (s.k === 'mc') {
-    h += '<h1 class="ex-q">' + esc(s.q) + '</h1>' + (s.quote ? '<blockquote class="quote">' + esc(s.quote) + '</blockquote>' : '') + (s.ia ? '<p class="fine">Pergunta criada por IA sobre o texto.</p>' : '') + '<div class="opts" role="radiogroup">';
-    s.opts.forEach(o => {
-      let cls = L.pick === o ? ' sel' : '';
-      if (ck) cls = o === s.ans ? ' right' : (L.pick === o ? ' wrong' : ' dim');
-      h += '<button class="opt' + cls + '" role="radio" aria-checked="' + (L.pick === o) + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '><span class="rd">' + (ck && o === s.ans ? icon('check', 'ic xs') : ck && L.pick === o ? icon('fechar', 'ic xs') : '') + '</span><span>' + esc(o) + '</span></button>';
-    });
-    h += '</div>';
-  } else if (s.k === 'fill') {
-    const shown = L.pick ? '<span class="gap filled">' + esc(L.pick) + '</span>' : '<span class="gap">&nbsp;</span>';
-    h += '<h1 class="ex-q">' + esc(s.q || 'Complete a frase') + '</h1>' + (s.hint ? '<p class="ref">' + esc(s.hint) + '</p>' : '') + '<p class="verse">' + esc(s.before) + shown + esc(s.after) + '</p><div class="words">';
-    s.opts.forEach(o => { h += '<button class="word' + (L.pick === o ? ' used' : '') + (ck && o === s.ans ? ' right' : '') + '" data-a="pick" data-v="' + esc(o) + '"' + (ck ? ' disabled' : '') + '>' + esc(o) + '</button>'; });
-    h += '</div>';
-  } else if (s.k === 'tiles') {
-    const parts = String(s.hint).split(': ');
-    h += '<h1 class="ex-q">' + esc(s.prompt) + '</h1><p class="ref">' + esc(parts[0]) + '</p><p class="verse">' + esc(parts.slice(1).join(': ').replace(/…$/, '')) + ' ';
-    L.built.forEach(id => { const w = s.bank.find(x => x.id === id); h += '<button class="gap filled" data-a="untile" data-id="' + id + '"' + (ck ? ' disabled' : '') + '>' + esc(w.w) + '</button> '; });
-    if (!ck && L.built.length < s.target.length) h += '<span class="gap">&nbsp;</span>';
-    h += '</p><div class="words">';
-    s.bank.forEach(w => { const used = L.built.includes(w.id); h += '<button class="word' + (used ? ' used' : '') + '" data-a="tile" data-id="' + w.id + '"' + (used || ck ? ' disabled' : '') + '>' + esc(w.w) + '</button>'; });
-    h += '</div>';
+  if (s.k === 'ore') {
+    h += '<article class="devo"><h1 class="sc-t">Vamos orar</h1><p class="muted">Leia devagar, ou use como ponto de partida para a sua própria oração.</p><blockquote class="oracao">' + esc(dev.oracao) + '</blockquote></article>';
+    return h + '</main><footer class="lfoot"><button class="btn" data-a="amem">Amém' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
-  if (ck) {
-    const ok = ck === 'ok', ansTxt = s.k === 'tiles' ? s.target.join(' ') : s.ans;
-    const elog = ['Isso mesmo.', 'Certo.', 'Muito bem.', 'Exato.'][(L.right + L.i) % 4];
-    h += '<div class="fb ' + (ok ? 'ok' : 'bad') + '" role="status"><span class="fb-i">' + icon(ok ? 'check' : 'fechar', 'ic sm') + '</span><div><b>' + (ok ? elog : 'A resposta é: ' + esc(ansTxt)) + '</b>' + (s.exp && (s.ia || !ok) ? '<p>' + esc(s.exp) + '</p>' : '') + '</div></div>';
-  }
-  h += '</main>';
-  const ready = s.k === 'tiles' ? L.built.length > 0 : !!L.pick;
-  h += ck ? '<footer class="lfoot"><button class="btn" data-a="next">Continuar' + icon('voltar', 'ic flip') + '</button></footer>'
-    : '<footer class="lfoot"><button class="btn" data-a="checkAns"' + (ready ? '' : ' disabled') + '>Conferir</button></footer>';
-  return h + '</div>';
+  /* para hoje */
+  h += '<article class="devo"><h1 class="sc-t">Para levar hoje</h1><div class="hoje-card"><p>' + esc(dev.hoje) + '</p></div>' + (dev.verso ? '<p class="muted">Versículo do dia: <b>' + esc(dev.verso.ref) + '</b></p>' : '') + '</article>';
+  return h + '</main><footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
 }
 
 function vFim(L) {
@@ -413,11 +361,11 @@ function vFim(L) {
   const tFim = trilha(L.id);
   const figuraFim = (!L.review && tFim && isDone(L.id)) ? ART.mani('mani m-lg', 'oliveira', falaTrilha(tFim.nome))
     : (!L.review && todayXP() >= S.goal) ? ART.mani('mani m-lg', 'grata', 'Glória a Deus! Meta de hoje cumprida.')
-    : ART.mani('mani m-lg', 'feliz', L.review ? 'Revisão feita!' : 'Glória a Deus! Porção colhida.');
+    : ART.mani('mani m-lg', 'feliz', L.review ? 'Que bom voltar a este texto!' : 'Glória a Deus! Porção colhida.');
   return '<div class="lesson"><main class="lz fim">' + figuraFim +
-    '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(l.ref) + '</h1><ul>' +
-    linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Acertos', '<span data-count="' + r.acc + '">0</span>%') + linha('Tempo', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
-    '</ul>' + (r.perfect && !L.review ? '<p class="muted">Sem nenhum erro.</p>' : '') + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
+    '<article class="diario"><p class="muted">' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><h1>' + esc(r.tema || l.ref) + '</h1><p class="muted">' + esc(l.ref) + '</p><ul>' +
+    linha('XP ganho', '+<span data-count="' + r.xp + '">0</span>') + linha('Reflexões escritas', r.reflexoes) + linha('Tempo com Deus', r.tempo) + (r.grains ? linha('Grãos de maná', '+' + r.grains) : '') +
+    '</ul>' + (S.group && !L.review ? '<p class="muted">Seu check-in foi postado em ' + esc(S.group.nome) + '.</p>' : '') + '</article>' +
     '</main><footer class="lfoot"><button class="btn" data-a="afterFim">Continuar' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
@@ -439,28 +387,26 @@ function vOfensivaUp() {
 
 function finishLesson() {
   const L = ui.L, t = trilha(L.id), l = t.licoes[L.idx];
-  const nota = val('l-nota'); if (nota) setLessonNote(L.id, L.idx, nota);
-  const perfect = L.wrong === 0, acc = Math.round(L.right / Math.max(1, L.right + L.wrong) * 100);
+  document.querySelectorAll('[id^="rf-"]').forEach(el => { respostas(L)[Number(el.id.slice(3))] = el.value; });
+  const reflexoes = respostas(L).filter(x => x && x.trim()).length;
   const secs = Math.round((Date.now() - L.t0) / 1000), tempo = Math.floor(secs / 60) + ':' + pad(secs % 60);
   let base = L.review ? 5 : 15;
-  if (!L.review && perfect) base += 5;
-  base += Math.min(5, Math.floor(L.best / 3));
+  if (!L.review && reflexoes) base += 5;
   const boost = boostOn(), xp = addXP(base);
   let grains = 0, up = false;
   if (!L.review) {
-    const antes = S.progress[L.id] || 0;
-    const depois = Math.max(antes, L.idx + 1);
+    const antes = S.progress[L.id] || 0, depois = Math.max(antes, L.idx + 1);
     if (depois > antes) ui.andar = { id: L.id, de: antes, para: depois };
     S.progress[L.id] = depois;
-    S.lessons++; if (perfect) { S.perfect++; bump('perfeita', 1); }
-    bump('licoes', 1); grains = perfect ? 8 : 5; S.grains += grains;
+    S.lessons++;
+    if (reflexoes) { S.perfect++; bump('reflexao', reflexoes); }
+    bump('licoes', 1); grains = reflexoes ? 8 : 5; S.grains += grains;
     up = study(l.caps);
-    if (S.group) postFeed('Colhi a porção de hoje: ' + l.titulo + '.', l.ref);
+    if (S.group) postFeed('Colhi a porção de hoje: ' + (L.dev ? L.dev.tema : l.titulo) + '.', L.dev && L.dev.verso ? L.dev.verso.ref : l.ref);
     if (isDone(L.id)) setTimeout(() => toast('Meta concluída: ' + t.nome), 1500);
   } else { up = study(0); }
-  S.bestCombo = Math.max(S.bestCombo, L.best);
   checkAch(); save();
-  L.result = { xp, acc, tempo, perfect, grains, boost, up };
+  L.result = { xp, tempo, reflexoes, grains, boost, up, tema: L.dev ? L.dev.tema : '' };
   L.phase = 'fim';
   render(); SND.fim(); rain(40); countUp();
 }

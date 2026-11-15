@@ -536,6 +536,20 @@ body.in-lesson #toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); 
 .membros .nm { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .ofs { display: inline-flex; align-items: center; gap: 4px; font-weight: 800; }
 .d-block { display: block; font-weight: 400; font-size: 12px; }
+
+/* Devocional da porção */
+.devo { display: flex; flex-direction: column; gap: 14px; }
+.vchave { margin: 4px 0; padding: 18px 18px 16px; border-radius: 18px; background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; gap: 8px; }
+.vchave p { font: 400 20px/1.55 var(--f-book); }
+.vchave cite { font-style: normal; font-weight: 700; font-size: 14px; color: var(--ouro); }
+.med { font: 400 18px/1.75 var(--f-book); }
+.oracao { margin: 0; padding: 18px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); font: italic 400 19px/1.7 var(--f-book); }
+.hoje-card { padding: 18px; border-radius: 18px; background: var(--mine); font-size: 18px; font-weight: 600; line-height: 1.45; }
+.reflex { display: flex; flex-direction: column; gap: 16px; }
+.rq { display: flex; flex-direction: column; gap: 8px; }
+.rq b { font-size: 17px; line-height: 1.4; }
+.rq textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; }
+.pad-y { padding-block: 40px 20px; }
 </style>
 <div id="app"></div>
 <script>

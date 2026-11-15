@@ -194,15 +194,15 @@ function checkStreak() {
 /* Missões do dia */
 const QUEST_POOL = [
   { id: 'xp', m: 'xp', ns: [20, 30, 40], t: n => 'Ganhe ' + n + ' XP' },
-  { id: 'combo', m: 'combo', ns: [5, 8], t: n => 'Acerte ' + n + ' respostas seguidas', max: true },
+  { id: 'ore', m: 'ore', ns: [1], t: () => 'Ore com a porção de hoje' },
   { id: 'licoes', m: 'licoes', ns: [1, 2], t: n => n === 1 ? 'Complete uma lição' : 'Complete ' + n + ' lições' },
-  { id: 'perfeita', m: 'perfeita', ns: [1], t: () => 'Faça uma lição sem errar' },
+  { id: 'reflexao', m: 'reflexao', ns: [1, 2], t: n => n === 1 ? 'Escreva uma reflexão' : 'Escreva ' + n + ' reflexões' },
   { id: 'caps', m: 'caps', ns: [2, 3], t: n => 'Leia ' + n + ' capítulos' },
   { id: 'duvida', m: 'duvida', ns: [1], t: () => 'Estude uma dúvida da biblioteca' },
 ];
 function ensureQuests() {
   const t = todayK();
-  if (S.quests && S.quests.d === t) return;
+  if (S.quests && S.quests.d === t && S.quests.list.every(q => questDef(q.id))) return;
   const h = hash(t), pool = QUEST_POOL.slice(), list = [pool.splice(0, 1)[0]];
   for (let i = 0; i < 2; i++) list.push(pool.splice((h >> (i * 5)) % pool.length, 1)[0]);
   S.quests = { d: t, list: list.map((q, i) => ({ id: q.id, n: q.ns[(h >> (i * 3 + 2)) % q.ns.length], p: 0, claimed: false })) };
@@ -255,7 +255,7 @@ const ACH = [
   { id: 'fiel', nome: 'Fiel', desc: 'dias seguidos', cor: '#F2C14E', v: s => s.streak.best, n: [3, 7, 14, 30, 100] },
   { id: 'leitor', nome: 'Leitor', desc: 'capítulos lidos', cor: '#A9C6E8', v: s => s.chapters, n: [10, 50, 100, 250, 500] },
   { id: 'estudioso', nome: 'Estudioso', desc: 'lições feitas', cor: '#9CC28A', v: s => s.lessons, n: [5, 20, 50, 100, 200] },
-  { id: 'perfeito', nome: 'Sem tropeço', desc: 'lições sem erro', cor: '#E8A27A', v: s => s.perfect, n: [1, 5, 15, 40, 100] },
+  { id: 'perfeito', nome: 'Coração atento', desc: 'porções com reflexão escrita', cor: '#E8A27A', v: s => s.perfect, n: [1, 5, 15, 40, 100] },
   { id: 'domingo', nome: 'Domingo vivo', desc: 'cultos estudados', cor: '#C59BD0', v: s => s.cultos.length, n: [1, 4, 12, 26, 52] },
   { id: 'curioso', nome: 'Curioso', desc: 'dúvidas estudadas', cor: '#E8E2D0', v: s => s.duvidasLidas.length + s.perguntas.length, n: [1, 5, 10, 20, 40] },
   { id: 'colhedor', nome: 'Colhedor', desc: 'XP no total', cor: '#D9B45A', v: s => s.xp, n: [100, 500, 1500, 4000, 10000] },

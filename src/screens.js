@@ -528,33 +528,12 @@ const A = {
     DICT.start().catch(e => { toast(e && e.code === 'not_granted' ? 'O ditado não foi permitido. Dá para digitar normalmente.' : 'Não deu para começar o ditado.'); });
   },
   /* Lição */
-  pick(el) { const L = ui.L; if (L.checked) return; L.pick = el.dataset.v; renderLesson(); },
-  tile(el) { const L = ui.L; if (L.checked) return; L.built.push(Number(el.dataset.id)); renderLesson(); },
-  untile(el) { const L = ui.L; if (L.checked) return; L.built = L.built.filter(x => x !== Number(el.dataset.id)); renderLesson(); },
-  checkAns() {
-    const L = ui.L, s = L.steps[L.i];
-    const ok = s.k === 'tiles' ? L.built.map(id => s.bank.find(x => x.id === id).w).join(' ') === s.target.join(' ') : L.pick === s.ans;
-    L.checked = ok ? 'ok' : 'bad';
-    if (ok) { L.right++; L.combo++; L.best = Math.max(L.best, L.combo); bump('combo', L.combo); SND.certo(); }
-    else { L.wrong++; L.combo = 0; SND.errado(); if (!s.retry) L.steps.splice(L.steps.length - 1, 0, Object.assign({}, s, { retry: true, opts: s.opts ? shuffle(s.opts) : s.opts, bank: s.bank ? shuffle(s.bank) : s.bank })); }
-    renderLesson();
-  },
-  explain() {
-    const L = ui.L, l = trilha(L.id).licoes[L.idx];
-    ui.busy = true; ui.aiErr = ''; ui.aiText = ''; renderLesson();
-    aiCtl = new AbortController();
-    SAMPLE(REGRAS + '\n\nExplique ' + l.ref + ' para um crente que vai ler o texto hoje. Tema da lição: ' + l.titulo + '. Em 2 parágrafos curtos: o contexto (quem, para quem, quando) e a ideia central. Depois, uma frase de aplicação. Texto corrido, sem títulos, sem listas, sem markdown.', {
-      signal: aiCtl.signal, modelTier: 'quick', onText: ({ text }) => {
-        ui.aiText = text;
-        const box = document.querySelector('.ai-out');
-        if (box) box.innerHTML = esc(text).split(/\n+/).filter(Boolean).map(p => '<p>' + p + '</p>').join('');
-        else if (ui.L) renderLesson();
-      },
-    }).catch(e => { ui.aiText = e.text || ui.aiText; if (e.code !== 'cancelled') ui.aiErr = aiMsg(e); })
-      .finally(() => { ui.busy = false; if (ui.L) renderLesson(); });
-  },
+
+
   stopAi() { if (aiCtl) aiCtl.abort(); },
   finishLesson() { finishLesson(); },
+  amem() { const L = ui.L; if (!L.orou) { L.orou = true; bump('ore', 1); save(); } lessonNext(); },
+  semEsperar() { const L = ui.L; if (!L.dev) { L.dev = devLocal(trilha(L.id), L.idx, L.vs); L.devCarregando = false; } renderLesson(); },
   afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
   closeLesson() {
     ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false;
@@ -596,7 +575,6 @@ const A = {
     p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); save(); keep();
   },
   gmode(el) { ui.groupMode = el.dataset.m; keep(); },
-  amem(el) { const p = S.group.feed.find(x => x.id === el.dataset.id); p.amei = !p.amei; p.amem += p.amei ? 1 : -1; save(); keep(); },
   cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; keep(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
   leaveGroup() {
     if (ui.confirmLeave) { ui.confirmLeave = false; S.group = null; save(); keep(); toast('Você saiu do grupo.'); return; }
@@ -621,7 +599,8 @@ const A = {
 function lessonNext() {
   const L = ui.L, s = L.steps[L.i];
   if (s.k === 'leia') { if (!L.lido) return; }
-  L.i++; L.pick = null; L.built = []; L.checked = null;
+  if (s.k === 'reflita') document.querySelectorAll('[id^="rf-"]').forEach(el => { respostas(L)[Number(el.id.slice(3))] = el.value; });
+  L.i++;
   renderLesson(); window.scrollTo(0, 0);
 }
 
@@ -740,7 +719,7 @@ document.addEventListener('input', e => {
     ui.filtro = e.target.value; const pos = e.target.selectionStart; keep();
     const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
   }
-  if (e.target.id === 'l-nota' && ui.L) { setLessonNote(ui.L.id, ui.L.idx, e.target.value); save(); }
+  if (/^rf-\d$/.test(e.target.id) && ui.L) { respostas(ui.L)[Number(e.target.id.slice(3))] = e.target.value; save(); }
   if (/^ck-(txt|caps|ref)$/.test(e.target.id)) { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.value; }
   if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
   if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = !objPronto(); }
