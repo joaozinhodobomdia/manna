@@ -337,7 +337,7 @@ function vLessonScreen() {
   }
   if (s.k === 'devo') {
     h += '<article class="devo"><h1 class="sc-t">' + esc(dev.tema) + '</h1>' + (dev.verso ? '<blockquote class="vchave"><p>' + esc(dev.verso.t) + '</p><cite>' + esc(dev.verso.ref) + '</cite></blockquote>' : '') +
-      dev.meditacao.map(p => '<p class="med">' + esc(p) + '</p>').join('') + (dev.ia ? '<p class="fine">Meditação escrita com IA a partir do texto. Confira tudo na Palavra.</p>' : '') + '</article>';
+      dev.meditacao.map(p => '<p class="med">' + esc(p) + '</p>').join('') + '</article>';
     return h + foot('Refletir');
   }
   if (s.k === 'reflita') {
