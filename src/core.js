@@ -214,7 +214,7 @@ function bump(metric, amount) {
     const d = questDef(q.id); if (d.m !== metric) return;
     const before = q.p >= q.n;
     q.p = d.max ? Math.max(q.p, amount) : q.p + amount;
-    if (!before && q.p >= q.n) setTimeout(() => toast('Missão cumprida: ' + d.t(q.n)), 600);
+    if (!before && q.p >= q.n) setTimeout(() => { toast('Missão cumprida: ' + d.t(q.n)); SND.check(); }, 600);
   });
 }
 
@@ -264,27 +264,61 @@ const achLevel = a => a.n.filter(x => a.v(S) >= x).length;
 function checkAch() {
   ACH.forEach(a => {
     const l = achLevel(a);
-    if (l > (S.ach[a.id] || 0)) { S.ach[a.id] = l; setTimeout(() => toast('Conquista: ' + a.nome + ', nível ' + l), 900); }
+    if (l > (S.ach[a.id] || 0)) { S.ach[a.id] = l; setTimeout(() => { toast('Conquista: ' + a.nome + ', nível ' + l); SND.conquista(); }, 900); }
   });
 }
 
-/* Sons curtos (só depois de um toque do usuário) */
-let actx = null;
-function tone(notes) {
-  if (!S.sound) return;
+/* Sons do Manna: sintetizados no próprio app (sino, harpa e marimba), com um eco suave de igreja.
+   Tocam só depois de um toque da pessoa e respeitam o ajuste "Sons do app" no Perfil. */
+let actx = null, mix = null;
+function audio() {
+  if (!S.sound) return null;
   try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!actx) {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      const master = actx.createGain(); master.gain.value = 0.55; master.connect(actx.destination);
+      /* eco: resposta de impulso curta gerada com ruído que decai */
+      const len = Math.floor(actx.sampleRate * 1.6), ir = actx.createBuffer(2, len, actx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+      const rev = actx.createConvolver(); rev.buffer = ir;
+      const wet = actx.createGain(); wet.gain.value = 0.22; rev.connect(wet); wet.connect(master);
+      const dry = actx.createGain(); dry.gain.value = 1; dry.connect(master);
+      mix = { dry, rev };
+    }
     if (actx.state === 'suspended') actx.resume();
-    let t = actx.currentTime;
-    notes.forEach(([f, d]) => {
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(actx.destination);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-      o.start(t); o.stop(t + d + 0.02); t += d * 0.8;
-    });
-  } catch (e) {}
+    return actx;
+  } catch (e) { return null; }
 }
-const SND = { certo: () => tone([[660, .12], [990, .22]]), errado: () => tone([[220, .25], [180, .3]]), fim: () => tone([[523, .14], [659, .14], [784, .14], [1047, .4]]), vaso: () => tone([[784, .1], [988, .1], [1319, .3]]) };
+function voz(f, t, dur, vol, parciais, eco) {
+  const ac = actx, out = ac.createGain();
+  out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(vol, t + 0.008); out.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  out.connect(mix.dry); if (eco) out.connect(mix.rev);
+  parciais.forEach(([mult, g, tipo]) => {
+    const o = ac.createOscillator(), og = ac.createGain();
+    o.type = tipo || 'sine'; o.frequency.value = f * mult; og.gain.value = g;
+    o.connect(og); og.connect(out); o.start(t); o.stop(t + dur + 0.05);
+  });
+}
+const NOTA = n => 440 * Math.pow(2, (n - 69) / 12);          /* número MIDI para Hz */
+const harpa = (n, t, dur, vol) => voz(NOTA(n), t, dur || 1.1, vol || 0.16, [[1, 1], [2, .35], [3, .12, 'triangle']], true);
+const sino = (n, t, dur, vol) => voz(NOTA(n), t, dur || 2.2, vol || 0.12, [[1, 1], [2.0, .5], [2.76, .35], [5.4, .12]], true);
+const marimba = (n, t, vol) => voz(NOTA(n), t, 0.35, vol || 0.14, [[1, 1], [4, .18]], false);
+function tocar(fn) { const ac = audio(); if (!ac) return; try { fn(ac.currentTime + 0.01); } catch (e) {} }
+const SND = {
+  toque: () => tocar(t => voz(1500, t, 0.05, 0.035, [[1, 1]], false)),
+  passo: () => tocar(t => { marimba(76, t, .11); marimba(79, t + .07, .09); }),
+  lido: () => tocar(t => harpa(84, t, .8, .1)),
+  amem: () => tocar(t => { sino(60, t, 3, .09); sino(67, t + .02, 3, .07); sino(76, t + .35, 2.6, .06); }),
+  fim: () => tocar(t => { [60, 64, 67, 72, 76].forEach((n, i) => harpa(n, t + i * .11, 1.4, .13)); sino(84, t + .62, 2.4, .07); }),
+  ofensiva: () => tocar(t => { [67, 71, 74, 79].forEach((n, i) => marimba(n, t + i * .08, .13)); sino(86, t + .36, 2, .06); }),
+  vaso: () => tocar(t => { [79, 84, 88, 91, 96].forEach((n, i) => harpa(n, t + i * .06 + Math.random() * .02, .7, .08)); }),
+  check: () => tocar(t => { sino(72, t, 1.8, .08); sino(79, t + .12, 1.8, .07); }),
+  conquista: () => tocar(t => { [72, 76, 79].forEach(n => sino(n, t, 2.6, .06)); harpa(84, t + .2, 1.2, .09); }),
+  reacao: () => tocar(t => marimba(81, t, .08)),
+  aviso: () => tocar(t => { marimba(64, t, .1); marimba(60, t + .1, .08); }),
+  passos: n => tocar(t => { for (let i = 0; i < Math.min(n || 4, 8); i++) marimba(i % 2 ? 74 : 72, t + i * .16, .06); }),
+};
+SND.certo = SND.check; SND.errado = SND.aviso;
 
 /* Chuva de maná: animação de celebração */
 const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -236,6 +236,7 @@ function andarMani() {
     if (p < 1) ui.andarFrame = requestAnimationFrame(frame);
     else { porManiMapa(el, pts[pts.length - 1]); ui.andar = null; ui.andarPts = null; ui.andando = false; syncManiMapa(); }
   };
+  if (ui.andar) SND.passos((ui.andar.para - ui.andar.de) * 3 + 2);
   ui.andarFrame = requestAnimationFrame(frame);
 }
 

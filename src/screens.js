@@ -294,7 +294,7 @@ function vPerfil() {
   h += '</ul></section>';
   h += '<section class="share"><div class="share-top">' + ART.logo('logo sm') + '<span class="brand sm">manna</span></div><h2>Minha semana</h2><div class="share-n"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + weekChaps() + '</b><span>capítulos</span></div><div><b class="tnum">' + weekXPFrom(weekStart()) + '</b><span>XP</span></div></div><p>Sua porção diária da Palavra</p></section>';
   h += '<button class="btn sec" data-a="copy" data-t="' + esc(resumo) + '">Copiar resumo para o Status</button>';
-  h += '<section class="sec"><h2>Ajustes</h2><form class="form card" data-f="ajustes"><label>Seu nome<input id="p-nome" maxlength="30" value="' + esc(S.nome) + '"></label><div class="two"><label>Meta diária<select id="p-goal">' + [[20, '20 XP · leve'], [30, '30 XP · firme'], [50, '50 XP · intenso']].map(([g, n]) => '<option value="' + g + '"' + (S.goal === g ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label><label>Lembrete<select id="p-hor">' + ['6h', '7h', '12h', '19h', '21h'].map(x => '<option' + (S.quiz.horario === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label></div><label class="check"><input type="checkbox" id="p-som"' + (S.sound ? ' checked' : '') + '> Sons nas lições</label><p class="fine">Na versão de teste não enviamos notificações.</p><button class="btn sec" type="submit">Salvar ajustes</button></form></section>';
+  h += '<section class="sec"><h2>Ajustes</h2><form class="form card" data-f="ajustes"><label>Seu nome<input id="p-nome" maxlength="30" value="' + esc(S.nome) + '"></label><div class="two"><label>Meta diária<select id="p-goal">' + [[20, '20 XP · leve'], [30, '30 XP · firme'], [50, '50 XP · intenso']].map(([g, n]) => '<option value="' + g + '"' + (S.goal === g ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label><label>Lembrete<select id="p-hor">' + ['6h', '7h', '12h', '19h', '21h'].map(x => '<option' + (S.quiz.horario === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label></div><label class="check"><input type="checkbox" id="p-som"' + (S.sound ? ' checked' : '') + '> Sons do app</label><p class="fine">Na versão de teste não enviamos notificações.</p><button class="btn sec" type="submit">Salvar ajustes</button></form></section>';
   h += '<section class="card"><h3>Assinatura</h3><p>' + ({ anual: 'Anual', mensal: 'Mensal', familia: 'Família ou célula' }[S.plano] || 'Anual') + ', em teste grátis até ' + fmt(addDays(S.trialStart || todayK(), 7)) + '. Nada é cobrado nesta versão.</p></section>';
   h += '<section class="card test"><h3>Ferramentas de teste</h3><p class="muted">Data simulada: ' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><div class="row"><button class="btn sec" data-a="nextDay">Avançar um dia</button><button class="btn sec" data-a="giveGrains">+100 grãos</button><button class="btn sec" data-a="redoQuiz">Refazer o quiz</button></div>' +
     (ui.confirmReset ? '<div class="row"><button class="btn badbtn" data-a="reset">Apagar tudo</button><button class="btn ghost" data-a="cancelReset">Cancelar</button></div>' : '<button class="link danger" data-a="askReset">Apagar meus dados deste aparelho</button>') + '</section>';
@@ -513,7 +513,7 @@ const A = {
   bibChap(el) { const B = ui.bib, c = B.c + Number(el.dataset.d); if (c < 1 || c > LIVROS[B.b][1]) return; A.bibGo({ dataset: { b: B.b, c } }); },
   bibRead() {
     const B = ui.bib, k = B.b + ':' + B.c; if (S.lidos[k]) return;
-    S.lidos[k] = todayK(); study(1); addXP(5); save();
+    S.lidos[k] = todayK(); study(1); addXP(5); save(); SND.lido();
     toast('Capítulo lido. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.'); keep();
   },
   verse(el) { const k = el.dataset.k; ui.sel = ui.sel || []; const i = ui.sel.indexOf(k); if (i > -1) ui.sel.splice(i, 1); else ui.sel.push(k); keep(); },
@@ -532,9 +532,9 @@ const A = {
 
   stopAi() { if (aiCtl) aiCtl.abort(); },
   finishLesson() { finishLesson(); },
-  amem() { const L = ui.L; if (!L.orou) { L.orou = true; bump('ore', 1); save(); } lessonNext(); },
+  amem() { const L = ui.L; SND.amem(); if (!L.orou) { L.orou = true; bump('ore', 1); save(); } lessonNext(true); },
   semEsperar() { const L = ui.L; if (!L.dev) { L.dev = devLocal(trilha(L.id), L.idx, L.vs); L.devCarregando = false; } renderLesson(); },
-  afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
+  afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); SND.ofensiva(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
   closeLesson() {
     ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false;
     const andar = ui.andar;
@@ -572,7 +572,7 @@ const A = {
   gSub(el) { ui.gSub = el.dataset.m; keep(); },
   react(el) {
     const p = normPost(S.group.feed.find(x => x.id === el.dataset.id)), k = el.dataset.k;
-    p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); save(); keep();
+    p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); if (p.mine[k]) SND.reacao(); save(); keep();
   },
   gmode(el) { ui.groupMode = el.dataset.m; keep(); },
   cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; keep(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
@@ -596,9 +596,10 @@ const A = {
   reset() { try { localStorage.removeItem(KEY); } catch (e) {} S = fresh(); Object.assign(ui, { tab: 'jornada', ov: null, L: null, confirmReset: false, notice: '', sheet: null, modal: null }); save(); window.scrollTo(0, 0); render(); },
 };
 
-function lessonNext() {
+function lessonNext(semSom) {
   const L = ui.L, s = L.steps[L.i];
   if (s.k === 'leia') { if (!L.lido) return; }
+  if (!semSom) SND.passo();
   if (s.k === 'reflita') document.querySelectorAll('[id^="rf-"]').forEach(el => { respostas(L)[Number(el.id.slice(3))] = el.value; });
   L.i++;
   renderLesson(); window.scrollTo(0, 0);
@@ -667,6 +668,7 @@ const F = {
     if (caps) { study(caps); addXP(10 * caps); }
     postFeed(txt || (caps ? 'Li ' + plural(caps, 'capítulo', 'capítulos') + ' hoje.' : ''), ref, { caps, foto: ui.ckFoto || '' });
     ui.ckFoto = null; ui.sheet = null; ui.gSub = 'feed'; if (ui.draft) ['ck-txt', 'ck-caps', 'ck-ref'].forEach(k => delete ui.draft[k]);
+    SND.check();
     toast(caps ? 'Check-in postado. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.' : 'Check-in postado.'); save(); keep();
   },
   cmt(form) {
@@ -679,9 +681,11 @@ const F = {
   },
 };
 
+const SONS_TOQUE = new Set(['tab', 'gTab', 'gSub', 'dom', 'ebdModo', 'bibMode', 'expl', 'objToggle', 'pickTrail', 'answer', 'plan', 'toggleMeta', 'marco', 'sheet', 'open', 'close', 'closeSheet', 'gmode', 'bibBook', 'bibGo', 'bibChap', 'verse', 'next', 'back', 'goTrail', 'hinoFav', 'cmt']);
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
   const fn = A[el.dataset.a]; if (!fn || el.tagName === 'A') return;
+  if (SONS_TOQUE.has(el.dataset.a)) SND.toque();
   e.preventDefault(); fn(el);
 });
 document.addEventListener('keydown', e => {
@@ -729,6 +733,7 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'p-som') { S.sound = e.target.checked; save(); if (S.sound) SND.check(); }
   if (e.target.id === 'ck-foto' && e.target.files && e.target.files[0]) {
     reduzFoto(e.target.files[0]).then(u => { ui.ckFoto = u; keep(); }).catch(() => toast('Não deu para abrir essa foto. Tente outra.'));
   }
@@ -745,7 +750,7 @@ document.addEventListener('change', e => {
     };
     r.readAsText(f);
   }
-  if (e.target.id === 'l-lido' && ui.L) { ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
+  if (e.target.id === 'l-lido' && ui.L) { if (e.target.checked) SND.lido(); ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
 });
 
 /* Abrir uma dúvida conta como estudada */

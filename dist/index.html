@@ -1335,7 +1335,7 @@ function bump(metric, amount) {
     const d = questDef(q.id); if (d.m !== metric) return;
     const before = q.p >= q.n;
     q.p = d.max ? Math.max(q.p, amount) : q.p + amount;
-    if (!before && q.p >= q.n) setTimeout(() => toast('Missão cumprida: ' + d.t(q.n)), 600);
+    if (!before && q.p >= q.n) setTimeout(() => { toast('Missão cumprida: ' + d.t(q.n)); SND.check(); }, 600);
   });
 }
 
@@ -1385,27 +1385,61 @@ const achLevel = a => a.n.filter(x => a.v(S) >= x).length;
 function checkAch() {
   ACH.forEach(a => {
     const l = achLevel(a);
-    if (l > (S.ach[a.id] || 0)) { S.ach[a.id] = l; setTimeout(() => toast('Conquista: ' + a.nome + ', nível ' + l), 900); }
+    if (l > (S.ach[a.id] || 0)) { S.ach[a.id] = l; setTimeout(() => { toast('Conquista: ' + a.nome + ', nível ' + l); SND.conquista(); }, 900); }
   });
 }
 
-/* Sons curtos (só depois de um toque do usuário) */
-let actx = null;
-function tone(notes) {
-  if (!S.sound) return;
+/* Sons do Manna: sintetizados no próprio app (sino, harpa e marimba), com um eco suave de igreja.
+   Tocam só depois de um toque da pessoa e respeitam o ajuste "Sons do app" no Perfil. */
+let actx = null, mix = null;
+function audio() {
+  if (!S.sound) return null;
   try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (!actx) {
+      actx = new (window.AudioContext || window.webkitAudioContext)();
+      const master = actx.createGain(); master.gain.value = 0.55; master.connect(actx.destination);
+      /* eco: resposta de impulso curta gerada com ruído que decai */
+      const len = Math.floor(actx.sampleRate * 1.6), ir = actx.createBuffer(2, len, actx.sampleRate);
+      for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2); }
+      const rev = actx.createConvolver(); rev.buffer = ir;
+      const wet = actx.createGain(); wet.gain.value = 0.22; rev.connect(wet); wet.connect(master);
+      const dry = actx.createGain(); dry.gain.value = 1; dry.connect(master);
+      mix = { dry, rev };
+    }
     if (actx.state === 'suspended') actx.resume();
-    let t = actx.currentTime;
-    notes.forEach(([f, d]) => {
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(actx.destination);
-      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
-      o.start(t); o.stop(t + d + 0.02); t += d * 0.8;
-    });
-  } catch (e) {}
+    return actx;
+  } catch (e) { return null; }
 }
-const SND = { certo: () => tone([[660, .12], [990, .22]]), errado: () => tone([[220, .25], [180, .3]]), fim: () => tone([[523, .14], [659, .14], [784, .14], [1047, .4]]), vaso: () => tone([[784, .1], [988, .1], [1319, .3]]) };
+function voz(f, t, dur, vol, parciais, eco) {
+  const ac = actx, out = ac.createGain();
+  out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(vol, t + 0.008); out.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  out.connect(mix.dry); if (eco) out.connect(mix.rev);
+  parciais.forEach(([mult, g, tipo]) => {
+    const o = ac.createOscillator(), og = ac.createGain();
+    o.type = tipo || 'sine'; o.frequency.value = f * mult; og.gain.value = g;
+    o.connect(og); og.connect(out); o.start(t); o.stop(t + dur + 0.05);
+  });
+}
+const NOTA = n => 440 * Math.pow(2, (n - 69) / 12);          /* número MIDI para Hz */
+const harpa = (n, t, dur, vol) => voz(NOTA(n), t, dur || 1.1, vol || 0.16, [[1, 1], [2, .35], [3, .12, 'triangle']], true);
+const sino = (n, t, dur, vol) => voz(NOTA(n), t, dur || 2.2, vol || 0.12, [[1, 1], [2.0, .5], [2.76, .35], [5.4, .12]], true);
+const marimba = (n, t, vol) => voz(NOTA(n), t, 0.35, vol || 0.14, [[1, 1], [4, .18]], false);
+function tocar(fn) { const ac = audio(); if (!ac) return; try { fn(ac.currentTime + 0.01); } catch (e) {} }
+const SND = {
+  toque: () => tocar(t => voz(1500, t, 0.05, 0.035, [[1, 1]], false)),
+  passo: () => tocar(t => { marimba(76, t, .11); marimba(79, t + .07, .09); }),
+  lido: () => tocar(t => harpa(84, t, .8, .1)),
+  amem: () => tocar(t => { sino(60, t, 3, .09); sino(67, t + .02, 3, .07); sino(76, t + .35, 2.6, .06); }),
+  fim: () => tocar(t => { [60, 64, 67, 72, 76].forEach((n, i) => harpa(n, t + i * .11, 1.4, .13)); sino(84, t + .62, 2.4, .07); }),
+  ofensiva: () => tocar(t => { [67, 71, 74, 79].forEach((n, i) => marimba(n, t + i * .08, .13)); sino(86, t + .36, 2, .06); }),
+  vaso: () => tocar(t => { [79, 84, 88, 91, 96].forEach((n, i) => harpa(n, t + i * .06 + Math.random() * .02, .7, .08)); }),
+  check: () => tocar(t => { sino(72, t, 1.8, .08); sino(79, t + .12, 1.8, .07); }),
+  conquista: () => tocar(t => { [72, 76, 79].forEach(n => sino(n, t, 2.6, .06)); harpa(84, t + .2, 1.2, .09); }),
+  reacao: () => tocar(t => marimba(81, t, .08)),
+  aviso: () => tocar(t => { marimba(64, t, .1); marimba(60, t + .1, .08); }),
+  passos: n => tocar(t => { for (let i = 0; i < Math.min(n || 4, 8); i++) marimba(i % 2 ? 74 : 72, t + i * .16, .06); }),
+};
+SND.certo = SND.check; SND.errado = SND.aviso;
 
 /* Chuva de maná: animação de celebração */
 const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2012,6 +2046,7 @@ function andarMani() {
     if (p < 1) ui.andarFrame = requestAnimationFrame(frame);
     else { porManiMapa(el, pts[pts.length - 1]); ui.andar = null; ui.andarPts = null; ui.andando = false; syncManiMapa(); }
   };
+  if (ui.andar) SND.passos((ui.andar.para - ui.andar.de) * 3 + 2);
   ui.andarFrame = requestAnimationFrame(frame);
 }
 
@@ -2676,7 +2711,7 @@ function vPerfil() {
   h += '</ul></section>';
   h += '<section class="share"><div class="share-top">' + ART.logo('logo sm') + '<span class="brand sm">manna</span></div><h2>Minha semana</h2><div class="share-n"><div><b class="tnum">' + st.count + '</b><span>dias de ofensiva</span></div><div><b class="tnum">' + weekChaps() + '</b><span>capítulos</span></div><div><b class="tnum">' + weekXPFrom(weekStart()) + '</b><span>XP</span></div></div><p>Sua porção diária da Palavra</p></section>';
   h += '<button class="btn sec" data-a="copy" data-t="' + esc(resumo) + '">Copiar resumo para o Status</button>';
-  h += '<section class="sec"><h2>Ajustes</h2><form class="form card" data-f="ajustes"><label>Seu nome<input id="p-nome" maxlength="30" value="' + esc(S.nome) + '"></label><div class="two"><label>Meta diária<select id="p-goal">' + [[20, '20 XP · leve'], [30, '30 XP · firme'], [50, '50 XP · intenso']].map(([g, n]) => '<option value="' + g + '"' + (S.goal === g ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label><label>Lembrete<select id="p-hor">' + ['6h', '7h', '12h', '19h', '21h'].map(x => '<option' + (S.quiz.horario === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label></div><label class="check"><input type="checkbox" id="p-som"' + (S.sound ? ' checked' : '') + '> Sons nas lições</label><p class="fine">Na versão de teste não enviamos notificações.</p><button class="btn sec" type="submit">Salvar ajustes</button></form></section>';
+  h += '<section class="sec"><h2>Ajustes</h2><form class="form card" data-f="ajustes"><label>Seu nome<input id="p-nome" maxlength="30" value="' + esc(S.nome) + '"></label><div class="two"><label>Meta diária<select id="p-goal">' + [[20, '20 XP · leve'], [30, '30 XP · firme'], [50, '50 XP · intenso']].map(([g, n]) => '<option value="' + g + '"' + (S.goal === g ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label><label>Lembrete<select id="p-hor">' + ['6h', '7h', '12h', '19h', '21h'].map(x => '<option' + (S.quiz.horario === x ? ' selected' : '') + '>' + x + '</option>').join('') + '</select></label></div><label class="check"><input type="checkbox" id="p-som"' + (S.sound ? ' checked' : '') + '> Sons do app</label><p class="fine">Na versão de teste não enviamos notificações.</p><button class="btn sec" type="submit">Salvar ajustes</button></form></section>';
   h += '<section class="card"><h3>Assinatura</h3><p>' + ({ anual: 'Anual', mensal: 'Mensal', familia: 'Família ou célula' }[S.plano] || 'Anual') + ', em teste grátis até ' + fmt(addDays(S.trialStart || todayK(), 7)) + '. Nada é cobrado nesta versão.</p></section>';
   h += '<section class="card test"><h3>Ferramentas de teste</h3><p class="muted">Data simulada: ' + fmt(todayK(), { weekday: 'long', day: 'numeric', month: 'long' }) + '</p><div class="row"><button class="btn sec" data-a="nextDay">Avançar um dia</button><button class="btn sec" data-a="giveGrains">+100 grãos</button><button class="btn sec" data-a="redoQuiz">Refazer o quiz</button></div>' +
     (ui.confirmReset ? '<div class="row"><button class="btn badbtn" data-a="reset">Apagar tudo</button><button class="btn ghost" data-a="cancelReset">Cancelar</button></div>' : '<button class="link danger" data-a="askReset">Apagar meus dados deste aparelho</button>') + '</section>';
@@ -2895,7 +2930,7 @@ const A = {
   bibChap(el) { const B = ui.bib, c = B.c + Number(el.dataset.d); if (c < 1 || c > LIVROS[B.b][1]) return; A.bibGo({ dataset: { b: B.b, c } }); },
   bibRead() {
     const B = ui.bib, k = B.b + ':' + B.c; if (S.lidos[k]) return;
-    S.lidos[k] = todayK(); study(1); addXP(5); save();
+    S.lidos[k] = todayK(); study(1); addXP(5); save(); SND.lido();
     toast('Capítulo lido. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.'); keep();
   },
   verse(el) { const k = el.dataset.k; ui.sel = ui.sel || []; const i = ui.sel.indexOf(k); if (i > -1) ui.sel.splice(i, 1); else ui.sel.push(k); keep(); },
@@ -2914,9 +2949,9 @@ const A = {
 
   stopAi() { if (aiCtl) aiCtl.abort(); },
   finishLesson() { finishLesson(); },
-  amem() { const L = ui.L; if (!L.orou) { L.orou = true; bump('ore', 1); save(); } lessonNext(); },
+  amem() { const L = ui.L; SND.amem(); if (!L.orou) { L.orou = true; bump('ore', 1); save(); } lessonNext(true); },
   semEsperar() { const L = ui.L; if (!L.dev) { L.dev = devLocal(trilha(L.id), L.idx, L.vs); L.devCarregando = false; } renderLesson(); },
-  afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
+  afterFim() { const L = ui.L; if (L.result.up && !L.review) { L.phase = 'ofensiva'; renderLesson(); countUp(); SND.ofensiva(); if (S.streak.count > 1) rain(50); } else A.closeLesson(); },
   closeLesson() {
     ui.L = null; ui.aiText = ''; ui.busy = false; ui.novoRecorde = false;
     const andar = ui.andar;
@@ -2954,7 +2989,7 @@ const A = {
   gSub(el) { ui.gSub = el.dataset.m; keep(); },
   react(el) {
     const p = normPost(S.group.feed.find(x => x.id === el.dataset.id)), k = el.dataset.k;
-    p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); save(); keep();
+    p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); if (p.mine[k]) SND.reacao(); save(); keep();
   },
   gmode(el) { ui.groupMode = el.dataset.m; keep(); },
   cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; keep(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
@@ -2978,9 +3013,10 @@ const A = {
   reset() { try { localStorage.removeItem(KEY); } catch (e) {} S = fresh(); Object.assign(ui, { tab: 'jornada', ov: null, L: null, confirmReset: false, notice: '', sheet: null, modal: null }); save(); window.scrollTo(0, 0); render(); },
 };
 
-function lessonNext() {
+function lessonNext(semSom) {
   const L = ui.L, s = L.steps[L.i];
   if (s.k === 'leia') { if (!L.lido) return; }
+  if (!semSom) SND.passo();
   if (s.k === 'reflita') document.querySelectorAll('[id^="rf-"]').forEach(el => { respostas(L)[Number(el.id.slice(3))] = el.value; });
   L.i++;
   renderLesson(); window.scrollTo(0, 0);
@@ -3049,6 +3085,7 @@ const F = {
     if (caps) { study(caps); addXP(10 * caps); }
     postFeed(txt || (caps ? 'Li ' + plural(caps, 'capítulo', 'capítulos') + ' hoje.' : ''), ref, { caps, foto: ui.ckFoto || '' });
     ui.ckFoto = null; ui.sheet = null; ui.gSub = 'feed'; if (ui.draft) ['ck-txt', 'ck-caps', 'ck-ref'].forEach(k => delete ui.draft[k]);
+    SND.check();
     toast(caps ? 'Check-in postado. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.' : 'Check-in postado.'); save(); keep();
   },
   cmt(form) {
@@ -3061,9 +3098,11 @@ const F = {
   },
 };
 
+const SONS_TOQUE = new Set(['tab', 'gTab', 'gSub', 'dom', 'ebdModo', 'bibMode', 'expl', 'objToggle', 'pickTrail', 'answer', 'plan', 'toggleMeta', 'marco', 'sheet', 'open', 'close', 'closeSheet', 'gmode', 'bibBook', 'bibGo', 'bibChap', 'verse', 'next', 'back', 'goTrail', 'hinoFav', 'cmt']);
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]'); if (!el || el.disabled) return;
   const fn = A[el.dataset.a]; if (!fn || el.tagName === 'A') return;
+  if (SONS_TOQUE.has(el.dataset.a)) SND.toque();
   e.preventDefault(); fn(el);
 });
 document.addEventListener('keydown', e => {
@@ -3111,6 +3150,7 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'p-som') { S.sound = e.target.checked; save(); if (S.sound) SND.check(); }
   if (e.target.id === 'ck-foto' && e.target.files && e.target.files[0]) {
     reduzFoto(e.target.files[0]).then(u => { ui.ckFoto = u; keep(); }).catch(() => toast('Não deu para abrir essa foto. Tente outra.'));
   }
@@ -3127,7 +3167,7 @@ document.addEventListener('change', e => {
     };
     r.readAsText(f);
   }
-  if (e.target.id === 'l-lido' && ui.L) { ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
+  if (e.target.id === 'l-lido' && ui.L) { if (e.target.checked) SND.lido(); ui.L.lido = e.target.checked; const b = document.querySelector('.lfoot .btn'); if (b) b.disabled = !ui.L.lido; }
 });
 
 /* Abrir uma dúvida conta como estudada */
