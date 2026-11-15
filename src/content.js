@@ -71,23 +71,37 @@ async function genDuvida(q) {
 
 /* Grupo (simulado neste aparelho) */
 const MEMBROS = [
-  { nome: 'Débora', base: 6, rate: 3.1 }, { nome: 'Pr. Samuel', base: 9, rate: 3.4 },
-  { nome: 'Lucas', base: 2, rate: 1.6 }, { nome: 'Raquel', base: 4, rate: 2.6 }, { nome: 'Tiago', base: 1, rate: 0.9 },
+  { nome: 'Débora', base: 6, rate: 3.1, freq: 6 }, { nome: 'Pr. Samuel', base: 9, rate: 3.4, freq: 6 },
+  { nome: 'Lucas', base: 2, rate: 1.6, freq: 4 }, { nome: 'Raquel', base: 4, rate: 2.6, freq: 5 }, { nome: 'Tiago', base: 1, rate: 0.9, freq: 3 },
 ];
+/* Membro de exemplo leu num dia? (determinístico, conforme a frequência dele por semana) */
+const leuNoDia = (m, k) => hash(k + m.nome) % 7 < m.freq;
+function ofensivaDe(m) { let n = 0, k = todayK(); if (!leuNoDia(m, k)) k = addDays(k, -1); while (n < 60 && leuNoDia(m, k)) { n++; k = addDays(k, -1); } return n; }
+function membrosHoje() {
+  const t = todayK(), out = MEMBROS.filter(m => leuNoDia(m, t)).map(m => ({ nome: m.nome }));
+  if (studiedToday() || (S.group && S.group.feed.some(p => p.me && p.d === t))) out.unshift({ nome: S.nome || 'Você', me: true });
+  return out;
+}
+function membrosLista() {
+  const t = todayK();
+  const eu = { nome: S.nome || 'Você', me: true, hoje: studiedToday(), ofensiva: S.streak.count };
+  return [eu].concat(MEMBROS.map(m => ({ nome: m.nome, ex: true, hoje: leuNoDia(m, t), ofensiva: ofensivaDe(m) })));
+}
 function makeGroup(nome, des) {
   const t = todayK();
   S.group = {
     nome, code: Math.random().toString(36).slice(2, 8).toUpperCase(), desafio: des, start: t, chapAtStart: S.chapters,
     feed: [
-      { id: uid(), who: 'Pr. Samuel', d: addDays(t, -1), text: 'Começamos o desafio. Leiam com calma e postem o que Deus falar com vocês.', ref: '', amem: 4, comments: [] },
-      { id: uid(), who: 'Débora', d: t, text: 'Li dois capítulos no ônibus hoje. Marcos 1 me lembrou que Jesus começou o ministério orando cedo.', ref: 'Marcos 1:35', amem: 3, comments: [] },
+      { id: uid(), who: 'Pr. Samuel', d: addDays(t, -1), text: 'Começamos o desafio. Leiam com calma e postem o que Deus falar com vocês.', ref: '', r: { amem: 4, gloria: 2, orando: 1 }, mine: {}, comments: [] },
+      { id: uid(), who: 'Débora', d: t, text: 'Li dois capítulos no ônibus hoje. Marcos 1 me lembrou que Jesus começou o ministério orando cedo.', ref: 'Marcos 1:35', caps: 2, r: { amem: 3, gloria: 1, orando: 0 }, mine: {}, comments: [{ who: 'Raquel', text: 'Que lindo! Amanhã leio no ônibus também.' }] },
     ],
   };
 }
 function ranking() {
   const g = S.group, days = Math.max(0, diff(g.start, todayK())) + 1;
-  const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true }));
-  rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true });
+  const janela = Math.max(days, 7), diasDe = m => Array.from({ length: janela }, (_, i) => addDays(todayK(), -i)).filter(k => leuNoDia(m, k)).length;
+  const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true, dias: diasDe(m) }));
+  rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true, dias: S.days.filter(k => k >= g.start).length });
   return rows.sort((a, b) => b.caps - a.caps || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
 }
 function capsDaSemanaGrupo() {
@@ -99,8 +113,10 @@ function capsDaSemanaGrupo() {
   const deles = MEMBROS.reduce((a, m) => a + Math.round(m.rate * dias), 0);
   return weekChaps() + deles;
 }
-function postFeed(text, ref) {
+function postFeed(text, ref, extra) {
   if (!S.group) return;
-  S.group.feed.unshift({ id: uid(), who: S.nome || 'Você', me: true, d: todayK(), text, ref: ref || '', amem: 0, comments: [] });
+  S.group.feed.unshift(Object.assign({ id: uid(), who: S.nome || 'Você', me: true, d: todayK(), text, ref: ref || '', r: { amem: 0, gloria: 0, orando: 0 }, mine: {}, comments: [] }, extra || {}));
+  /* guarda só as 10 fotos mais recentes, para não lotar o aparelho */
+  let fotos = 0; S.group.feed.forEach(p => { if (p.foto && ++fotos > 10) delete p.foto; });
 }
 

@@ -180,21 +180,91 @@ function vDuvidas() {
   return h + '</section></main>';
 }
 
-/* ---------- Liga e grupo ---------- */
-function vLiga() {
-  let h = '<main class="screen sheet-top">' + capa(ui.ligaMode === 'grupo' ? (S.group ? esc(S.group.nome) : 'Seu grupo') : 'Liga da semana', ui.ligaMode === 'grupo' ? 'Leitura junto com a sua igreja.' : 'Quem mais estudou nesta semana.') + '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (ui.ligaMode === 'liga') + '" data-a="ligaMode" data-m="liga">Liga semanal</button><button role="tab" aria-selected="' + (ui.ligaMode === 'grupo') + '" data-a="ligaMode" data-m="grupo">Meu grupo</button></div>';
-  if (ui.ligaMode === 'grupo') return h + vGrupoBody() + '</main>';
+/* ---------- Grupo (estilo GymRats) e liga ---------- */
+const REACOES = [['amem', 'Amém'], ['gloria', 'Glória a Deus'], ['orando', 'Orando']];
+function normPost(p) {
+  if (!p.r) p.r = { amem: p.amem || 0, gloria: 0, orando: 0 };
+  if (!p.mine) p.mine = p.amei ? { amem: true } : {};
+  if (!p.comments) p.comments = [];
+  return p;
+}
+const inicial = n => esc((String(n || 'V').replace('Pr. ', '')[0] || 'V').toUpperCase());
+function vGrupoTab() {
+  const aba = ui.gTab || 'grupo', g = S.group;
+  let h = '<main class="screen sheet-top">' + capa(aba === 'liga' ? 'Liga da semana' : g ? esc(g.nome) : 'Grupo da igreja', aba === 'liga' ? 'Quem mais estudou nesta semana.' : 'Leitura junto com os irmãos, todo dia.') +
+    '<div class="seg" role="tablist"><button role="tab" aria-selected="' + (aba === 'grupo') + '" data-a="gTab" data-m="grupo">Meu grupo</button><button role="tab" aria-selected="' + (aba === 'liga') + '" data-a="gTab" data-m="liga">Liga da semana</button></div>';
+  return h + (aba === 'liga' ? vLigaBody() : vGrupoBody()) + '</main>';
+}
+function vLigaBody() {
   const ws = weekStart(), di = diff(ws, todayK()), rows = leagueTable(ws, di), lg = LIGAS[S.league.div];
-  const resta = 7 - di;
-  h += '<section class="liga-h"><div class="shields">' + LIGAS.map((l, i) => '<span class="sh' + (i === S.league.div ? ' cur' : i > S.league.div ? ' next' : '') + '">' + ART.escudo(i <= S.league.div ? 'var(--ouro)' : 'var(--bloq)', 'escudo' + (i === S.league.div ? ' big' : '')) + '</span>').join('') + '</div>' +
-    '<h1 class="h1">Você está em ' + (rows.findIndex(r => r.me) + 1) + 'º na Liga ' + lg.nome + '</h1><p class="muted">Os 3 primeiros sobem de liga. Termina em ' + plural(resta, 'dia', 'dias') + '.</p></section><ol class="league">';
+  let h = '<section class="liga-h"><div class="shields">' + LIGAS.map((l, i) => '<span class="sh' + (i > S.league.div ? ' next' : '') + '">' + ART.escudo(i <= S.league.div ? 'var(--ouro)' : 'var(--bloq)', 'escudo' + (i === S.league.div ? ' big' : '')) + '</span>').join('') + '</div>' +
+    '<h1 class="h1">Você está em ' + (rows.findIndex(r => r.me) + 1) + 'º na Liga ' + lg.nome + '</h1><p class="muted">Os 3 primeiros sobem de liga. Termina em ' + plural(7 - di, 'dia', 'dias') + '.</p></section><ol class="league">';
   rows.forEach((r, i) => {
     if (i === 3) h += '<li class="zone up">' + icon('voltar', 'ic xs up-ic') + 'Zona de promoção</li>';
     if (i === 8 && S.league.div > 0) h += '<li class="zone down">Zona de rebaixamento</li>';
-    h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.me ? '' : '') + '</span><b class="tnum">' + r.xp + ' XP</b></li>';
+    h += '<li class="lr' + (r.me ? ' me' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + inicial(r.nome) + '</span><span class="nm">' + esc(r.nome) + '</span><b class="tnum">' + r.xp + ' XP</b></li>';
   });
-  h += '</ol>';
-  return h + '</main>';
+  return h + '</ol><p class="fine center-t">Participantes de exemplo nesta versão de teste.</p>';
+}
+function vGrupoBody() {
+  const g = S.group;
+  if (!g) return ART.mani('mani m-sm row', 'joinha', 'Quem lê junto não para.') + '<p class="lede">Crie um grupo com a sua célula, família ou ministério: desafio com prazo, check-in todo dia com foto, ranking e reações.</p>' + vGroupForms(false);
+  g.feed.forEach(normPost);
+  const d = desafio(g.desafio) || DESAFIOS[0], dia = Math.min(d.dias, Math.max(1, diff(g.start, todayK()) + 1)), meus = Math.max(0, S.chapters - g.chapAtStart);
+  const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
+  const fezHoje = g.feed.some(p => p.me && p.d === todayK()) || studiedToday();
+  const leram = membrosHoje();
+  /* Desafio em destaque */
+  let h = '<section class="g-hero"><div class="g-top"><div><b>' + esc(d.nome) + '</b><small>Dia ' + dia + ' de ' + d.dias + ' · faltam ' + plural(d.dias - dia, 'dia', 'dias') + '</small></div><span class="g-pct tnum">' + Math.min(100, Math.round(meus / d.caps * 100)) + '%</span></div>' +
+    '<span class="line on-dark"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><small class="g-meta tnum">Você leu ' + meus + ' de ' + d.caps + ' capítulos</small>' +
+    '<div class="g-hoje"><span class="g-avs">' + leram.map(m => '<span class="av sm' + (m.me ? ' me' : '') + '" title="' + esc(m.nome) + '">' + inicial(m.nome) + '</span>').join('') + '</span><small>' + (leram.length ? plural(leram.length, 'irmão já leu hoje', 'irmãos já leram hoje') : 'Ninguém leu hoje ainda') + '</small></div>' +
+    '<button class="btn" data-a="sheet" data-s="checkin">' + (fezHoje ? 'Fazer outro check-in' : 'Fazer check-in de hoje') + '</button></section>';
+  /* Abas internas */
+  const sub = ui.gSub || 'feed';
+  h += '<div class="tabs-h" role="tablist">' + [['feed', 'Feed'], ['ranking', 'Ranking'], ['membros', 'Membros']].map(([k, n]) => '<button role="tab" aria-selected="' + (sub === k) + '" data-a="gSub" data-m="' + k + '">' + n + '</button>').join('') + '</div>';
+  if (sub === 'ranking') {
+    const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
+    h += '<section class="sec"><h2>Você está em ' + mp + 'º no grupo</h2><ol class="league">';
+    rk.forEach((r, i) => { h += '<li class="lr' + (r.me ? ' me' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + inicial(r.nome) + '</span><span class="nm">' + esc(r.nome) + (r.ex ? ' <small class="muted">exemplo</small>' : '') + '<small class="muted d-block">' + plural(r.dias, 'dia com leitura', 'dias com leitura') + '</small></span><b class="tnum">' + r.caps + ' cap.</b></li>'; });
+    h += '</ol></section>';
+  } else if (sub === 'membros') {
+    h += '<ul class="membros">' + membrosLista().map(m => '<li><span class="av' + (m.me ? ' me' : '') + '">' + inicial(m.nome) + '</span><span class="nm"><b>' + esc(m.nome) + '</b><small class="muted">' + (m.hoje ? 'leu hoje' : 'ainda não leu hoje') + (m.ex ? ' · exemplo' : '') + '</small></span><span class="ofs tnum">' + ART.grao() + m.ofensiva + '</span></li>').join('') + '</ul>' +
+      '<section class="card"><h3>Chame mais irmãos</h3><p class="muted">Código do grupo: <b class="code">' + esc(g.code) + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener noreferrer">Convidar pelo WhatsApp</a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div></section>' +
+      '<button class="link danger" data-a="leaveGroup">' + (ui.confirmLeave ? 'Toque de novo para sair' : 'Sair do grupo') + '</button>';
+  } else {
+    h += '<ul class="feed">';
+    g.feed.forEach(p => {
+      h += '<li><div class="who"><span class="av sm' + (p.me ? ' me' : '') + '">' + inicial(p.who) + '</span><span><b>' + esc(p.who) + '</b><small class="muted"> · ' + fmt(p.d, { day: 'numeric', month: 'short' }) + (p.caps ? ' · ' + plural(p.caps, 'capítulo', 'capítulos') : '') + '</small></span></div>' +
+        (p.foto ? '<img class="post-foto" src="' + p.foto + '" alt="Foto do check-in de ' + esc(p.who) + '">' : '') + (p.ref ? '<p class="ref">' + esc(p.ref) + '</p>' : '') + (p.text ? '<p>' + esc(p.text) + '</p>' : '') +
+        '<div class="reacts">' + REACOES.map(([k, n]) => '<button class="pill' + (p.mine[k] ? ' on' : '') + '" data-a="react" data-id="' + p.id + '" data-k="' + k + '" aria-pressed="' + !!p.mine[k] + '">' + n + (p.r[k] ? ' <span class="tnum">' + p.r[k] + '</span>' : '') + '</button>').join('') + '<button class="link" data-a="cmt" data-id="' + p.id + '">Comentar' + (p.comments.length ? ' (' + p.comments.length + ')' : '') + '</button></div>';
+      if (p.comments.length) h += '<ul class="cmts">' + p.comments.map(c => '<li><b>' + esc(c.who) + '</b> ' + esc(c.text) + '</li>').join('') + '</ul>';
+      if (ui.cmt === p.id) h += '<form class="form inline" data-f="cmt" data-id="' + p.id + '"><input id="cmt-txt" maxlength="200" placeholder="Escreva um comentário" aria-label="Comentário"><button class="btn mini" type="submit">Enviar</button></form>';
+      h += '</li>';
+    });
+    h += '</ul>';
+  }
+  return h + '<p class="fine center-t">Nesta versão de teste o grupo fica neste aparelho, com irmãos de exemplo.</p>';
+}
+function vCheckinSheet() {
+  return '<h2>Check-in de hoje</h2><p class="muted">Conte para o grupo o que você leu. A foto é opcional: a Bíblia aberta, o caderno, o lugar onde você leu.</p>' +
+    '<form class="form" data-f="checkin"><div class="two"><label>Capítulos lidos<input id="ck-caps" type="number" min="0" max="50" value="' + esc((ui.draft && ui.draft['ck-caps']) || '1') + '" inputmode="numeric"></label><label>Versículo<input id="ck-ref" maxlength="40" placeholder="Ex.: Salmos 23:1" value="' + esc((ui.draft && ui.draft['ck-ref']) || '') + '"></label></div>' +
+    '<label>O que Deus falou com você?<textarea id="ck-txt" rows="3" maxlength="280" placeholder="Opcional">' + esc((ui.draft && ui.draft['ck-txt']) || '') + '</textarea></label>' +
+    '<label class="file">Foto (opcional)<input id="ck-foto" type="file" accept="image/*"></label>' + (ui.ckFoto ? '<img class="post-foto prev" src="' + ui.ckFoto + '" alt="Prévia da foto">' : '') +
+    '<button class="btn" type="submit">Postar check-in · +10 XP por capítulo</button></form>';
+}
+/* Reduz a foto para caber no aparelho (máx. 720 px, JPEG) */
+function reduzFoto(file) {
+  return new Promise((ok, no) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 720 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      ok(c.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); no(new Error('imagem')); };
+    img.src = url;
+  });
 }
 function vGroupForms(onb) {
   const m = ui.groupMode;
@@ -207,30 +277,6 @@ function vGroupForms(onb) {
     h += '<form class="form card" data-f="gentrar"><label>Código do convite<input id="g-code" required maxlength="8" placeholder="Ex.: K7Q2MD" autocapitalize="characters"></label><label>Seu nome no grupo<input id="g-eu" maxlength="30" value="' + esc(S.nome) + '"></label><button class="btn" type="submit">Entrar no grupo</button></form>';
   }
   return h;
-}
-function vGrupoBody() {
-  const g = S.group;
-  if (!g) return '<p class="lede">Leia junto com a sua célula: desafio com prazo, ranking e check-in todo dia.</p>' + vGroupForms(false);
-  const d = desafio(g.desafio) || DESAFIOS[0], dia = Math.min(d.dias, Math.max(1, diff(g.start, todayK()) + 1)), meus = Math.max(0, S.chapters - g.chapAtStart);
-  const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
-  const semana = capsDaSemanaGrupo();
-  let h = ART.mani('mani m-sm row', 'joinha', 'Sua célula leu ' + semana + ' capítulos esta semana.') + '<section class="banner group-b"><div><h3>' + esc(g.nome) + '</h3><small>' + d.nome + ' · dia ' + dia + ' de ' + d.dias + '</small></div>' + ART.banner() + '</section>';
-  h += '<section class="card"><div class="sec-h"><h3>Seu progresso no desafio</h3><span class="tnum muted">' + meus + '/' + d.caps + '</span></div><span class="bar thick"><i style="width:' + Math.min(100, meus / d.caps * 100) + '%"></i></span><p class="fine">O ritmo do desafio é ' + (d.caps / d.dias).toFixed(1).replace('.', ',') + ' capítulos por dia.</p></section>';
-  const rk = ranking(), mp = rk.findIndex(r => r.me) + 1;
-  h += '<section class="sec"><h2>Você está em ' + mp + 'º no grupo</h2><ol class="league">';
-  rk.forEach((r, i) => { h += '<li class="lr' + (r.me ? ' me' : '') + (i < 3 ? ' top' : '') + '"><span class="pos tnum">' + (i + 1) + '</span><span class="av' + (r.me ? ' me' : '') + '">' + esc((r.nome.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><span class="nm">' + esc(r.nome) + (r.ex ? ' <small class="muted">exemplo</small>' : '') + '</span><b class="tnum">' + r.caps + '</b></li>'; });
-  h += '</ol></section>';
-  h += '<section class="sec"><h2>Check-in de hoje</h2><form class="form card" data-f="checkin"><div class="two"><label>Capítulos lidos fora do app<input id="ck-caps" type="number" min="0" max="50" value="1" inputmode="numeric"></label><label>Versículo<input id="ck-ref" maxlength="40" placeholder="Ex.: Salmos 23:1"></label></div><label>Reflexão curta<textarea id="ck-txt" rows="2" maxlength="280" placeholder="O que Deus falou com você hoje? (opcional)"></textarea></label><button class="btn" type="submit">Marcar leitura · +10 XP por capítulo</button></form></section>';
-  h += '<section class="sec"><h2>Feed do grupo</h2><ul class="feed">';
-  g.feed.forEach(p => {
-    h += '<li><div class="who"><span class="av sm' + (p.me ? ' me' : '') + '">' + esc((p.who.replace('Pr. ', '')[0] || 'V').toUpperCase()) + '</span><b>' + esc(p.who) + '</b><span class="muted"> · ' + fmt(p.d, { day: 'numeric', month: 'short' }) + '</span></div>' + (p.ref ? '<p class="ref">' + esc(p.ref) + '</p>' : '') + '<p>' + esc(p.text) + '</p>' +
-      '<div class="acts"><button class="pill' + (p.amei ? ' on' : '') + '" data-a="amem" data-id="' + p.id + '" aria-pressed="' + !!p.amei + '">Amém <span class="tnum">' + p.amem + '</span></button><button class="link" data-a="cmt" data-id="' + p.id + '">Comentar</button></div>';
-    if (p.comments.length) h += '<ul class="cmts">' + p.comments.map(c => '<li><b>' + esc(c.who) + '</b> ' + esc(c.text) + '</li>').join('') + '</ul>';
-    if (ui.cmt === p.id) h += '<form class="form inline" data-f="cmt" data-id="' + p.id + '"><input id="cmt-txt" maxlength="200" placeholder="Escreva um comentário" aria-label="Comentário"><button class="btn mini" type="submit">Enviar</button></form>';
-    h += '</li>';
-  });
-  h += '</ul></section><section class="card"><h3>Convide pelo WhatsApp</h3><p class="muted">Código do grupo: <b class="code">' + esc(g.code) + '</b></p><div class="row"><a class="btn sec" href="https://wa.me/?text=' + encodeURIComponent(convite) + '" target="_blank" rel="noopener noreferrer">Abrir WhatsApp<span class="sr-only"> (abre outra página)</span></a><button class="btn sec" data-a="copy" data-t="' + esc(convite) + '">Copiar convite</button></div></section>';
-  return h + '<button class="link danger" data-a="leaveGroup">' + (ui.confirmLeave ? 'Toque de novo para sair' : 'Sair do grupo') + '</button>';
 }
 
 /* ---------- Perfil ---------- */
@@ -276,7 +322,8 @@ function vLoja() {
 function vSheet() {
   const s = ui.sheet;
   let h = '<div class="scrim" data-a="closeSheet"></div><div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">';
-  if (s === 'licao') {
+  if (s === 'checkin') h += vCheckinSheet();
+  else if (s === 'licao') {
     const t = trilha(curTrail()), i = ui.sheetI, l = t.licoes[i], feita = i < doneCount(t.id), ctx = l.ctx || (S.gen[l.ref] && S.gen[l.ref].contexto) || '';
     h += '<p class="muted">' + (t.tipo === 'Plano' ? 'Leitura ' : 'Lição ') + (i + 1) + ' de ' + t.licoes.length + (feita ? ' · concluída' : '') + '</p><h2 id="sheet-title">' + esc(l.titulo) + '</h2>' + (l.titulo !== l.ref ? '<p class="ref">' + esc(l.ref) + '</p>' : '') + (ctx ? '<p>' + esc(ctx) + '</p>' : '') +
       '<button class="btn" data-a="sheetStart" data-i="' + i + '" data-r="' + (feita ? 1 : 0) + '">' + (feita ? 'Revisar · +5 XP' : 'Colher a porção · +15 XP') + '</button>';
@@ -334,7 +381,7 @@ function vModal() {
 }
 
 /* ---------- Render ---------- */
-const TABS = () => [['jornada', 'Jornada', 'jornada'], ['biblia', 'Bíblia', 'livro'], ['domingo', nomeCulto(), 'domingo'], ['duvidas', 'Dúvidas', 'duvidas'], ['liga', 'Liga', 'liga'], ['perfil', 'Perfil', 'perfil']];
+const TABS = () => [['jornada', 'Jornada', 'jornada'], ['biblia', 'Bíblia', 'livro'], ['domingo', nomeCulto(), 'domingo'], ['duvidas', 'Dúvidas', 'duvidas'], ['grupo', 'Grupo', 'grupo'], ['perfil', 'Perfil', 'perfil']];
 function renderLesson() { const app = $('app'); if (app && ui.L) app.innerHTML = vLessonScreen(); }
 function render() {
   const app = $('app'); if (!app) return;
@@ -346,7 +393,7 @@ function render() {
   else {
     let h;
     if (ui.ov) h = '<div class="ov">' + ({ culto: vCulto, ebd: vEbd, duvida: vDuvida, loja: vLoja, plano: vPlano, explorar: vExplorar }[ui.ov.type])(ui.ov.id) + '</div>';
-    else h = ({ jornada: vJornada, biblia: vBiblia, domingo: vDomingo, duvidas: vDuvidas, liga: vLiga, perfil: vPerfil }[ui.tab])() +
+    else h = ({ jornada: vJornada, biblia: vBiblia, domingo: vDomingo, duvidas: vDuvidas, grupo: vGrupoTab, perfil: vPerfil }[ui.tab])() +
       '<nav class="tabs" aria-label="Seções">' + TABS().map(([k, n, ic]) => '<button data-a="tab" data-tab="' + k + '"' + (ui.tab === k ? ' aria-current="page"' : '') + '>' + icon(ic) + '<span>' + n + '</span></button>').join('') + '</nav>';
     if (ui.sheet) h += vSheet();
     if (ui.modal) h += vModal();
@@ -400,7 +447,7 @@ const A = {
   dismiss() { ui.notice = ''; keep(); },
   sheet(el) { ui.sheet = el.dataset.s; keep(); },
   sheetStart(el) { ui.sheet = null; startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
-  closeSheet() { ui.sheet = null; keep(); },
+  closeSheet() { ui.ckFoto = null; ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
   goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
   addMeta(el) {
@@ -542,7 +589,12 @@ const A = {
     ui.confirmDel = null; S.ebds = S.ebds.filter(x => x.id !== el.dataset.id); save(); A.close();
   },
   /* Liga e grupo */
-  ligaMode(el) { ui.ligaMode = el.dataset.m; keep(); },
+  gTab(el) { ui.gTab = el.dataset.m; keep(); },
+  gSub(el) { ui.gSub = el.dataset.m; keep(); },
+  react(el) {
+    const p = normPost(S.group.feed.find(x => x.id === el.dataset.id)), k = el.dataset.k;
+    p.mine[k] = !p.mine[k]; p.r[k] = Math.max(0, (p.r[k] || 0) + (p.mine[k] ? 1 : -1)); save(); keep();
+  },
   gmode(el) { ui.groupMode = el.dataset.m; keep(); },
   amem(el) { const p = S.group.feed.find(x => x.id === el.dataset.id); p.amei = !p.amei; p.amem += p.amei ? 1 : -1; save(); keep(); },
   cmt(el) { ui.cmt = ui.cmt === el.dataset.id ? null : el.dataset.id; keep(); setTimeout(() => $('cmt-txt') && $('cmt-txt').focus(), 0); },
@@ -623,19 +675,20 @@ const F = {
   gcriar() {
     const nome = val('g-nome'); if (!nome) { toast('Dê um nome ao grupo.'); return; }
     S.nome = val('g-eu') || S.nome; makeGroup(nome, val('g-des') || 'evangelhos30');
-    S.onboarded = true; ui.tab = 'liga'; ui.ligaMode = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Grupo criado. Agora convide pelo WhatsApp.');
+    S.onboarded = true; ui.tab = 'grupo'; ui.gTab = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Grupo criado. Agora convide pelo WhatsApp.');
   },
   gentrar() {
     const code = val('g-code').toUpperCase(); if (code.length < 4) { toast('Digite o código do convite.'); return; }
     S.nome = val('g-eu') || S.nome; makeGroup('Célula Esperança', 'evangelhos30'); S.group.code = code;
-    S.onboarded = true; ui.tab = 'liga'; ui.ligaMode = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Você entrou num grupo de exemplo.');
+    S.onboarded = true; ui.tab = 'grupo'; ui.gTab = 'grupo'; ui.groupMode = null; save(); window.scrollTo(0, 0); render(); toast('Você entrou num grupo de exemplo.');
   },
   checkin() {
     const caps = Math.max(0, Math.min(50, parseInt(val('ck-caps'), 10) || 0)), ref = val('ck-ref'), txt = val('ck-txt');
-    if (!caps && !txt) { toast('Informe os capítulos ou escreva uma reflexão.'); return; }
+    if (!caps && !txt && !ui.ckFoto) { toast('Informe os capítulos, escreva algo ou envie uma foto.'); return; }
     if (caps) { study(caps); addXP(10 * caps); }
-    postFeed(txt || ('Li ' + plural(caps, 'capítulo', 'capítulos') + ' hoje.'), ref);
-    toast(caps ? 'Leitura marcada. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.' : 'Reflexão postada.'); save(); keep();
+    postFeed(txt || (caps ? 'Li ' + plural(caps, 'capítulo', 'capítulos') + ' hoje.' : ''), ref, { caps, foto: ui.ckFoto || '' });
+    ui.ckFoto = null; ui.sheet = null; ui.gSub = 'feed'; if (ui.draft) ['ck-txt', 'ck-caps', 'ck-ref'].forEach(k => delete ui.draft[k]);
+    toast(caps ? 'Check-in postado. Ofensiva: ' + plural(S.streak.count, 'dia', 'dias') + '.' : 'Check-in postado.'); save(); keep();
   },
   cmt(form) {
     const t = val('cmt-txt'); if (!t) return;
@@ -688,6 +741,7 @@ document.addEventListener('input', e => {
     const n = $('d-filtro'); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
   }
   if (e.target.id === 'l-nota' && ui.L) { setLessonNote(ui.L.id, ui.L.idx, e.target.value); save(); }
+  if (/^ck-(txt|caps|ref)$/.test(e.target.id)) { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.value; }
   if (/^(c|e)-/.test(e.target.id) && e.target.type !== 'file') { ui.draft = ui.draft || {}; ui.draft[e.target.id] = e.target.type === 'checkbox' ? e.target.checked : e.target.value; }
   if (e.target.id === 'obj' && !S.onboarded) { S.objetivo = e.target.value; save(); const b = document.querySelector('[data-a="objNext"]'); if (b) b.disabled = !objPronto(); }
   if (e.target.id === 'expl-f' || e.target.id === 'bib-f') {
@@ -696,6 +750,9 @@ document.addEventListener('input', e => {
   }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'ck-foto' && e.target.files && e.target.files[0]) {
+    reduzFoto(e.target.files[0]).then(u => { ui.ckFoto = u; keep(); }).catch(() => toast('Não deu para abrir essa foto. Tente outra.'));
+  }
   if (e.target.id === 'h-sel') { S.hinario = e.target.value; save(); keep(); }
   if (e.target.id === 'c-trilha') { ui.draft = ui.draft || {}; ui.draft['c-trilha'] = e.target.checked; }
   if (e.target.id === 'c-file' && e.target.files && e.target.files[0]) {
