@@ -41,9 +41,13 @@ function load() {
     o.streak = Object.assign({ count: 0, last: null, best: 0 }, asObj(o.streak));
     o.league = Object.assign({ week: null, div: 0 }, asObj(o.league));
     o.league.div = num(o.league.div, 0, 0, 5);
+    const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+    const fotoOk = v => typeof v === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v);
     ['days', 'xpLog', 'chapLog', 'cultos', 'ebds', 'duvidasLidas', 'perguntas', 'hinos', 'objSel'].forEach(k => { o[k] = asArr(o[k]); });
     ['progress', 'notes', 'chests', 'custom', 'lidos', 'ach', 'gen'].forEach(k => { o[k] = asObj(o[k]); });
-    if (o.group && !Array.isArray(asObj(o.group).feed)) o.group = null;
+    o.days = o.days.filter(isDate);
+    o.xpLog = o.xpLog.filter(x => x && isDate(x.d) && Number.isFinite(Number(x.x))).map(x => ({ d: x.d, x: Number(x.x) }));
+    o.chapLog = o.chapLog.filter(x => x && isDate(x.d) && Number.isFinite(Number(x.c))).map(x => ({ d: x.d, c: Number(x.c) }));
     if (typeof o.nome !== 'string') o.nome = '';
     if (typeof o.objetivo !== 'string') o.objetivo = '';
     o.grains = num(o.grains, 0, 0, 1000000);
@@ -52,6 +56,69 @@ function load() {
     o.fonte = num(o.fonte, 18, 14, 26);
     o.goal = [20, 30, 50].includes(Number(o.goal)) ? Number(o.goal) : 30;
     o.offset = num(o.offset, 0, -3650, 3650);
+    o.streak.count = num(o.streak.count, 0, 0, 100000);
+    o.streak.best = num(o.streak.best, 0, 0, 100000);
+    if (!isDate(o.streak.last)) o.streak.last = null;
+    if (!o.lost || !isDate(asObj(o.lost).d)) o.lost = null;
+    else o.lost = { count: num(o.lost.count, 0, 0, 100000), d: o.lost.d };
+    if (!isDate(o.league.week)) o.league.week = null;
+    if (!isDate(o.trialStart)) o.trialStart = null;
+    if (!o.quests || !Array.isArray(asObj(o.quests).list)) o.quests = null;
+    o.reflex = asObj(o.reflex);
+    Object.keys(o.reflex).forEach(k => { if (!Array.isArray(o.reflex[k])) delete o.reflex[k]; });
+    if (o.group) {
+      const g = asObj(o.group);
+      if (typeof g.nome !== 'string' || !isDate(g.start)) o.group = null;
+      else {
+        g.chapAtStart = num(g.chapAtStart, 0, 0, 10000000);
+        g.feed = asArr(g.feed).filter(p => p && typeof p === 'object' && !Array.isArray(p));
+        g.feed.forEach(p => {
+          if (!Array.isArray(p.comments)) p.comments = [];
+          p.comments = p.comments.filter(c => c && typeof c.text === 'string');
+          if (!p.r || typeof p.r !== 'object' || Array.isArray(p.r)) p.r = {};
+          if (!p.mine || typeof p.mine !== 'object' || Array.isArray(p.mine)) p.mine = {};
+          if (!fotoOk(p.foto)) delete p.foto;
+          if (typeof p.text !== 'string') p.text = '';
+          if (typeof p.who !== 'string') p.who = '';
+          if (!isDate(p.d)) p.d = g.start;
+        });
+        o.group = g;
+      }
+    }
+    o.cultos = o.cultos.filter(c => c && typeof c.tema === 'string').map(c => {
+      c.feitos = asArr(c.feitos).filter(i => i === 0 || i === 1 || i === 2 || i === 3 || i === 4);
+      const s = asObj(c.study);
+      s.resumo = typeof s.resumo === 'string' ? s.resumo : '';
+      s.pontos = asArr(s.pontos).map(String);
+      s.versiculos = asArr(s.versiculos).map(String);
+      s.dias = asArr(s.dias).filter(d => d && typeof d === 'object').map(d => ({ titulo: String(d.titulo || ''), referencia: String(d.referencia || ''), pergunta: String(d.pergunta || '') }));
+      c.study = s;
+      if (!isDate(c.data)) c.data = '1970-01-01';
+      if (c.link && !/^https?:\/\//i.test(String(c.link))) c.link = '';
+      return c;
+    });
+    o.ebds = o.ebds.filter(e => e && typeof e.tema === 'string').map(e => {
+      const p = asObj(e.prep);
+      p.contexto = typeof p.contexto === 'string' ? p.contexto : '';
+      p.aplicacao = typeof p.aplicacao === 'string' ? p.aplicacao : '';
+      p.versiculos = asArr(p.versiculos).map(String);
+      p.perguntas = asArr(p.perguntas).map(String);
+      p.roteiro = asArr(p.roteiro).filter(r => r && typeof r === 'object');
+      e.prep = p;
+      if (!isDate(e.data)) e.data = '1970-01-01';
+      return e;
+    });
+    o.hinos = o.hinos.filter(x => x && typeof x.id === 'string').map(x => ({ id: x.id, h: typeof x.h === 'string' ? x.h : '', n: num(x.n, 1, 1, 999), t: typeof x.t === 'string' ? x.t.slice(0, 80) : '', fav: !!x.fav }));
+    o.perguntas = o.perguntas.filter(p => p && typeof p.q === 'string').map(p => ({ id: typeof p.id === 'string' ? p.id : 'p', q: p.q, cat: typeof p.cat === 'string' ? p.cat : '', biblia: typeof p.biblia === 'string' ? p.biblia : '', refs: typeof p.refs === 'string' ? p.refs : '', trad: asObj(p.trad), comum: typeof p.comum === 'string' ? p.comum : '', ia: !!p.ia }));
+    Object.keys(o.lidos).forEach(k => { if (!isDate(o.lidos[k])) delete o.lidos[k]; });
+    Object.keys(o.progress).forEach(k => { o.progress[k] = num(o.progress[k], 0, 0, 100000); });
+    Object.keys(o.gen).forEach(k => {
+      const g = o.gen[k];
+      if (!g || typeof g !== 'object' || Array.isArray(g)) { delete o.gen[k]; return; }
+      if (String(k).startsWith('dev:') && (!Array.isArray(g.meditacao) || !Array.isArray(g.perguntas))) delete o.gen[k];
+    });
+    Object.keys(o.custom).forEach(k => { const t = o.custom[k]; if (!t || !Array.isArray(t.licoes)) delete o.custom[k]; });
+    if (typeof o.lastRead !== 'string' || !/^\d{1,2}:\d{1,3}$/.test(o.lastRead)) o.lastRead = '';
     if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; }
     return o;
   } catch (e) {}
@@ -79,12 +146,11 @@ const now = () => new Date(Date.now() + S.offset * DAY);
 const pad = n => String(n).padStart(2, '0');
 const keyOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const todayK = () => keyOf(now());
-const parseK = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const parseK = k => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(k || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(NaN); };
 const diff = (a, b) => Math.round((parseK(b) - parseK(a)) / DAY);
 const addDays = (k, n) => keyOf(new Date(parseK(k).getTime() + n * DAY + 3600000));
 const fmt = (k, o) => parseK(k).toLocaleDateString('pt-BR', o || { day: 'numeric', month: 'long' });
-const weekStart = () => { const d = now(); return keyOf(new Date(d.getTime() - d.getDay() * DAY)); };
-const lastSunday = weekStart;
+const weekStart = () => { const d = now(); return keyOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay())); };
 
 /* Utilidades */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -96,17 +162,6 @@ function safeHref(u) {
     if (x.protocol !== 'http:' && x.protocol !== 'https:') return '';
     return esc(x.href);
   } catch (e) { return ''; }
-}
-function noteKey(id, idx) { return id + ':' + idx; }
-function lessonNote(id, idx) {
-  const k = noteKey(id, idx);
-  if (S.notes[k] != null && S.notes[k] !== '') return S.notes[k];
-  return S.notes[id + idx] || '';
-}
-function setLessonNote(id, idx, text) {
-  S.notes[noteKey(id, idx)] = text;
-  const old = id + idx;
-  if (old !== noteKey(id, idx) && S.notes[old] != null) delete S.notes[old];
 }
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
@@ -179,7 +234,7 @@ function checkStreak() {
   const st = S.streak, t = todayK();
   if (!st.last || !st.count) return;
   const missed = diff(st.last, t) - 1;
-  if (missed < 1) return;
+  if (!(missed >= 1)) return;
   if (missed <= S.protetores) {
     S.protetores -= missed; st.last = addDays(t, -1);
     ui.notice = (missed === 1 ? 'Você não estudou ontem' : 'Você ficou ' + missed + ' dias sem estudar') + ', e ' + plural(missed, 'protetor salvou', 'protetores salvaram') + ' sua ofensiva de ' + plural(st.count, 'dia', 'dias') + '.';

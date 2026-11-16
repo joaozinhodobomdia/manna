@@ -38,30 +38,16 @@ function quizHead(s) {
 }
 function vQuiz(q, s) {
   let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">' + q.t + '</h1>' + (q.sub ? '<p class="lede">' + q.sub + '</p>' : '');
-  if (q.multi) {
-    const sel = S.quiz.trilhas;
-    ['Livro', 'Personagem', 'Tema'].forEach(tp => {
-      h += '<h3 class="grp">' + { Livro: 'Um livro', Personagem: 'Um personagem', Tema: 'Um tema' }[tp] + '</h3><div class="cards2">';
-      TRILHAS.filter(t => t.tipo === tp).forEach(t => {
-        const i = sel.indexOf(t.id);
-        h += '<button class="pick' + (i > -1 ? ' on' : '') + '" data-a="pickTrail" data-id="' + t.id + '" aria-pressed="' + (i > -1) + '">' + (i > -1 ? '<em class="ord">' + (i + 1) + '</em>' : '') + '<b>' + t.nome + '</b><small>' + t.desc + '</small><span class="muted tnum">' + plural(t.licoes.length, 'lição', 'lições') + '</span></button>';
-      });
-      h += '</div>';
-    });
-    h += '<div class="sticky-cta"><button class="btn" data-a="next"' + (sel.length ? '' : ' disabled') + '>Continuar</button></div>';
-  } else {
-    h += '<div class="choices">';
-    q.opts.forEach(o => {
-      if (o && o.v) {
-        h += '<button class="choice rich' + (S.quiz[q.k] === o.v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(o.v) + '"><span class="pl-l"><b>' + esc(o.l) + (o.tag ? ' <span class="tag-in">' + o.tag + '</span>' : '') + '</b><small>' + esc(o.d) + '</small></span></button>';
-        return;
-      }
-      const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
-      h += '<button class="choice' + (S.quiz[q.k] === v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
-    });
-    h += '</div>';
-  }
-  return h + '</main>';
+  h += '<div class="choices">';
+  q.opts.forEach(o => {
+    if (o && o.v) {
+      h += '<button class="choice rich' + (S.quiz[q.k] === o.v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(o.v) + '"><span class="pl-l"><b>' + esc(o.l) + (o.tag ? ' <span class="tag-in">' + o.tag + '</span>' : '') + '</b><small>' + esc(o.d) + '</small></span></button>';
+      return;
+    }
+    const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
+    h += '<button class="choice' + (S.quiz[q.k] === v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
+  });
+  return h + '</div></main>';
 }
 function vResultado() {
   const q = S.quiz, first = trilha(q.trilhas[0]);
@@ -100,7 +86,7 @@ function vPaywall() {
   return h;
 }
 function vConvite() {
-  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms(true) + '<button class="btn sec" data-a="finish">Agora não</button></main>';
+  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms() + '<button class="btn sec" data-a="finish">Agora não</button></main>';
 }
 
 /* ---------- Domingo ---------- */
@@ -208,7 +194,7 @@ function vLigaBody() {
 }
 function vGrupoBody() {
   const g = S.group;
-  if (!g) return ART.mani('mani m-sm row', 'joinha', 'Quem lê junto não para.') + '<p class="lede">Crie um grupo com a sua célula, família ou ministério: desafio com prazo, check-in todo dia com foto, ranking e reações.</p>' + vGroupForms(false);
+  if (!g) return ART.mani('mani m-sm row', 'joinha', 'Quem lê junto não para.') + '<p class="lede">Crie um grupo com a sua célula, família ou ministério: desafio com prazo, check-in todo dia com foto, ranking e reações.</p>' + vGroupForms();
   g.feed.forEach(normPost);
   const d = desafio(g.desafio) || DESAFIOS[0], dia = Math.min(d.dias, Math.max(1, diff(g.start, todayK()) + 1)), meus = Math.max(0, S.chapters - g.chapAtStart);
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
@@ -266,7 +252,7 @@ function reduzFoto(file) {
     img.src = url;
   });
 }
-function vGroupForms(onb) {
+function vGroupForms() {
   const m = ui.groupMode;
   let h = '<div class="choices"><button class="choice' + (m === 'criar' ? ' sel' : '') + '" data-a="gmode" data-m="criar"><span class="pl-l"><b>Criar um grupo</b><small>Célula, família, ministério ou amigos</small></span></button>' +
     '<button class="choice' + (m === 'entrar' ? ' sel' : '') + '" data-a="gmode" data-m="entrar"><span class="pl-l"><b>Entrar com um código</b><small>Recebeu o convite de alguém</small></span></button></div>';
@@ -441,7 +427,7 @@ const A = {
   plan(el) { S.plano = el.dataset.id; save(); keep(); },
   trial() { go(() => { S.trialStart = todayK(); S.step++; }); window.scrollTo(0, 0); },
   finish() { go(() => { S.onboarded = true; ui.tab = 'jornada'; }); window.scrollTo(0, 0); },
-  tab(el) { ui.tab = el.dataset.tab; ui.aiErr = ''; ui.pop = null; ui.confirmReset = false; window.scrollTo(0, 0); render(); },
+  tab(el) { ui.tab = el.dataset.tab; ui.aiErr = ''; ui.confirmReset = false; window.scrollTo(0, 0); render(); },
   open(el) { openOv(el.dataset.ov, el.dataset.id); },
   close() { ui.ov = null; if (aiCtl) aiCtl.abort(); ui.busy = false; window.scrollTo(0, 0); render(); },
   dismiss() { ui.notice = ''; keep(); },
@@ -449,7 +435,7 @@ const A = {
   sheetStart(el) { ui.sheet = null; startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
   closeSheet() { ui.ckFoto = null; ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
-  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
+  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
   addMeta(el) {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
@@ -711,10 +697,8 @@ document.addEventListener('keydown', e => {
     if (sel) sel.focus();
     return;
   }
-  if (ui.L && !e.target.matches('textarea,input')) {
-    const L = ui.L, s = L.steps[L.i];
-    if (s && s.k === 'mc' && !L.checked && /^[1-4]$/.test(e.key) && s.opts[Number(e.key) - 1]) { L.pick = s.opts[Number(e.key) - 1]; renderLesson(); }
-    if (e.key === 'Enter') { const b = document.querySelector('.lfoot .btn:not([disabled])'); if (b) { e.preventDefault(); b.click(); } }
+  if (ui.L && e.key === 'Enter' && !e.target.matches('textarea,input')) {
+    const b = document.querySelector('.lfoot .btn:not([disabled])'); if (b) { e.preventDefault(); b.click(); }
   }
 });
 document.addEventListener('submit', e => { e.preventDefault(); const f = e.target.dataset.f; if (F[f]) F[f](e.target); });

@@ -27,13 +27,6 @@
     --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; --ouro-ink: #F2C14E; color-scheme: dark;
   }
 }
-:root[data-theme="dark"] {
-  --bg: #0F1B3D; --surface: #16244B; --fg: #F5F1E6; --muted: #A8B2CA; --line: #283A66; --line-dk: #34487A; --soft: #1D2D58; --mine: #273A6E;
-  --link: #A9C6E8; --ok: #8FD3A1; --bad: #F5A28C; --chao: rgba(0,0,0,.28);
-  --deserto: #1F2C55; --reino: #1E3050; --galileia: #1B3249; --cidades: #222B4D; --ceu-r: #2B3152; --estrada: #3A4C7A; --estrada-borda: #2C3B66;
-  --bloq: #22335F; --bloq-dk: #34487A; --vaso-tr: #070F28; --ouro-ink: #F2C14E; color-scheme: dark;
-}
-
 /* Base */
 * { box-sizing: border-box; }
 html { scroll-padding-top: 16px; scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
@@ -139,7 +132,6 @@ img { max-width: 100%; }
 .row-link span { display: flex; flex-direction: column; min-width: 0; }
 .row-link small { color: var(--muted); }
 .insight { color: var(--muted); font-size: 15px; }
-.ai-out { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 16px; background: var(--soft); }
 
 /* Formulários */
 .form { display: flex; flex-direction: column; gap: 12px; }
@@ -210,9 +202,6 @@ textarea { resize: vertical; }
 .marco.done .m-dot, .m-dot.aqui { background: var(--ouro); border-color: var(--ouro-dk); color: var(--noite); }
 .marco.done .m-dot .ic { width: 16px; height: 16px; stroke-width: 3.5; }
 .marco.cur { z-index: 3; }
-.m-pin .m-tile { width: 62px; padding: 6px; border-radius: 18px; border: 3px solid var(--ouro); }
-@media (prefers-reduced-motion: no-preference) { .marco.cur .m-pin { animation: pin 2.6s ease-in-out infinite; } }
-@keyframes pin { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
 .m-lbl { position: absolute; z-index: 1; display: flex; flex-direction: column; gap: 1px; max-width: 46%; padding: 5px 9px; border-radius: 10px; background: var(--surface); font-size: 13px; line-height: 1.3; pointer-events: none; }
 .m-lbl.dir { transform: translate(28px, -50%); text-align: left; }
 .m-lbl.esq { transform: translate(-28px, -50%); text-align: right; align-items: flex-end; }
@@ -337,7 +326,6 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 .lfoot { position: sticky; bottom: 0; z-index: 4; display: flex; flex-direction: column; gap: 6px; padding: 10px var(--gutr) calc(16px + env(safe-area-inset-bottom, 0px)) var(--gut); margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); background: var(--bg); }
 .intro { display: flex; flex-direction: column; gap: 8px; }
 .sc-t { font: 800 26px/1.2 var(--f-body); letter-spacing: -0.02em; }
-.sc-q { font: 700 21px/1.35 var(--f-body); }
 .sc-ctx { font-size: 16px; color: var(--muted); }
 .bible { display: flex; flex-direction: column; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
 .bt-cap { margin: 0; font: 800 15px/1.2 var(--f-body); }
@@ -345,30 +333,6 @@ body.ov-open .topo-j .mani, body.ov-open .screen .mani, body.ov-open .onb-mid .m
 .bt sup { font: 700 .62em/1 var(--f-body); color: var(--muted); margin-right: 3px; }
 .vv[role="button"] { cursor: pointer; border-radius: 4px; }
 .vv.on { background: var(--mine); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-.ex-q { font: 800 22px/1.3 var(--f-body); }
-.quote { padding: 14px 16px; border-radius: 14px; background: var(--soft); font: 400 17px/1.55 var(--f-book); }
-.opt { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 54px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); text-align: left; font-size: 16px; font-weight: 500; }
-.rd { width: 22px; height: 22px; flex: none; border-radius: 50%; border: 1.5px solid var(--line-dk); display: grid; place-items: center; }
-.opt.sel { border-color: var(--fg); box-shadow: inset 0 0 0 1px var(--fg); }
-.opt.sel .rd { border: 6px solid var(--fg); }
-.opt.right { border-color: var(--ok); box-shadow: inset 0 0 0 1px var(--ok); }
-.opt.right .rd, .opt.wrong .rd { color: var(--surface); }
-.opt.right .rd { background: var(--ok); border-color: var(--ok); }
-.opt.wrong { border-color: var(--bad); } .opt.wrong .rd { background: var(--bad); border-color: var(--bad); }
-.opt.dim { opacity: 1; color: var(--muted); }
-.verse { font: 400 21px/1.75 var(--f-book); }
-.gap { display: inline-block; min-width: 84px; margin: 0 2px; padding: 0 4px; border: 0; border-bottom: 2px solid var(--fg); background: none; font: inherit; line-height: 1.3; text-align: center; }
-.gap.filled { min-width: 0; background: var(--mine); border-bottom-color: var(--ouro-dk); border-radius: 6px 6px 0 0; }
-.words { display: flex; flex-wrap: wrap; gap: 8px; }
-.word { min-height: 44px; padding: 10px 14px; border: 1px solid var(--line-dk); border-radius: 10px; background: var(--surface); font: 400 17px/1.2 var(--f-book); }
-.word.used { visibility: hidden; }
-.word.right { border-color: var(--ok); color: var(--ok); }
-.fb { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
-.fb-i { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--surface); }
-.fb.ok .fb-i { background: var(--ok); } .fb.bad .fb-i { background: var(--bad); }
-.fb p { font-size: 15px; color: var(--muted); margin-top: 2px; }
-@media (prefers-reduced-motion: no-preference) { .fb { animation: fbin .2s ease-out; } }
-@keyframes fbin { from { transform: translateY(6px); } to { transform: none; } }
 .diario { width: 100%; display: flex; flex-direction: column; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
 .diario h1 { font: 800 24px/1.2 var(--f-body); }
 .diario ul { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-direction: column; gap: 10px; }
@@ -425,7 +389,6 @@ canvas.rain { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-ev
 .feed { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .feed li { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow-wrap: anywhere; }
 .who { display: flex; align-items: center; gap: 8px; }
-.acts { display: flex; align-items: center; gap: 16px; }
 .cmts { list-style: none; padding: 8px 0 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .prof { display: flex; align-items: center; gap: 16px; }
 .prof > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -1020,8 +983,6 @@ ART.deco = {
   fogo: decoSvg('<ellipse cx="45" cy="84" rx="16" ry="4" fill="var(--areia)"/><path d="M45 82 C28 78 26 58 36 44 C38 54 42 56 44 56 C40 40 46 22 58 12 C56 26 66 34 66 54 C66 72 58 82 45 82Z" fill="var(--fogo)"/><path d="M46 80 C38 78 36 68 41 60 C43 66 46 66 48 64 C47 56 50 50 55 46 C56 56 60 60 59 68 C58 76 53 80 46 80Z" fill="var(--ouro)"/>'),
   vasoGrande: decoSvg('<ellipse cx="45" cy="82" rx="24" ry="5" fill="var(--areia)"/><g transform="translate(17 18) scale(1.75)">' + '<path d="M9 12C3 15 2 20 2 24c0 7 6 10 14 10s14-3 14-10c0-4-1-9-7-12Z" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="9" y="8" width="14" height="5" rx="1.5" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="6" y="3" width="20" height="6" rx="3" fill="var(--ouro-dk)" stroke="var(--tronco)" stroke-width="1.6"/></g>'),
 };
-ART.tendinha = () => '<svg viewBox="0 0 34 30" aria-hidden="true"><path d="M3 27 L17 5 L31 27 Z" fill="var(--tenda)"/><path d="M17 5 L12 27 H22 Z" fill="var(--tenda-dk)"/><path d="M17 5 V1" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/><path d="M17 1.5 L23 3.5 L17 5.5" fill="var(--ouro)"/><path d="M1 27.5 H33" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/></svg>';
-
 /* Cenas do mapa da caminhada: paisagens bíblicas e personagens, em pixels, cores chapadas */
 const G = (x, y, inner, s) => '<g transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')' + (s ? ' scale(' + s + ')' : '') + '">' + inner + '</g>';
 const SV = {
@@ -1063,14 +1024,12 @@ ART.cena = (r, x, y, tipo, u) => {
   return G(x, y, tipo === 'gente' ? gente : marco);
 };
 
-ART.decoOrder = ['tenda', 'palmeira', 'nuvem', 'fogo', 'tabuas', 'vasoGrande'];
-
 /* Faixa da unidade: dunas e grãos caindo */
 ART.banner = () => '<svg class="banner-art" viewBox="0 0 120 80" aria-hidden="true">' +
   '<path d="M0 62 C22 48 40 48 62 60 C80 50 100 48 120 56 V80 H0Z" fill="#1D2D58"/><path d="M0 72 C30 62 54 64 76 72 C92 66 108 66 120 70 V80 H0Z" fill="#26386A"/>' +
   [[22, 12, -20], [48, 26, 15], [74, 8, -30], [96, 30, 10], [36, 40, -10], [86, 46, 25], [108, 14, -15]]
     .map(([x, y, r]) => '<ellipse cx="' + x + '" cy="' + y + '" rx="2.6" ry="4" transform="rotate(' + r + ' ' + x + ' ' + y + ')" fill="#F2C14E"/>').join('') +
-  '<circle cx="100" cy="0" r="0" fill="none"/></svg>';
+  '</svg>';
 
 /* Medalhas de conquista: hexágono com número do nível */
 ART.medalha = (lvl, cor, simbolo) => '<svg class="medalha" viewBox="0 0 64 72" aria-hidden="true">' +
@@ -1095,16 +1054,12 @@ const IC = {
   jornada: '<path d="M5 19c2-6 4-3 7-8s5-2 7-6"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/><circle cx="19" cy="5" r="1.6" fill="currentColor"/>',
   domingo: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
   duvidas: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"/><circle cx="12" cy="16.8" r=".6" fill="currentColor"/>',
-  liga: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
   grupo: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.8 14.2c2.3 0 4 1.3 4.7 4"/>',
   perfil: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   voltar: '<path d="M15 5l-7 7 7 7"/>',
   fechar: '<path d="M6 6l12 12M18 6L6 18"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
-  cadeado: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   livro: '<path d="M4 6c3-1.5 6-1.5 8 1 2-2.5 5-2.5 8-1v12c-3-1.5-6-1.5-8 1-2-2.5-5-2.5-8-1z"/><path d="M12 7v12"/>',
-  repetir: '<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',
-  som: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9c1.5 1.5 1.5 4.5 0 6M18.5 6.5c3 3 3 8 0 11"/>',
   raio: '<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
   escudo: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
 };
@@ -1153,9 +1108,13 @@ function load() {
     o.streak = Object.assign({ count: 0, last: null, best: 0 }, asObj(o.streak));
     o.league = Object.assign({ week: null, div: 0 }, asObj(o.league));
     o.league.div = num(o.league.div, 0, 0, 5);
+    const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+    const fotoOk = v => typeof v === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v);
     ['days', 'xpLog', 'chapLog', 'cultos', 'ebds', 'duvidasLidas', 'perguntas', 'hinos', 'objSel'].forEach(k => { o[k] = asArr(o[k]); });
     ['progress', 'notes', 'chests', 'custom', 'lidos', 'ach', 'gen'].forEach(k => { o[k] = asObj(o[k]); });
-    if (o.group && !Array.isArray(asObj(o.group).feed)) o.group = null;
+    o.days = o.days.filter(isDate);
+    o.xpLog = o.xpLog.filter(x => x && isDate(x.d) && Number.isFinite(Number(x.x))).map(x => ({ d: x.d, x: Number(x.x) }));
+    o.chapLog = o.chapLog.filter(x => x && isDate(x.d) && Number.isFinite(Number(x.c))).map(x => ({ d: x.d, c: Number(x.c) }));
     if (typeof o.nome !== 'string') o.nome = '';
     if (typeof o.objetivo !== 'string') o.objetivo = '';
     o.grains = num(o.grains, 0, 0, 1000000);
@@ -1164,6 +1123,69 @@ function load() {
     o.fonte = num(o.fonte, 18, 14, 26);
     o.goal = [20, 30, 50].includes(Number(o.goal)) ? Number(o.goal) : 30;
     o.offset = num(o.offset, 0, -3650, 3650);
+    o.streak.count = num(o.streak.count, 0, 0, 100000);
+    o.streak.best = num(o.streak.best, 0, 0, 100000);
+    if (!isDate(o.streak.last)) o.streak.last = null;
+    if (!o.lost || !isDate(asObj(o.lost).d)) o.lost = null;
+    else o.lost = { count: num(o.lost.count, 0, 0, 100000), d: o.lost.d };
+    if (!isDate(o.league.week)) o.league.week = null;
+    if (!isDate(o.trialStart)) o.trialStart = null;
+    if (!o.quests || !Array.isArray(asObj(o.quests).list)) o.quests = null;
+    o.reflex = asObj(o.reflex);
+    Object.keys(o.reflex).forEach(k => { if (!Array.isArray(o.reflex[k])) delete o.reflex[k]; });
+    if (o.group) {
+      const g = asObj(o.group);
+      if (typeof g.nome !== 'string' || !isDate(g.start)) o.group = null;
+      else {
+        g.chapAtStart = num(g.chapAtStart, 0, 0, 10000000);
+        g.feed = asArr(g.feed).filter(p => p && typeof p === 'object' && !Array.isArray(p));
+        g.feed.forEach(p => {
+          if (!Array.isArray(p.comments)) p.comments = [];
+          p.comments = p.comments.filter(c => c && typeof c.text === 'string');
+          if (!p.r || typeof p.r !== 'object' || Array.isArray(p.r)) p.r = {};
+          if (!p.mine || typeof p.mine !== 'object' || Array.isArray(p.mine)) p.mine = {};
+          if (!fotoOk(p.foto)) delete p.foto;
+          if (typeof p.text !== 'string') p.text = '';
+          if (typeof p.who !== 'string') p.who = '';
+          if (!isDate(p.d)) p.d = g.start;
+        });
+        o.group = g;
+      }
+    }
+    o.cultos = o.cultos.filter(c => c && typeof c.tema === 'string').map(c => {
+      c.feitos = asArr(c.feitos).filter(i => i === 0 || i === 1 || i === 2 || i === 3 || i === 4);
+      const s = asObj(c.study);
+      s.resumo = typeof s.resumo === 'string' ? s.resumo : '';
+      s.pontos = asArr(s.pontos).map(String);
+      s.versiculos = asArr(s.versiculos).map(String);
+      s.dias = asArr(s.dias).filter(d => d && typeof d === 'object').map(d => ({ titulo: String(d.titulo || ''), referencia: String(d.referencia || ''), pergunta: String(d.pergunta || '') }));
+      c.study = s;
+      if (!isDate(c.data)) c.data = '1970-01-01';
+      if (c.link && !/^https?:\/\//i.test(String(c.link))) c.link = '';
+      return c;
+    });
+    o.ebds = o.ebds.filter(e => e && typeof e.tema === 'string').map(e => {
+      const p = asObj(e.prep);
+      p.contexto = typeof p.contexto === 'string' ? p.contexto : '';
+      p.aplicacao = typeof p.aplicacao === 'string' ? p.aplicacao : '';
+      p.versiculos = asArr(p.versiculos).map(String);
+      p.perguntas = asArr(p.perguntas).map(String);
+      p.roteiro = asArr(p.roteiro).filter(r => r && typeof r === 'object');
+      e.prep = p;
+      if (!isDate(e.data)) e.data = '1970-01-01';
+      return e;
+    });
+    o.hinos = o.hinos.filter(x => x && typeof x.id === 'string').map(x => ({ id: x.id, h: typeof x.h === 'string' ? x.h : '', n: num(x.n, 1, 1, 999), t: typeof x.t === 'string' ? x.t.slice(0, 80) : '', fav: !!x.fav }));
+    o.perguntas = o.perguntas.filter(p => p && typeof p.q === 'string').map(p => ({ id: typeof p.id === 'string' ? p.id : 'p', q: p.q, cat: typeof p.cat === 'string' ? p.cat : '', biblia: typeof p.biblia === 'string' ? p.biblia : '', refs: typeof p.refs === 'string' ? p.refs : '', trad: asObj(p.trad), comum: typeof p.comum === 'string' ? p.comum : '', ia: !!p.ia }));
+    Object.keys(o.lidos).forEach(k => { if (!isDate(o.lidos[k])) delete o.lidos[k]; });
+    Object.keys(o.progress).forEach(k => { o.progress[k] = num(o.progress[k], 0, 0, 100000); });
+    Object.keys(o.gen).forEach(k => {
+      const g = o.gen[k];
+      if (!g || typeof g !== 'object' || Array.isArray(g)) { delete o.gen[k]; return; }
+      if (String(k).startsWith('dev:') && (!Array.isArray(g.meditacao) || !Array.isArray(g.perguntas))) delete o.gen[k];
+    });
+    Object.keys(o.custom).forEach(k => { const t = o.custom[k]; if (!t || !Array.isArray(t.licoes)) delete o.custom[k]; });
+    if (typeof o.lastRead !== 'string' || !/^\d{1,2}:\d{1,3}$/.test(o.lastRead)) o.lastRead = '';
     if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; }
     return o;
   } catch (e) {}
@@ -1191,12 +1213,11 @@ const now = () => new Date(Date.now() + S.offset * DAY);
 const pad = n => String(n).padStart(2, '0');
 const keyOf = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const todayK = () => keyOf(now());
-const parseK = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const parseK = k => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(k || '')); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(NaN); };
 const diff = (a, b) => Math.round((parseK(b) - parseK(a)) / DAY);
 const addDays = (k, n) => keyOf(new Date(parseK(k).getTime() + n * DAY + 3600000));
 const fmt = (k, o) => parseK(k).toLocaleDateString('pt-BR', o || { day: 'numeric', month: 'long' });
-const weekStart = () => { const d = now(); return keyOf(new Date(d.getTime() - d.getDay() * DAY)); };
-const lastSunday = weekStart;
+const weekStart = () => { const d = now(); return keyOf(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay())); };
 
 /* Utilidades */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1208,17 +1229,6 @@ function safeHref(u) {
     if (x.protocol !== 'http:' && x.protocol !== 'https:') return '';
     return esc(x.href);
   } catch (e) { return ''; }
-}
-function noteKey(id, idx) { return id + ':' + idx; }
-function lessonNote(id, idx) {
-  const k = noteKey(id, idx);
-  if (S.notes[k] != null && S.notes[k] !== '') return S.notes[k];
-  return S.notes[id + idx] || '';
-}
-function setLessonNote(id, idx, text) {
-  S.notes[noteKey(id, idx)] = text;
-  const old = id + idx;
-  if (old !== noteKey(id, idx) && S.notes[old] != null) delete S.notes[old];
 }
 const $ = id => document.getElementById(id);
 const val = id => ($(id) ? $(id).value.trim() : '');
@@ -1291,7 +1301,7 @@ function checkStreak() {
   const st = S.streak, t = todayK();
   if (!st.last || !st.count) return;
   const missed = diff(st.last, t) - 1;
-  if (missed < 1) return;
+  if (!(missed >= 1)) return;
   if (missed <= S.protetores) {
     S.protetores -= missed; st.last = addDays(t, -1);
     ui.notice = (missed === 1 ? 'Você não estudou ontem' : 'Você ficou ' + missed + ' dias sem estudar') + ', e ' + plural(missed, 'protetor salvou', 'protetores salvaram') + ' sua ofensiva de ' + plural(st.count, 'dia', 'dias') + '.';
@@ -1485,6 +1495,8 @@ const CURADOS = { 'Romanos': 'romanos', 'João': 'joao', 'Provérbios': 'proverb
 /* Leitura de referências: "João 3", "Mateus 6:5-15", "2 Samuel 11-12", "Gênesis 50; Êxodo 1-2" */
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const ALIAS = { 'salmo': 'Salmos', 'sl': 'Salmos', 'cantico dos canticos': 'Cantares', 'canticos': 'Cantares', 'apocalipse de joao': 'Apocalipse', 'atos dos apostolos': 'Atos', 'jo': 'Jó', 'mt': 'Mateus', 'mc': 'Marcos', 'lc': 'Lucas', 'jo.': 'João', 'rm': 'Romanos', 'gn': 'Gênesis', 'ex': 'Êxodo', 'sabedoria': null };
+/* "1 Jo." é 1 João. "Jo" sozinho continua sendo Jó. */
+const NUMAB = { jo: 'João', co: 'Coríntios', pe: 'Pedro', ts: 'Tessalonicenses', tm: 'Timóteo', sm: 'Samuel', rs: 'Reis', cr: 'Crônicas', cor: 'Coríntios' };
 const BOOK_IX = {};
 LIVROS.forEach(([n], i) => { BOOK_IX[norm(n)] = i; });
 Object.entries(ALIAS).forEach(([k, v]) => { if (v) BOOK_IX[k] = LIVROS.findIndex(l => l[0] === v); });
@@ -1516,6 +1528,11 @@ function bookIndex(raw) {
   const noDots = tidy(trimmed.replace(/\./g, ''));
   if (BOOK_IX[withDots] != null) return BOOK_IX[withDots];
   if (BOOK_IX[noDots] != null) return BOOK_IX[noDots];
+  const m = noDots.match(/^([123]) ([a-z]+)$/);
+  if (m && NUMAB[m[2]]) {
+    const full = tidy(m[1] + ' ' + NUMAB[m[2]]);
+    if (BOOK_IX[full] != null) return BOOK_IX[full];
+  }
   return null;
 }
 const refLabel = s => LIVROS[s.b][0] + ' ' + s.c + (s.v1 ? ':' + s.v1 + (s.v2 && s.v2 !== s.v1 ? '-' + s.v2 : '') : '');
@@ -1781,15 +1798,6 @@ function ranking() {
   const rows = MEMBROS.map(m => ({ nome: m.nome, caps: Math.floor(m.base + m.rate * (days - 1)), ex: true, dias: diasDe(m) }));
   rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true, dias: S.days.filter(k => k >= g.start).length });
   return rows.sort((a, b) => b.caps - a.caps || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
-}
-function capsDaSemanaGrupo() {
-  const g = S.group;
-  if (!g) return 0;
-  const ws = weekStart();
-  if (g.start >= ws) return ranking().reduce((a, r) => a + r.caps, 0);
-  const dias = diff(ws, todayK()) + 1;
-  const deles = MEMBROS.reduce((a, m) => a + Math.round(m.rate * dias), 0);
-  return weekChaps() + deles;
 }
 function postFeed(text, ref, extra) {
   if (!S.group) return;
@@ -2084,7 +2092,12 @@ async function devIA(L) {
     const vv = r.versiculo ? versesOf(String(r.versiculo)) : [];
     const dev = { tema: String(r.tema || l.titulo), verso: vv.length ? { ref: vref(vv[0]), t: vv[0].t } : versoChave(L.vs), meditacao: med, perguntas: pq, oracao: String(r.oracao || ''), hoje: String(r.para_hoje || ''), ia: true };
     S.gen[key] = dev; save();
-    if (ui.L === L) { L.dev = dev; L.devCarregando = false; if (L.steps[L.i] && L.steps[L.i].k !== 'reflita') renderLesson(); }
+    /* Quem tocou em "Seguir sem esperar" já está lendo o texto local. Não troca no meio. */
+    if (ui.L === L && !L.dev) {
+      L.dev = dev; L.devCarregando = false;
+      const k = L.steps[L.i] && L.steps[L.i].k;
+      if (k && k !== 'leia') renderLesson();
+    }
   } catch (e) {
     if (ui.L === L && !L.dev) { L.dev = devLocal(t, L.idx, L.vs); L.devCarregando = false; renderLesson(); }
   }
@@ -2350,7 +2363,10 @@ function vBiblia() {
   const B = ui.bib;
   if (!B) {
     const f = norm(ui.bibF || '');
-    if (S.lastRead) { const [b, c] = S.lastRead.split(':').map(Number); h += '<button class="culto-row" data-a="bibGo" data-b="' + b + '" data-c="' + c + '"><span class="cr-ic">' + icon('livro') + '</span><span><b>Continuar em ' + LIVROS[b][0] + ' ' + c + '</b><small>Onde você parou</small></span><span class="chev">›</span></button>'; }
+    if (typeof S.lastRead === 'string') {
+      const [b, c] = S.lastRead.split(':').map(Number);
+      if (LIVROS[b] && c >= 1 && c <= LIVROS[b][1]) h += '<button class="culto-row" data-a="bibGo" data-b="' + b + '" data-c="' + c + '"><span class="cr-ic">' + icon('livro') + '</span><span><b>Continuar em ' + LIVROS[b][0] + ' ' + c + '</b><small>Onde você parou</small></span><span class="chev">›</span></button>';
+    }
     h += '<input id="bib-f" class="search" type="search" placeholder="Buscar livro" value="' + esc(ui.bibF || '') + '" aria-label="Buscar livro">';
     [['Antigo Testamento', 0, NT], ['Novo Testamento', NT, 66]].forEach(([nome, a, z]) => {
       const ls = LIVROS.slice(a, z).map((l, i) => [l, a + i]).filter(([l]) => !f || norm(l[0]).includes(f));
@@ -2446,30 +2462,16 @@ function quizHead(s) {
 }
 function vQuiz(q, s) {
   let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">' + q.t + '</h1>' + (q.sub ? '<p class="lede">' + q.sub + '</p>' : '');
-  if (q.multi) {
-    const sel = S.quiz.trilhas;
-    ['Livro', 'Personagem', 'Tema'].forEach(tp => {
-      h += '<h3 class="grp">' + { Livro: 'Um livro', Personagem: 'Um personagem', Tema: 'Um tema' }[tp] + '</h3><div class="cards2">';
-      TRILHAS.filter(t => t.tipo === tp).forEach(t => {
-        const i = sel.indexOf(t.id);
-        h += '<button class="pick' + (i > -1 ? ' on' : '') + '" data-a="pickTrail" data-id="' + t.id + '" aria-pressed="' + (i > -1) + '">' + (i > -1 ? '<em class="ord">' + (i + 1) + '</em>' : '') + '<b>' + t.nome + '</b><small>' + t.desc + '</small><span class="muted tnum">' + plural(t.licoes.length, 'lição', 'lições') + '</span></button>';
-      });
-      h += '</div>';
-    });
-    h += '<div class="sticky-cta"><button class="btn" data-a="next"' + (sel.length ? '' : ' disabled') + '>Continuar</button></div>';
-  } else {
-    h += '<div class="choices">';
-    q.opts.forEach(o => {
-      if (o && o.v) {
-        h += '<button class="choice rich' + (S.quiz[q.k] === o.v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(o.v) + '"><span class="pl-l"><b>' + esc(o.l) + (o.tag ? ' <span class="tag-in">' + o.tag + '</span>' : '') + '</b><small>' + esc(o.d) + '</small></span></button>';
-        return;
-      }
-      const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
-      h += '<button class="choice' + (S.quiz[q.k] === v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
-    });
-    h += '</div>';
-  }
-  return h + '</main>';
+  h += '<div class="choices">';
+  q.opts.forEach(o => {
+    if (o && o.v) {
+      h += '<button class="choice rich' + (S.quiz[q.k] === o.v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(o.v) + '"><span class="pl-l"><b>' + esc(o.l) + (o.tag ? ' <span class="tag-in">' + o.tag + '</span>' : '') + '</b><small>' + esc(o.d) + '</small></span></button>';
+      return;
+    }
+    const v = Array.isArray(o) ? o[0] : o, label = Array.isArray(o) ? o[1] : o;
+    h += '<button class="choice' + (S.quiz[q.k] === v ? ' sel' : '') + '" data-a="answer" data-k="' + q.k + '" data-v="' + esc(v) + '">' + esc(label) + '</button>';
+  });
+  return h + '</div></main>';
 }
 function vResultado() {
   const q = S.quiz, first = trilha(q.trilhas[0]);
@@ -2508,7 +2510,7 @@ function vPaywall() {
   return h;
 }
 function vConvite() {
-  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms(true) + '<button class="btn sec" data-a="finish">Agora não</button></main>';
+  return '<main class="screen">' + ART.mani('mani m-md row', 'joinha', 'Quem lê junto não para.') + '<h1 class="h1">Estude com a sua igreja</h1><p class="lede">Crie um grupo para a sua célula ou entre com o código de um irmão.</p>' + vGroupForms() + '<button class="btn sec" data-a="finish">Agora não</button></main>';
 }
 
 /* ---------- Domingo ---------- */
@@ -2616,7 +2618,7 @@ function vLigaBody() {
 }
 function vGrupoBody() {
   const g = S.group;
-  if (!g) return ART.mani('mani m-sm row', 'joinha', 'Quem lê junto não para.') + '<p class="lede">Crie um grupo com a sua célula, família ou ministério: desafio com prazo, check-in todo dia com foto, ranking e reações.</p>' + vGroupForms(false);
+  if (!g) return ART.mani('mani m-sm row', 'joinha', 'Quem lê junto não para.') + '<p class="lede">Crie um grupo com a sua célula, família ou ministério: desafio com prazo, check-in todo dia com foto, ranking e reações.</p>' + vGroupForms();
   g.feed.forEach(normPost);
   const d = desafio(g.desafio) || DESAFIOS[0], dia = Math.min(d.dias, Math.max(1, diff(g.start, todayK()) + 1)), meus = Math.max(0, S.chapters - g.chapAtStart);
   const convite = 'Entre no meu grupo "' + g.nome + '" no Manna para o desafio ' + d.nome + '. Código: ' + g.code;
@@ -2674,7 +2676,7 @@ function reduzFoto(file) {
     img.src = url;
   });
 }
-function vGroupForms(onb) {
+function vGroupForms() {
   const m = ui.groupMode;
   let h = '<div class="choices"><button class="choice' + (m === 'criar' ? ' sel' : '') + '" data-a="gmode" data-m="criar"><span class="pl-l"><b>Criar um grupo</b><small>Célula, família, ministério ou amigos</small></span></button>' +
     '<button class="choice' + (m === 'entrar' ? ' sel' : '') + '" data-a="gmode" data-m="entrar"><span class="pl-l"><b>Entrar com um código</b><small>Recebeu o convite de alguém</small></span></button></div>';
@@ -2849,7 +2851,7 @@ const A = {
   plan(el) { S.plano = el.dataset.id; save(); keep(); },
   trial() { go(() => { S.trialStart = todayK(); S.step++; }); window.scrollTo(0, 0); },
   finish() { go(() => { S.onboarded = true; ui.tab = 'jornada'; }); window.scrollTo(0, 0); },
-  tab(el) { ui.tab = el.dataset.tab; ui.aiErr = ''; ui.pop = null; ui.confirmReset = false; window.scrollTo(0, 0); render(); },
+  tab(el) { ui.tab = el.dataset.tab; ui.aiErr = ''; ui.confirmReset = false; window.scrollTo(0, 0); render(); },
   open(el) { openOv(el.dataset.ov, el.dataset.id); },
   close() { ui.ov = null; if (aiCtl) aiCtl.abort(); ui.busy = false; window.scrollTo(0, 0); render(); },
   dismiss() { ui.notice = ''; keep(); },
@@ -2857,7 +2859,7 @@ const A = {
   sheetStart(el) { ui.sheet = null; startLesson(curTrail(), Number(el.dataset.i), el.dataset.r === '1'); window.scrollTo(0, 0); },
   closeSheet() { ui.ckFoto = null; ui.sheet = null; keep(); },
   closeModal() { ui.modal = null; keep(); },
-  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.pop = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
+  goTrail(el) { if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id); S.cur = el.dataset.id; ui.sheet = null; ui.ov = null; ui.tab = 'jornada'; save(); window.scrollTo(0, 0); render(); },
   addMeta(el) {
     if (S.quiz.trilhas.length >= MAX_METAS) { toast('Você já tem ' + MAX_METAS + ' metas.'); return; }
     if (!S.quiz.trilhas.includes(el.dataset.id)) S.quiz.trilhas.push(el.dataset.id);
@@ -3119,10 +3121,8 @@ document.addEventListener('keydown', e => {
     if (sel) sel.focus();
     return;
   }
-  if (ui.L && !e.target.matches('textarea,input')) {
-    const L = ui.L, s = L.steps[L.i];
-    if (s && s.k === 'mc' && !L.checked && /^[1-4]$/.test(e.key) && s.opts[Number(e.key) - 1]) { L.pick = s.opts[Number(e.key) - 1]; renderLesson(); }
-    if (e.key === 'Enter') { const b = document.querySelector('.lfoot .btn:not([disabled])'); if (b) { e.preventDefault(); b.click(); } }
+  if (ui.L && e.key === 'Enter' && !e.target.matches('textarea,input')) {
+    const b = document.querySelector('.lfoot .btn:not([disabled])'); if (b) { e.preventDefault(); b.click(); }
   }
 });
 document.addEventListener('submit', e => { e.preventDefault(); const f = e.target.dataset.f; if (F[f]) F[f](e.target); });

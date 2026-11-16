@@ -135,7 +135,10 @@ function vBiblia() {
   const B = ui.bib;
   if (!B) {
     const f = norm(ui.bibF || '');
-    if (S.lastRead) { const [b, c] = S.lastRead.split(':').map(Number); h += '<button class="culto-row" data-a="bibGo" data-b="' + b + '" data-c="' + c + '"><span class="cr-ic">' + icon('livro') + '</span><span><b>Continuar em ' + LIVROS[b][0] + ' ' + c + '</b><small>Onde você parou</small></span><span class="chev">›</span></button>'; }
+    if (typeof S.lastRead === 'string') {
+      const [b, c] = S.lastRead.split(':').map(Number);
+      if (LIVROS[b] && c >= 1 && c <= LIVROS[b][1]) h += '<button class="culto-row" data-a="bibGo" data-b="' + b + '" data-c="' + c + '"><span class="cr-ic">' + icon('livro') + '</span><span><b>Continuar em ' + LIVROS[b][0] + ' ' + c + '</b><small>Onde você parou</small></span><span class="chev">›</span></button>';
+    }
     h += '<input id="bib-f" class="search" type="search" placeholder="Buscar livro" value="' + esc(ui.bibF || '') + '" aria-label="Buscar livro">';
     [['Antigo Testamento', 0, NT], ['Novo Testamento', NT, 66]].forEach(([nome, a, z]) => {
       const ls = LIVROS.slice(a, z).map((l, i) => [l, a + i]).filter(([l]) => !f || norm(l[0]).includes(f));
