@@ -32,3 +32,13 @@ Never cut: validation at trust boundaries, error handling that prevents data los
 (Yes, this file also applies to agents working on the ponytail repo itself. Especially to them.)
 
 Source: https://github.com/DietrichGebert/ponytail (MIT license).
+
+## How these agent tools fit together
+
+Ponytail's minimal-change rule wins for code size. Superpowers governs the plan, test, and review process. When they conflict on scope, keep the smaller change that still finishes the plan, the tests, and the review.
+
+UI/UX Pro Max (CLI 2.15.0) is installed for Cursor under `.cursor/skills/`. From the repo root, search with `python3 .cursor/skills/ui-ux-pro-max/scripts/search.py`. Source: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill (MIT license, file `.cursor/skills/ui-ux-pro-max/LICENSE`). The bundled `ui-styling` skill keeps its own Apache-2.0 `LICENSE.txt`.
+
+Superpowers skills are release v7.0.2, copied into `.cursor/skills/` so cloud agents can read them. Source: https://github.com/obra/superpowers (MIT license). The license file is `.cursor/skills/using-superpowers/LICENSE` and covers every Superpowers skill in `.cursor/skills/`. There is no repo file that turns telemetry off. The brainstorming visual companion loads a remote logo unless the environment variable `SUPERPOWERS_DISABLE_TELEMETRY` is set to a true value (`1`, `true`, or `yes`). `DISABLE_TELEMETRY` and `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` do the same.
+
+Cloudflare Security Audit is at `.cursor/skills/security-audit`. Source: https://github.com/cloudflare/security-audit-skill (MIT license, file `.cursor/skills/security-audit/LICENSE`).
