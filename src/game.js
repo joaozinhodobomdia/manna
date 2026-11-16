@@ -283,7 +283,12 @@ async function devIA(L) {
     const vv = r.versiculo ? versesOf(String(r.versiculo)) : [];
     const dev = { tema: String(r.tema || l.titulo), verso: vv.length ? { ref: vref(vv[0]), t: vv[0].t } : versoChave(L.vs), meditacao: med, perguntas: pq, oracao: String(r.oracao || ''), hoje: String(r.para_hoje || ''), ia: true };
     S.gen[key] = dev; save();
-    if (ui.L === L) { L.dev = dev; L.devCarregando = false; if (L.steps[L.i] && L.steps[L.i].k !== 'reflita') renderLesson(); }
+    /* Quem tocou em "Seguir sem esperar" já está lendo o texto local. Não troca no meio. */
+    if (ui.L === L && !L.dev) {
+      L.dev = dev; L.devCarregando = false;
+      const k = L.steps[L.i] && L.steps[L.i].k;
+      if (k && k !== 'leia') renderLesson();
+    }
   } catch (e) {
     if (ui.L === L && !L.dev) { L.dev = devLocal(t, L.idx, L.vs); L.devCarregando = false; renderLesson(); }
   }

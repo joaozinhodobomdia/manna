@@ -8,6 +8,8 @@ const CURADOS = { 'Romanos': 'romanos', 'João': 'joao', 'Provérbios': 'proverb
 /* Leitura de referências: "João 3", "Mateus 6:5-15", "2 Samuel 11-12", "Gênesis 50; Êxodo 1-2" */
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 const ALIAS = { 'salmo': 'Salmos', 'sl': 'Salmos', 'cantico dos canticos': 'Cantares', 'canticos': 'Cantares', 'apocalipse de joao': 'Apocalipse', 'atos dos apostolos': 'Atos', 'jo': 'Jó', 'mt': 'Mateus', 'mc': 'Marcos', 'lc': 'Lucas', 'jo.': 'João', 'rm': 'Romanos', 'gn': 'Gênesis', 'ex': 'Êxodo', 'sabedoria': null };
+/* "1 Jo." é 1 João. "Jo" sozinho continua sendo Jó. */
+const NUMAB = { jo: 'João', co: 'Coríntios', pe: 'Pedro', ts: 'Tessalonicenses', tm: 'Timóteo', sm: 'Samuel', rs: 'Reis', cr: 'Crônicas', cor: 'Coríntios' };
 const BOOK_IX = {};
 LIVROS.forEach(([n], i) => { BOOK_IX[norm(n)] = i; });
 Object.entries(ALIAS).forEach(([k, v]) => { if (v) BOOK_IX[k] = LIVROS.findIndex(l => l[0] === v); });
@@ -39,6 +41,11 @@ function bookIndex(raw) {
   const noDots = tidy(trimmed.replace(/\./g, ''));
   if (BOOK_IX[withDots] != null) return BOOK_IX[withDots];
   if (BOOK_IX[noDots] != null) return BOOK_IX[noDots];
+  const m = noDots.match(/^([123]) ([a-z]+)$/);
+  if (m && NUMAB[m[2]]) {
+    const full = tidy(m[1] + ' ' + NUMAB[m[2]]);
+    if (BOOK_IX[full] != null) return BOOK_IX[full];
+  }
   return null;
 }
 const refLabel = s => LIVROS[s.b][0] + ' ' + s.c + (s.v1 ? ':' + s.v1 + (s.v2 && s.v2 !== s.v1 ? '-' + s.v2 : '') : '');

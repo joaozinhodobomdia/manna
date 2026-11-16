@@ -104,15 +104,6 @@ function ranking() {
   rows.push({ nome: S.nome || 'Você', caps: Math.max(0, S.chapters - g.chapAtStart), me: true, dias: S.days.filter(k => k >= g.start).length });
   return rows.sort((a, b) => b.caps - a.caps || (a.me ? -1 : b.me ? 1 : a.nome.localeCompare(b.nome, 'pt')));
 }
-function capsDaSemanaGrupo() {
-  const g = S.group;
-  if (!g) return 0;
-  const ws = weekStart();
-  if (g.start >= ws) return ranking().reduce((a, r) => a + r.caps, 0);
-  const dias = diff(ws, todayK()) + 1;
-  const deles = MEMBROS.reduce((a, m) => a + Math.round(m.rate * dias), 0);
-  return weekChaps() + deles;
-}
 function postFeed(text, ref, extra) {
   if (!S.group) return;
   S.group.feed.unshift(Object.assign({ id: uid(), who: S.nome || 'Você', me: true, d: todayK(), text, ref: ref || '', r: { amem: 0, gloria: 0, orando: 0 }, mine: {}, comments: [] }, extra || {}));

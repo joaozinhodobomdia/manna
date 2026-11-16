@@ -58,8 +58,6 @@ ART.deco = {
   fogo: decoSvg('<ellipse cx="45" cy="84" rx="16" ry="4" fill="var(--areia)"/><path d="M45 82 C28 78 26 58 36 44 C38 54 42 56 44 56 C40 40 46 22 58 12 C56 26 66 34 66 54 C66 72 58 82 45 82Z" fill="var(--fogo)"/><path d="M46 80 C38 78 36 68 41 60 C43 66 46 66 48 64 C47 56 50 50 55 46 C56 56 60 60 59 68 C58 76 53 80 46 80Z" fill="var(--ouro)"/>'),
   vasoGrande: decoSvg('<ellipse cx="45" cy="82" rx="24" ry="5" fill="var(--areia)"/><g transform="translate(17 18) scale(1.75)">' + '<path d="M9 12C3 15 2 20 2 24c0 7 6 10 14 10s14-3 14-10c0-4-1-9-7-12Z" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="9" y="8" width="14" height="5" rx="1.5" fill="var(--ouro)" stroke="var(--tronco)" stroke-width="1.6"/><rect x="6" y="3" width="20" height="6" rx="3" fill="var(--ouro-dk)" stroke="var(--tronco)" stroke-width="1.6"/></g>'),
 };
-ART.tendinha = () => '<svg viewBox="0 0 34 30" aria-hidden="true"><path d="M3 27 L17 5 L31 27 Z" fill="var(--tenda)"/><path d="M17 5 L12 27 H22 Z" fill="var(--tenda-dk)"/><path d="M17 5 V1" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/><path d="M17 1.5 L23 3.5 L17 5.5" fill="var(--ouro)"/><path d="M1 27.5 H33" stroke="var(--tenda-dk)" stroke-width="2" stroke-linecap="round"/></svg>';
-
 /* Cenas do mapa da caminhada: paisagens bíblicas e personagens, em pixels, cores chapadas */
 const G = (x, y, inner, s) => '<g transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')' + (s ? ' scale(' + s + ')' : '') + '">' + inner + '</g>';
 const SV = {
@@ -101,14 +99,12 @@ ART.cena = (r, x, y, tipo, u) => {
   return G(x, y, tipo === 'gente' ? gente : marco);
 };
 
-ART.decoOrder = ['tenda', 'palmeira', 'nuvem', 'fogo', 'tabuas', 'vasoGrande'];
-
 /* Faixa da unidade: dunas e grãos caindo */
 ART.banner = () => '<svg class="banner-art" viewBox="0 0 120 80" aria-hidden="true">' +
   '<path d="M0 62 C22 48 40 48 62 60 C80 50 100 48 120 56 V80 H0Z" fill="#1D2D58"/><path d="M0 72 C30 62 54 64 76 72 C92 66 108 66 120 70 V80 H0Z" fill="#26386A"/>' +
   [[22, 12, -20], [48, 26, 15], [74, 8, -30], [96, 30, 10], [36, 40, -10], [86, 46, 25], [108, 14, -15]]
     .map(([x, y, r]) => '<ellipse cx="' + x + '" cy="' + y + '" rx="2.6" ry="4" transform="rotate(' + r + ' ' + x + ' ' + y + ')" fill="#F2C14E"/>').join('') +
-  '<circle cx="100" cy="0" r="0" fill="none"/></svg>';
+  '</svg>';
 
 /* Medalhas de conquista: hexágono com número do nível */
 ART.medalha = (lvl, cor, simbolo) => '<svg class="medalha" viewBox="0 0 64 72" aria-hidden="true">' +
@@ -133,16 +129,12 @@ const IC = {
   jornada: '<path d="M5 19c2-6 4-3 7-8s5-2 7-6"/><circle cx="5" cy="19" r="1.6" fill="currentColor"/><circle cx="19" cy="5" r="1.6" fill="currentColor"/>',
   domingo: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
   duvidas: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.4"/><circle cx="12" cy="16.8" r=".6" fill="currentColor"/>',
-  liga: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
   grupo: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.8 14.2c2.3 0 4 1.3 4.7 4"/>',
   perfil: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   voltar: '<path d="M15 5l-7 7 7 7"/>',
   fechar: '<path d="M6 6l12 12M18 6L6 18"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
-  cadeado: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   livro: '<path d="M4 6c3-1.5 6-1.5 8 1 2-2.5 5-2.5 8-1v12c-3-1.5-6-1.5-8 1-2-2.5-5-2.5-8-1z"/><path d="M12 7v12"/>',
-  repetir: '<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2"/><path d="M20 4v5h-5M4 20v-5h5"/>',
-  som: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9c1.5 1.5 1.5 4.5 0 6M18.5 6.5c3 3 3 8 0 11"/>',
   raio: '<path d="M13 2L5 14h6l-1 8 8-12h-6z"/>',
   escudo: '<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>',
 };
