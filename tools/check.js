@@ -63,7 +63,9 @@ function boot(saved) {
   for (const f of files) vm.runInContext(fs.readFileSync(path.join(root, 'src', f), 'utf8'), context, { filename: f });
   vm.runInContext(`globalThis.T = {
     parseRef, safeHref, weekStart, addDays, todayK, makeGroup, finishLesson, ranking,
-    vBiblia, vJornada, vDomingo, vDuvidas, vGrupoTab, vPerfil, vLoja, vHinario, vCulto, vEbd,
+    vBiblia, vJornada, vDomingo, vDuvidas, vGrupoTab, vPerfil, vLoja, vHinario, vCulto, vEbd, vOnboarding, vLessonScreen, vPlus, vLeituraFocada, vIgreja, vQuizSug,
+    MANNA, plusAtivo, iniciarTeste, gastarIa, eRecursoPlus, salaDe, DEV_STEPS,
+    perfilIgreja, termosBuscaIgreja, igrejasCompativeis, urlMapaIgreja, BASE_IGREJAS, pontuarIgreja,
     livro: i => LIVROS[i][0],
     get S() { return S; },
     get ui() { return ui; },
@@ -147,6 +149,72 @@ if (quebrado) {
 
 try { boot('não é json'); ok('json inválido abre do zero', true); }
 catch (e) { failed++; console.error('FALHOU json inválido', e); }
+
+const preco = boot(null);
+eq('preços ainda não definidos', preco.MANNA.precos, { mensal: 'R$ --', anual: 'R$ --', familia: 'R$ --' });
+eq('whatsapp ainda sem número', preco.MANNA.whatsapp, '');
+eq('devocional em quatro passos', preco.DEV_STEPS.map(s => s.n), ['Citação', 'Passagem', 'Devocional', 'Oração']);
+const semPaywall = html => ['R$ 89,90', 'R$ 9,90', 'R$ 149,90', 'R$ 7,49', 'Começar 7 dias grátis'].every(t => String(html).indexOf(t) === -1);
+let onbLimpo = true;
+for (let i = 0; i < 16; i++) { preco.S.step = i; if (!semPaywall(preco.vOnboarding())) onbLimpo = false; }
+ok('onboarding sem paywall obrigatório', onbLimpo);
+ok('tela Plus usa placeholder', preco.vPlus().indexOf('R$ --') !== -1 && semPaywall(preco.vPlus()));
+preco.ui.L = {
+  id: 'joao', idx: 0, review: false, steps: preco.DEV_STEPS, i: 0, phase: 'steps', t0: Date.now(),
+  lido: false, orou: false, checks: {}, vs: [{ b: 42, c: 1, v: 1, t: 'No princípio era o Verbo' }],
+  dev: { tema: 'O Verbo', verso: { ref: 'João 1:1', t: 'No princípio era o Verbo' }, meditacao: ['Medite.'], perguntas: ['O que ficou?'], oracao: 'Amém.', hoje: 'Ore por alguém.', ia: false },
+};
+ok('devocional sem paywall', semPaywall(preco.vLessonScreen()) && preco.vLessonScreen().indexOf('Citação') !== -1);
+const foco = preco.vLeituraFocada({ ref: 'Gênesis 1:1', t: 'No princípio criou Deus os céus e a terra.', i: 0, n: 31 });
+ok('leitura focada sem paywall', foco.indexOf('Próximo versículo') !== -1 && semPaywall(foco));
+ok('plano longo é Plus e João continua grátis', preco.eRecursoPlus('plano:biblia1ano') && !preco.eRecursoPlus('joao'));
+ok('post antigo entra na discussão', preco.salaDe({ text: 'oi' }) === 'discussao' && preco.salaDe({ sala: 'oracao' }) === 'oracao');
+ok('três perguntas grátis e a quarta trava', preco.gastarIa() && preco.gastarIa() && preco.gastarIa() && !preco.gastarIa());
+preco.iniciarTeste('anual');
+ok('teste de 7 dias libera a próxima pergunta', preco.plusAtivo() && preco.gastarIa());
+
+const antigo = boot({
+  v: 2, onboarded: true, nome: 'Ana', xp: 40,
+  streak: { count: 9, last: '2026-11-26', best: 12 },
+  progress: { joao: 3 },
+  trialStart: '2026-11-20', plano: 'anual',
+  group: { nome: 'Casa', start: '2026-11-16', chapAtStart: 0, feed: [{ id: 'p1', who: 'Ana', d: '2026-11-16', text: 'leitura antiga' }] },
+});
+ok('dados antigos continuam', antigo.S.nome === 'Ana' && antigo.S.progress.joao === 3 && antigo.S.streak.count === 9 && antigo.S.group.feed.length === 1);
+ok('teste antigo ainda no prazo vira Plus', antigo.plusAtivo());
+ok('perfil antigo não trava o app', antigo.S.onboarded && semPaywall(antigo.vPerfil()) && semPaywall(antigo.vJornada()));
+const vencido = boot({ v: 2, onboarded: true, nome: 'Bia', trialStart: '2020-01-01', streak: { count: 2, last: '2026-11-25', best: 2 } });
+ok('teste vencido não trava', vencido.S.onboarded && !vencido.plusAtivo() && semPaywall(vencido.vPerfil()));
+preco.S.iaPermitida = false;
+ok('ia revogada não gasta mesmo no Plus', preco.gastarIa() === false);
+
+const perfil = { denom: 'Batista', tradicao: 'batista', celula: 'Célula', momento: 'De 1 a 5 anos', objetivo: 'Quero culto jovem e ministério infantil para a família', interesses: ['escola'] };
+eq('termos saem do perfil, sem igreja inventada', preco.termosBuscaIgreja(perfil), 'igreja Batista culto jovem ministério infantil célula escola bíblica');
+const exemplos = [
+  { nome: 'Comunidade Exemplo', denoms: ['Batista'], tradicao: 'batista', tags: ['celula', 'ebd'], exemplo: true },
+  { nome: 'Salão Exemplo', denoms: ['Metodista'], tags: [], exemplo: true },
+];
+const rank = preco.igrejasCompativeis(perfil, exemplos);
+eq('exemplo compatível fica na frente', rank.map(x => x.nome), ['Comunidade Exemplo']);
+ok('frase de porquê', rank[0].porque.indexOf('denominação') !== -1 && rank[0].exemplo === true);
+ok('base vazia não inventa igreja', preco.igrejasCompativeis(perfil, preco.BASE_IGREJAS).length === 0);
+const antes = JSON.stringify(preco.S);
+const link = preco.urlMapaIgreja('google', 'igreja Batista', 'Centro', { lat: -23.5501, lng: -46.6339 });
+ok('mapa não grava localização', JSON.stringify(preco.S) === antes);
+ok('link é só o Google Maps', link.indexOf('https://www.google.com/maps/search/?api=1&query=') === 0);
+ok('link da Apple é só o Apple Maps', preco.urlMapaIgreja('apple', 'igreja Batista', '', null).indexOf('https://maps.apple.com/?q=') === 0);
+preco.S.quiz.denom = 'Batista';
+preco.S.quiz.celula = 'Célula';
+const ig = preco.vIgreja();
+ok('tela da igreja não inventa nome e não cobra', ig.indexOf('Comunidade Exemplo') === -1 && ig.indexOf('não fica salva') !== -1 && semPaywall(ig) && ig.indexOf('Manna Plus') !== -1);
+const livre = boot(null);
+livre.S.quiz.trilhas = [];
+livre.S.objSel = ['biblia'];
+livre.S.objetivo = 'Ler a Bíblia toda';
+livre.ui.sug = null;
+livre.ui.sugInit = false;
+livre.vQuizSug(6);
+ok('onboarding grátis não coloca plano longo sozinho', livre.S.quiz.trilhas.length > 0 && !livre.S.quiz.trilhas.some(id => livre.eRecursoPlus(id)));
 
 if (failed) { console.error(failed, 'falha(s)'); process.exit(1); }
 console.log('tudo certo');

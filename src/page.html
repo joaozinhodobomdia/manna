@@ -513,6 +513,41 @@ body.in-lesson #toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); 
 .rq b { font-size: 17px; line-height: 1.4; }
 .rq textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); font: 400 16px/1.5 var(--f-body); resize: vertical; }
 .pad-y { padding-block: 40px 20px; }
+.pad-li { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; }
+.passos-hoje { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.passos-hoje li { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); font-weight: 700; }
+.passos-hoje li.on { background: var(--noite); color: var(--pergaminho); }
+.passos-hoje span { width: 22px; text-align: center; }
+body.tela-noite { background: var(--noite); }
+.abertura, .login { margin-inline: calc(-1 * var(--gut)) calc(-1 * var(--gutr)); min-height: 100vh; min-height: 100dvh; padding: calc(16px + env(safe-area-inset-top, 0px)) var(--gutr) calc(28px + env(safe-area-inset-bottom, 0px)) var(--gut); background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; }
+.abertura .abertura-pular { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: var(--gutr); width: auto; min-height: 44px; color: var(--pergaminho); }
+.abertura-t { font: 800 28px/1.2 var(--f-body); max-width: 16ch; }
+.livro { width: 150px; height: 110px; position: relative; perspective: 700px; }
+.livro::before { content: ''; position: absolute; z-index: 3; left: 50%; top: 8px; bottom: 8px; width: 10px; margin-left: -5px; background: #4A2818; }
+.capa-livro, .miolo { position: absolute; inset: 8px 40px; border-radius: 4px 10px 10px 4px; }
+.capa-livro { background: #6B3A22; transform-origin: left center; }
+.capa-livro.dir { background: #8A4B2A; }
+.miolo { background: var(--pergaminho); overflow: hidden; }
+.miolo i { position: absolute; inset: 0; background: var(--pergaminho); border-left: 8px solid #E7D7B8; }
+@media (prefers-reduced-motion: no-preference) {
+  .capa-livro.esq { animation: abre 1.6s ease forwards; }
+  .miolo i:nth-child(1) { animation: folha 1.8s ease .3s forwards; }
+  .miolo i:nth-child(2) { animation: folha 1.8s ease .5s forwards; }
+  .miolo i:nth-child(3) { animation: folha 1.8s ease .7s forwards; }
+}
+@keyframes abre { to { transform: rotateY(-150deg); } }
+@keyframes folha { to { transform: rotateY(-155deg); } }
+.heb { font: 400 28px/1.45 var(--f-book); min-height: 2.8em; }
+.trad { font: 400 18px/1.5 var(--f-book); color: var(--ceu); }
+.foco { min-height: 100vh; min-height: 100dvh; background: var(--noite); color: var(--pergaminho); display: flex; flex-direction: column; padding: calc(12px + env(safe-area-inset-top, 0px)) 0 calc(16px + env(safe-area-inset-bottom, 0px)); }
+.foco-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.foco-h .iconbtn { color: var(--pergaminho); }
+.foco-v { flex: 1; display: flex; align-items: center; }
+.verso-grande { font: 400 28px/1.45 var(--f-book); }
+.foco-nota { color: rgba(245,241,230,.72); }
+.arvore, .arvore ul { list-style: none; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
+.arvore { padding-left: 0; }
+body.in-lesson .tabs { display: none; }
 </style>
 <div id="app"></div>
 <script>

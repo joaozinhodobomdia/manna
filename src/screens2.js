@@ -13,7 +13,7 @@ function sugestoes() {
   return ui.sug;
 }
 async function sugerirIA() {
-  if (!SAMPLE) return;
+  if (!prepararIa('As sugestões prontas continuam aqui.')) return;
   const cat = catalogo().map(t => t.id + ' = ' + t.nome + ' (' + tipoDe(t) + ')').join('\n');
   ui.sugBusy = true; keep();
   try {
@@ -26,7 +26,8 @@ async function sugerirIA() {
 }
 function trailCard(t, opts) {
   const no = S.quiz.trilhas.includes(t.id), n = t.licoes.length;
-  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><b>' + esc(t.nome) + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + tipoDe(t) + ' · ' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
+  const cadeado = eRecursoPlus(t.id) && !plusAtivo() ? ' ' + icon('cadeado', 'ic xs') : '';
+  return '<button class="tcard' + (no ? ' on' : '') + '" data-a="' + (opts && opts.onb ? 'pickTrail' : 'toggleMeta') + '" data-id="' + t.id + '" aria-pressed="' + no + '"><b>' + esc(t.nome) + cadeado + '</b><small>' + esc(t.desc || '') + '</small><span class="tc-f"><span class="muted tnum">' + tipoDe(t) + ' · ' + plural(n, t.tipo === 'Plano' ? 'leitura' : 'lição', t.tipo === 'Plano' ? 'leituras' : 'lições') + '</span><span class="tc-add">' + (no ? icon('check', 'ic sm') + ' No plano' : '+ Adicionar') + '</span></span></button>';
 }
 function vSugestoes(onb) {
   const sg = sugestoes();
@@ -55,7 +56,11 @@ function vObjetivo(s) {
 }
 function vQuizSug(s) {
   const sg = sugestoes();
-  if (!S.quiz.trilhas.length && !ui.sugInit) { S.quiz.trilhas = sg.ids.slice(0, 2); ui.sugInit = true; save(); }
+  if (!S.quiz.trilhas.length && !ui.sugInit) {
+    S.quiz.trilhas = sg.ids.filter(id => !eRecursoPlus(id) || plusAtivo()).slice(0, 2);
+    if (!S.quiz.trilhas.length) S.quiz.trilhas = ['joao'];
+    ui.sugInit = true; save();
+  }
   let h = '<main class="screen">' + quizHead(s) + '<h1 class="qt">Trilhas para o seu objetivo</h1><p class="lede">Escolha quantas quiser. Dá para mudar quando precisar.</p>';
   h += vSugestoes(true);
   return h + '<div class="sticky-cta"><button class="btn" data-a="next"' + (S.quiz.trilhas.length ? '' : ' disabled') + '>Continuar com ' + plural(S.quiz.trilhas.length, 'meta', 'metas') + '</button></div></main>';
@@ -79,7 +84,8 @@ function vPlano() {
 /* ---------- Explorar catálogo ---------- */
 function vExplorar(tab) {
   const aba = ui.expl = tab && ['Sugestões', 'Criar', ...TIPOS].includes(tab) ? (ui.ov.id = tab) : ui.expl;
-  let h = ovHead('Explorar') + '<main class="screen"><h1 class="h1">Monte o seu ano</h1><div class="tabs-h" role="tablist">' + ['Sugestões', ...TIPOS, 'Criar'].map(x => '<button role="tab" aria-selected="' + (aba === x ? 'true' : 'false') + '" data-a="expl" data-t="' + x + '">' + ({ Plano: 'Planos', Livro: 'Livros', Personagem: 'Personagens', Época: 'Épocas', Tema: 'Temas' }[x] || x) + '</button>').join('') + '</div>';
+  const comoAba = ui.tab === 'explorar' && !ui.ov;
+  let h = (comoAba ? '<main class="screen sheet-top">' + pageHead('Explorar', 'Planos e trilhas. A porção de hoje fica na aba Hoje.') + '<button class="row-link" data-a="tab" data-tab="duvidas"><span><b>Dúvidas da fé</b><small>Continua grátis</small></span>' + icon('voltar', 'ic flip') + '</button>' : ovHead('Explorar') + '<main class="screen">') + '<h1 class="h1">Monte o seu ano</h1><div class="tabs-h" role="tablist">' + ['Sugestões', ...TIPOS, 'Criar'].map(x => '<button role="tab" aria-selected="' + (aba === x ? 'true' : 'false') + '" data-a="expl" data-t="' + x + '">' + ({ Plano: 'Planos', Livro: 'Livros', Personagem: 'Personagens', Época: 'Épocas', Tema: 'Temas' }[x] || x) + '</button>').join('') + '</div>';
   if (aba === 'Sugestões') {
     h += vFaixas() + '<form class="form" data-f="objetivo"><label class="field">Com suas palavras<textarea id="obj" rows="2" maxlength="400" placeholder="Ex.: Quero entender os profetas e orar melhor">' + esc(S.objetivo) + '</textarea></label><button class="btn sec" type="submit">Atualizar sugestões</button></form><h2 class="h2">Sugestões para você</h2>' + vSugestoes(false);
   } else if (aba === 'Criar') {
@@ -155,15 +161,30 @@ function vBiblia() {
   }
   const [n, k] = LIVROS[B.b], key = B.b + ':' + B.c, vs = versesOf(n + ' ' + B.c), sel = ui.sel || [];
   h += '<div class="reader-h"><button class="iconbtn" data-a="bibChap" data-d="-1" aria-label="Capítulo anterior"' + (B.c > 1 ? '' : ' disabled') + '>' + icon('voltar') + '</button><button class="link" data-a="bibBook" data-b="' + B.b + '"><b>' + n + ' ' + B.c + '</b></button><button class="iconbtn flip" data-a="bibChap" data-d="1" aria-label="Próximo capítulo"' + (B.c < k ? '' : ' disabled') + '>' + icon('voltar') + '</button></div>' +
-    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><span class="muted hint">Toque nos versículos para selecionar</span></div>';
+    '<div class="row fsz"><button class="pill" data-a="fonte" data-d="-1" aria-label="Diminuir letra">A−</button><button class="pill" data-a="fonte" data-d="1" aria-label="Aumentar letra">A+</button><button class="pill" data-a="foco">Leitura focada</button><button class="pill" data-a="ouvirCap">Ouvir</button></div>' +
+    '<p class="fine">' + esc(SAFARI_VOZ) + '</p>';
   h += '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(vs, { tap: true, sel }) + '</article>';
   if (sel.length) {
     const txt = selText();
-    h += '<div class="selbar"><span class="tnum">' + plural(sel.length, 'versículo', 'versículos') + '</span><button class="btn mini" data-a="copy" data-t="' + esc(txt) + '">Copiar</button>' + (S.group ? '<button class="btn mini sec" data-a="shareVerses">Postar no grupo</button>' : '') + '<button class="link" data-a="clearSel">Limpar</button></div>';
+    h += '<div class="selbar"><span class="tnum">' + plural(sel.length, 'versículo', 'versículos') + '</span><button class="btn mini" data-a="copy" data-t="' + esc(txt) + '">Copiar</button><button class="btn mini sec" data-a="marcar">Marcar</button><button class="btn mini sec" data-a="explicar">Explicar</button><button class="btn mini sec" data-a="anotar">Anotar ' + (plusAtivo() ? '' : icon('cadeado', 'ic xs')) + '</button><button class="btn mini sec" data-a="exportar">Exportar ' + (plusAtivo() ? '' : icon('cadeado', 'ic xs')) + '</button><button class="btn mini sec" data-a="comparar">Versões ' + (plusAtivo() ? '' : icon('cadeado', 'ic xs')) + '</button>' + (S.group ? '<button class="btn mini sec" data-a="shareVerses">Postar no grupo</button>' : '') + '<button class="link" data-a="clearSel">Limpar</button></div>';
   }
   h += S.lidos[key] ? '<p class="lido-ok">' + icon('check', 'ic sm') + ' Você leu este capítulo em ' + fmt(S.lidos[key], { day: 'numeric', month: 'short' }) + '.</p>' + (B.c < k ? '<button class="btn sec" data-a="bibChap" data-d="1">Próximo: ' + n + ' ' + (B.c + 1) + '</button>' : '')
     : '<button class="btn" data-a="bibRead">Marcar como lido · +5 XP</button>';
   return h + '</main>';
+}
+const SAFARI_VOZ = 'No iPhone, o Safari só lê em voz alta com a tela ligada e esta aba aberta. Se não sair som, baixe a voz em português em Ajustes, Acessibilidade, Conteúdo falado.';
+function vLeituraFocada(v) {
+  const i = v.i || 0, n = v.n || 1;
+  return '<div class="foco"><header class="foco-h"><button class="iconbtn" data-a="focoSair" aria-label="Sair da leitura focada">' + icon('fechar') + '</button><span>' + esc(v.ref || '') + '</span><span class="tnum">' + (i + 1) + ' de ' + n + '</span></header><main class="foco-v"><p class="verso-grande">' + esc(v.t || '') + '</p></main><footer class="lfoot"><button class="btn sec" data-a="ouvirCap">Ouvir</button><button class="btn" data-a="focoProx"' + (i + 1 >= n ? ' disabled' : '') + '>Próximo versículo</button></footer><p class="fine foco-nota">' + SAFARI_VOZ + '</p></div>';
+}
+function vFocoTela() {
+  const B = ui.bib;
+  if (!B || !B.c || !LIVROS[B.b]) return vLeituraFocada({ ref: 'Bíblia', t: 'Escolha um capítulo para ler um versículo por vez.', i: 0, n: 1 });
+  const vs = versesOf(LIVROS[B.b][0] + ' ' + B.c);
+  const i = Math.max(0, Math.min(ui.foco.i || 0, Math.max(0, vs.length - 1)));
+  const x = vs[i];
+  if (!x) return vLeituraFocada({ ref: LIVROS[B.b][0] + ' ' + B.c, t: 'Abra a Bíblia neste capítulo.', i: 0, n: 1 });
+  return vLeituraFocada({ ref: LIVROS[x.b][0] + ' ' + x.c + ':' + x.v, t: x.t, i, n: vs.length });
 }
 function selText() {
   const sel = (ui.sel || []).map(k => k.split(':').map(Number)).sort((a, b) => a[2] - b[2]);
