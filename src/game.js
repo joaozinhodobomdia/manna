@@ -54,13 +54,19 @@ function vJornada() {
   h += '<main class="screen jornada">';
   if (ui.notice) h += '<div class="note" role="status"><p>' + esc(ui.notice) + '</p><button class="link" data-a="dismiss">Ok</button></div>';
   if (!studiedToday() && S.streak.count > 0 && now().getHours() >= 19 && !(S.lost && S.lost.d && diff(S.lost.d, todayK()) <= 1)) h += '<div class="note warn" role="status"><p>Sua ofensiva acaba à meia-noite.</p></div>';
-  h += vMapa(t, id, d);
+  h += passosHoje();
+  h += '<div class="row"><button class="btn sec" data-a="toggleMapa">' + (ui.mapa ? 'Esconder caminhada' : 'Ver caminhada') + '</button><button class="btn sec" data-a="open" data-ov="diario">Diário</button></div>';
+  if (ui.mapa) h += vMapa(t, id, d);
   const c = S.cultos[0];
   if (c && diff(c.data, todayK()) < 7) {
     const nd = c.study.dias.findIndex((_, i) => !c.feitos.includes(i));
     h += '<button class="row-link" data-a="open" data-ov="culto" data-id="' + c.id + '"><span><b>' + esc(c.tema) + '</b><small>' + (nd === -1 ? 'Estudo da pregação concluído' : 'Estudo da pregação · dia ' + (nd + 1) + ' de 5') + '</small></span>' + icon('voltar', 'ic flip') + '</button>';
   }
   return h + vTarefas() + '</main>';
+}
+function passosHoje() {
+  const feito = studiedToday();
+  return '<ol class="passos-hoje" aria-label="Passos do devocional de hoje">' + DEV_STEPS.map((s, i) => '<li class="' + (feito ? 'on' : '') + '"><span>' + (feito ? icon('check', 'ic xs') : i + 1) + '</span>' + s.n + '</li>').join('') + '</ol>';
 }
 
 /* ---------- Mapa da caminhada ---------- */
@@ -240,7 +246,13 @@ function andarMani() {
   ui.andarFrame = requestAnimationFrame(frame);
 }
 
-/* ---------- Devocional da porção: ler, meditar, refletir, orar e levar para o dia ---------- */
+/* ---------- Devocional da porção: citação, passagem, devocional e oração ---------- */
+const DEV_STEPS = [
+  { k: 'cita', n: 'Citação' },
+  { k: 'leia', n: 'Passagem' },
+  { k: 'devo', n: 'Devocional' },
+  { k: 'ore', n: 'Oração' },
+];
 const words = s => s.replace(/[.,;:"()?!]/g, '').split(/\s+/).filter(Boolean);
 const vref = x => LIVROS[x.b][0] + ' ' + x.c + ':' + x.v;
 const PERGUNTAS_BASE = [
@@ -284,13 +296,13 @@ async function devIA(L) {
     const dev = { tema: String(r.tema || l.titulo), verso: vv.length ? { ref: vref(vv[0]), t: vv[0].t } : versoChave(L.vs), meditacao: med, perguntas: pq, oracao: String(r.oracao || ''), hoje: String(r.para_hoje || ''), ia: true };
     S.gen[key] = dev; save();
     /* Quem tocou em "Seguir sem esperar" já está lendo o texto local. Não troca no meio. */
-    if (ui.L === L && !L.dev) {
-      L.dev = dev; L.devCarregando = false;
+    if (ui.L === L && (L.pediuIa || !L.dev)) {
+      L.dev = dev; L.devCarregando = false; L.pediuIa = false;
       const k = L.steps[L.i] && L.steps[L.i].k;
       if (k && k !== 'leia') renderLesson();
     }
   } catch (e) {
-    if (ui.L === L && !L.dev) { L.dev = devLocal(t, L.idx, L.vs); L.devCarregando = false; renderLesson(); }
+    if (ui.L === L) { L.devCarregando = false; L.pediuIa = false; if (!L.dev) L.dev = devLocal(t, L.idx, L.vs); renderLesson(); }
   }
 }
 
@@ -301,9 +313,7 @@ async function startLesson(id, idx, review) {
   try { await loadBiblia(); } catch (e) { /* sem o texto, a lição usa a referência */ }
   if (!ui.L || ui.L.id !== id) return;
   const vs = versesOf(t.licoes[idx].ref), key = 'dev:' + t.licoes[idx].ref;
-  const steps = [{ k: 'leia', n: 'Leitura' }, { k: 'devo', n: 'Meditação' }, { k: 'reflita', n: 'Reflexão' }, { k: 'ore', n: 'Oração' }, { k: 'hoje', n: 'Para hoje' }];
-  const L = ui.L = { id, idx, review: !!review, steps, vs, i: 0, phase: 'steps', t0: Date.now(), lido: false, orou: false, dev: S.gen[key] || null };
-  if (!L.dev) { if (SAMPLE) { L.devCarregando = true; devIA(L); } else L.dev = devLocal(t, idx, vs); }
+  const L = ui.L = { id, idx, review: !!review, steps: DEV_STEPS, vs, i: 0, phase: 'steps', t0: Date.now(), lido: false, orou: false, checks: {}, dev: S.gen[key] || devLocal(t, idx, vs) };
   render();
 }
 const respostas = L => { S.reflex = S.reflex || {}; return (S.reflex[L.id + ':' + L.idx] = S.reflex[L.id + ':' + L.idx] || []); };
@@ -329,36 +339,34 @@ function vLessonScreen() {
   if (L.phase === 'ofensiva') return vOfensivaUp();
   if (L.phase === 'sair') return '<div class="lesson"><main class="lz center-col"><h2 class="qt">Sair da porção?</h2><p class="body-l">Suas reflexões ficam guardadas, mas a porção só conta quando você concluir.</p></main><footer class="lfoot col"><button class="btn" data-a="lessonStay">Continuar</button><button class="btn sec" data-a="lessonQuit">Sair</button></footer></div>';
   const s = L.steps[L.i], dev = L.dev;
+  if (!s) return '<div class="lesson"><main class="lz"><p class="body-l">Porção pronta para concluir.</p></main><footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
   let h = '<div class="lesson">' + lessonTop(L, t, l) + '<main class="lz">';
   const foot = (label, extra) => '</main><footer class="lfoot">' + (extra || '') + '<button class="btn" data-a="next">' + label + icon('voltar', 'ic flip') + '</button></footer></div>';
-  if (s.k === 'leia') {
-    const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
-    h += '<article class="intro"><h1 class="sc-t">' + esc(l.plano ? l.ref : l.titulo) + '</h1><p class="sc-ctx">Leia com calma, como quem senta à mesa com Deus.</p>' + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
-    h += L.vs.length ? '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>' : '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
-    return h + '</main><footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Ir para a meditação' + icon('voltar', 'ic flip') + '</button></footer></div>';
-  }
   if (!dev) {
     h += '<div class="center-col pad-y">' + ART.mani('mani m-lg', 'pensativo', 'Estou preparando a sua meditação.') + '<p class="muted">Leva alguns segundos.</p></div>';
     return h + '</main><footer class="lfoot"><button class="btn sec" data-a="semEsperar">Seguir sem esperar</button></footer></div>';
   }
+  const check = (k, label) => '<label class="check big"><input type="checkbox" data-passo="' + k + '"' + (L.checks && L.checks[k] ? ' checked' : '') + '> ' + label + '</label>';
+  if (s.k === 'cita') {
+    const v = dev.verso || (L.vs[0] ? { ref: vref(L.vs[0]), t: L.vs[0].t } : null);
+    h += '<article class="devo"><p class="muted">Citação do dia</p><h1 class="sc-t">' + esc(dev.tema) + '</h1>' +
+      (v ? '<blockquote class="vchave"><p>' + esc(v.t) + '</p><cite>' + esc(v.ref) + ' · Bíblia Livre</cite></blockquote>' : '<p class="note">Abra ' + esc(l.ref) + ' e leia o versículo que mais tocar você.</p>') + '</article>';
+    return h + '</main><footer class="lfoot">' + check('cita', 'Li esta citação') + '<button class="btn" data-a="next"' + (L.checks && L.checks.cita ? '' : ' disabled') + '>Ir para a passagem' + icon('voltar', 'ic flip') + '</button></footer></div>';
+  }
+  if (s.k === 'leia') {
+    const ver = S.quiz.versao && !/Outra|BLIVRE/.test(S.quiz.versao) ? S.quiz.versao : '';
+    h += '<article class="intro"><h1 class="sc-t">' + esc(l.plano ? l.ref : l.titulo) + '</h1><p class="sc-ctx">Leia com calma, como quem senta à mesa com Deus.</p>' + (t.nota ? '<p class="note">' + esc(t.nota) + '</p>' : '') + '</article>';
+    h += L.vs.length ? '<article class="bible" style="--fs:' + S.fonte + 'px">' + bibleText(L.vs) + '<p class="fine">Bíblia Livre.' + (ver ? ' Se preferir, acompanhe na ' + ver + '.' : '') + '</p></article>' : '<p class="note">Abra a sua Bíblia em ' + esc(l.ref) + ' e leia com calma.</p>';
+    return h + '</main><footer class="lfoot"><label class="check big" for="l-lido"><input type="checkbox" id="l-lido"' + (L.lido ? ' checked' : '') + '> Li ' + esc(l.ref) + '</label><button class="btn" data-a="next"' + (L.lido ? '' : ' disabled') + '>Ir para o devocional' + icon('voltar', 'ic flip') + '</button></footer></div>';
+  }
   if (s.k === 'devo') {
-    h += '<article class="devo"><h1 class="sc-t">' + esc(dev.tema) + '</h1>' + (dev.verso ? '<blockquote class="vchave"><p>' + esc(dev.verso.t) + '</p><cite>' + esc(dev.verso.ref) + '</cite></blockquote>' : '') +
-      dev.meditacao.map(p => '<p class="med">' + esc(p) + '</p>').join('') + '</article>';
-    return h + foot('Refletir');
+    h += '<article class="devo"><h1 class="sc-t">' + esc(dev.tema) + '</h1>' + dev.meditacao.map(p => '<p class="med">' + esc(p) + '</p>').join('') +
+      (dev.hoje ? '<div class="hoje-card"><p>' + esc(dev.hoje) + '</p></div>' : '') + '</article>';
+    const iaBtn = S.iaPermitida && !dev.ia ? '<button class="btn sec" data-a="aprofundar">' + (L.devCarregando ? 'Preparando…' : 'Aprofundar com a IA') + '</button>' : '';
+    return h + '</main><footer class="lfoot">' + iaBtn + check('devo', 'Li o devocional') + '<button class="btn" data-a="next"' + (L.checks && L.checks.devo ? '' : ' disabled') + '>Ir para a oração' + icon('voltar', 'ic flip') + '</button></footer></div>';
   }
-  if (s.k === 'reflita') {
-    const rs = respostas(L);
-    h += ART.mani('mani m-sm row', 'orando', 'Vamos guardar isso no coração.') + '<h1 class="sc-t">Para refletir</h1><p class="muted">Escreva o que vier ao coração. Suas respostas ficam só neste aparelho.</p><div class="reflex">' +
-      dev.perguntas.map((q, j) => '<label class="rq" for="rf-' + j + '"><b>' + esc(q) + '</b><textarea id="rf-' + j + '" rows="3" placeholder="Opcional">' + esc(rs[j] || '') + '</textarea></label>').join('') + '</div>';
-    return h + foot('Ir para a oração');
-  }
-  if (s.k === 'ore') {
-    h += '<article class="devo"><h1 class="sc-t">Vamos orar</h1><p class="muted">Leia devagar, ou use como ponto de partida para a sua própria oração.</p><blockquote class="oracao">' + esc(dev.oracao) + '</blockquote></article>';
-    return h + '</main><footer class="lfoot"><button class="btn" data-a="amem">Amém' + icon('voltar', 'ic flip') + '</button></footer></div>';
-  }
-  /* para hoje */
-  h += '<article class="devo"><h1 class="sc-t">Para levar hoje</h1><div class="hoje-card"><p>' + esc(dev.hoje) + '</p></div>' + (dev.verso ? '<p class="muted">Versículo do dia: <b>' + esc(dev.verso.ref) + '</b></p>' : '') + '</article>';
-  return h + '</main><footer class="lfoot"><button class="btn" data-a="finishLesson">Concluir a porção</button></footer></div>';
+  h += ART.mani('mani m-sm row', 'orando', 'Vamos orar com calma.') + '<article class="devo"><h1 class="sc-t">Vamos orar</h1><p class="muted">Leia devagar, ou use como ponto de partida para a sua própria oração.</p><blockquote class="oracao">' + esc(dev.oracao) + '</blockquote></article>';
+  return h + '</main><footer class="lfoot"><div class="row"><button class="btn sec" data-a="ouvir" data-t="oracao">Ouvir</button><button class="btn sec" data-a="audioPlus">Áudio caprichado ' + icon('cadeado', 'ic sm') + '</button></div><button class="btn" data-a="amem">Amém' + icon('voltar', 'ic flip') + '</button></footer></div>';
 }
 
 function vFim(L) {

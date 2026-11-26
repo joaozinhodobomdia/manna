@@ -92,8 +92,10 @@ function makeGroup(nome, des) {
   S.group = {
     nome, code: Math.random().toString(36).slice(2, 8).toUpperCase(), desafio: des, start: t, chapAtStart: S.chapters,
     feed: [
-      { id: uid(), who: 'Pr. Samuel', d: addDays(t, -1), text: 'Começamos o desafio. Leiam com calma e postem o que Deus falar com vocês.', ref: '', r: { amem: 4, gloria: 2, orando: 1 }, mine: {}, comments: [] },
-      { id: uid(), who: 'Débora', d: t, text: 'Li dois capítulos no ônibus hoje. Marcos 1 me lembrou que Jesus começou o ministério orando cedo.', ref: 'Marcos 1:35', caps: 2, r: { amem: 3, gloria: 1, orando: 0 }, mine: {}, comments: [{ who: 'Raquel', text: 'Que lindo! Amanhã leio no ônibus também.' }] },
+      { id: uid(), who: 'Pr. Samuel', sala: 'discussao', d: addDays(t, -1), text: 'Começamos o desafio. Leiam com calma e postem o que Deus falar com vocês.', ref: '', r: { amem: 4, gloria: 2, orando: 1 }, mine: {}, comments: [] },
+      { id: uid(), who: 'Débora', sala: 'discussao', d: t, text: 'Li dois capítulos no ônibus hoje. Marcos 1 me lembrou que Jesus começou o ministério orando cedo.', ref: 'Marcos 1:35', caps: 2, r: { amem: 3, gloria: 1, orando: 0 }, mine: {}, comments: [{ who: 'Raquel', text: 'Que lindo! Amanhã leio no ônibus também.' }] },
+      { id: uid(), who: 'Raquel', sala: 'oracao', d: t, text: 'Orem pela minha mãe. Ela está no hospital.', ref: '', r: { amem: 2, gloria: 0, orando: 5 }, mine: {}, comments: [] },
+      { id: uid(), who: 'Lucas', sala: 'gratidao', d: t, text: 'Grato pelo emprego novo. Deus sustentou a espera.', ref: '', r: { amem: 3, gloria: 2, orando: 0 }, mine: {}, comments: [] },
     ],
   };
 }
@@ -109,5 +111,73 @@ function postFeed(text, ref, extra) {
   S.group.feed.unshift(Object.assign({ id: uid(), who: S.nome || 'Você', me: true, d: todayK(), text, ref: ref || '', r: { amem: 0, gloria: 0, orando: 0 }, mine: {}, comments: [] }, extra || {}));
   /* guarda só as 10 fotos mais recentes, para não lotar o aparelho */
   let fotos = 0; S.group.feed.forEach(p => { if (p.foto && ++fotos > 10) delete p.foto; });
+}
+const PERGUNTAS_SALA = [
+  'O que Deus falou com você na leitura de hoje?',
+  'Por quem a sua casa precisa de oração?',
+  'Qual versículo você quer guardar esta semana?',
+  'Onde você viu o cuidado de Deus hoje?',
+];
+function perguntaDoDia() { return PERGUNTAS_SALA[hash(todayK()) % PERGUNTAS_SALA.length]; }
+
+/* Igrejas: a base real fica vazia. Nome e endereço de igreja de verdade não entram aqui.
+   Uma base futura pluga em BASE_IGREJAS. Os testes passam uma lista com exemplo: true. */
+const BASE_IGREJAS = [];
+function perfilIgreja() {
+  const q = S.quiz || {};
+  return {
+    denom: typeof q.denom === 'string' ? q.denom : '',
+    tradicao: typeof q.tradicao === 'string' ? q.tradicao : '',
+    momento: typeof q.convertido === 'string' ? q.convertido : '',
+    celula: typeof q.celula === 'string' ? q.celula : '',
+    objetivo: typeof objTexto === 'function' ? objTexto() : (S.objetivo || ''),
+    interesses: Array.isArray(S.objSel) ? S.objSel : [],
+  };
+}
+function termosBuscaIgreja(perfil) {
+  const p = perfil || {};
+  const txt = norm(p.objetivo || '');
+  const partes = [p.denom && p.denom !== 'Outra' ? 'igreja ' + p.denom : 'igreja evangélica'];
+  if (/jovem|juventude/.test(txt)) partes.push('culto jovem');
+  if (/familia|filho|crianca|infantil/.test(txt)) partes.push('ministério infantil');
+  if (p.celula === 'Célula' || p.celula === 'Os dois') partes.push('célula');
+  if (p.celula === 'EBD' || p.celula === 'Os dois' || (p.interesses || []).includes('escola')) partes.push('escola bíblica');
+  return partes.join(' ');
+}
+function porqueBusca(perfil) {
+  const p = perfil || {};
+  if (p.denom && p.denom !== 'Outra') return 'A busca usa a denominação que você já informou no cadastro, para achar um culto perto.';
+  if (p.celula === 'Célula' || p.celula === 'Os dois') return 'Você já disse que participa de célula, então a busca inclui esse termo.';
+  if (p.momento === 'Ainda estou conhecendo') return 'Você está conhecendo Jesus, então a busca fica em uma igreja evangélica perto de você.';
+  return 'A busca usa só o que o seu cadastro já tem, sem um questionário novo.';
+}
+function pontuarIgreja(ig, perfil) {
+  const p = perfil || {}, tags = ig.tags || [];
+  let pts = 0;
+  const razoes = [];
+  if (p.denom && (ig.denoms || []).indexOf(p.denom) !== -1) { pts += 5; razoes.push('É da denominação que você marcou no cadastro.'); }
+  if (p.tradicao && ig.tradicao === p.tradicao) { pts += 3; razoes.push('Segue a tradição da sua igreja.'); }
+  if ((p.celula === 'Célula' || p.celula === 'Os dois') && tags.indexOf('celula') !== -1) { pts += 2; razoes.push('Tem célula, como você já participa.'); }
+  if ((p.celula === 'EBD' || p.celula === 'Os dois') && tags.indexOf('ebd') !== -1) { pts += 2; razoes.push('Tem escola bíblica, como você pediu.'); }
+  if (p.momento === 'Ainda estou conhecendo' && tags.indexOf('acolhida') !== -1) { pts += 2; razoes.push('É um espaço de acolhida para quem está conhecendo Jesus.'); }
+  (p.interesses || []).forEach(id => { if (tags.indexOf(id) !== -1 && razoes.length < 3) { pts += 1; razoes.push('Combina com o que você quer viver na Bíblia.'); } });
+  return { pts, porque: razoes[0] || 'Entra na busca da sua região.' };
+}
+function igrejasCompativeis(perfil, base) {
+  return (base || []).filter(ig => ig && typeof ig.nome === 'string').map(ig => {
+    const r = pontuarIgreja(ig, perfil);
+    return { nome: ig.nome, exemplo: !!ig.exemplo, pts: r.pts, porque: r.porque };
+  }).filter(ig => ig.pts > 0).sort((a, b) => b.pts - a.pts || a.nome.localeCompare(b.nome, 'pt'));
+}
+function urlMapaIgreja(provedor, termos, lugar, geo) {
+  const limpo = s => String(s || '').replace(/[\u0000-\u001f<>"']/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 120);
+  let q = limpo(termos) || 'igreja evangélica';
+  const cidade = limpo(lugar);
+  if (cidade) q = (q + ' ' + cidade).trim();
+  else if (geo && Number.isFinite(Number(geo.lat)) && Number.isFinite(Number(geo.lng))) q = (q + ' perto de ' + Number(geo.lat).toFixed(3) + ',' + Number(geo.lng).toFixed(3)).trim();
+  else q = (q + ' perto de mim').trim();
+  q = q.slice(0, 180);
+  if (provedor === 'apple') return 'https://maps.apple.com/?q=' + encodeURIComponent(q);
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
 }
 

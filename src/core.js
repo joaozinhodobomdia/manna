@@ -2,11 +2,22 @@
 
 const KEY = 'manna.v1';
 const DAY = 86400000;
+/* O João troca preço e WhatsApp só aqui. Vazio ou "R$ --" significa que ainda não foi definido. */
+const MANNA = {
+  precos: { mensal: 'R$ --', anual: 'R$ --', familia: 'R$ --' },
+  trialDias: 7,
+  iaGratisPorDia: 3,
+  whatsapp: '',
+};
+const dataOk = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 
 function fresh() {
   return {
-    v: 2, onboarded: false, step: 0,
-    quiz: { trilhas: [] }, plano: null, trialStart: null, nome: '', cur: null,
+    v: 3, onboarded: false, step: 0,
+    quiz: { trilhas: [] }, plano: null, trialStart: null, plusAte: '', plusPlano: '', nome: '', cur: null,
+    conta: '', email: '', hora: '7h', aviso: '', widget: false,
+    iaPermitida: true, iaDia: { d: '', n: 0 },
+    diario: [], marcados: [], arvore: [],
     progress: {}, notes: {}, chests: {},
     streak: { count: 0, last: null, best: 0 }, protetores: 2, lost: null,
     days: [], xp: 0, xpLog: [], grains: 50, boostUntil: 0,
@@ -41,7 +52,7 @@ function load() {
     o.streak = Object.assign({ count: 0, last: null, best: 0 }, asObj(o.streak));
     o.league = Object.assign({ week: null, div: 0 }, asObj(o.league));
     o.league.div = num(o.league.div, 0, 0, 5);
-    const isDate = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
+    const isDate = dataOk;
     const fotoOk = v => typeof v === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v);
     ['days', 'xpLog', 'chapLog', 'cultos', 'ebds', 'duvidasLidas', 'perguntas', 'hinos', 'objSel'].forEach(k => { o[k] = asArr(o[k]); });
     ['progress', 'notes', 'chests', 'custom', 'lidos', 'ach', 'gen'].forEach(k => { o[k] = asObj(o[k]); });
@@ -78,6 +89,7 @@ function load() {
           if (!p.r || typeof p.r !== 'object' || Array.isArray(p.r)) p.r = {};
           if (!p.mine || typeof p.mine !== 'object' || Array.isArray(p.mine)) p.mine = {};
           if (!fotoOk(p.foto)) delete p.foto;
+          if (!['oracao', 'gratidao', 'discussao', 'pergunta'].includes(p.sala)) delete p.sala;
           if (typeof p.text !== 'string') p.text = '';
           if (typeof p.who !== 'string') p.who = '';
           if (!isDate(p.d)) p.d = g.start;
@@ -120,6 +132,31 @@ function load() {
     Object.keys(o.custom).forEach(k => { const t = o.custom[k]; if (!t || !Array.isArray(t.licoes)) delete o.custom[k]; });
     if (typeof o.lastRead !== 'string' || !/^\d{1,2}:\d{1,3}$/.test(o.lastRead)) o.lastRead = '';
     if (!o.v || o.v < 2) { o.v = 2; o.xp = o.xp || o.points || 0; }
+    o.v = 3;
+    o.iaPermitida = o.iaPermitida !== false;
+    o.iaDia = asObj(o.iaDia);
+    if (!isDate(o.iaDia.d)) o.iaDia = { d: '', n: 0 };
+    else o.iaDia.n = num(o.iaDia.n, 0, 0, 10000);
+    if (typeof o.conta !== 'string') o.conta = '';
+    if (typeof o.email !== 'string') o.email = '';
+    else o.email = o.email.slice(0, 80);
+    if (typeof o.hora !== 'string' || !o.hora) o.hora = '';
+    if (typeof o.aviso !== 'string') o.aviso = '';
+    o.widget = !!o.widget;
+    if (!isDate(o.plusAte)) o.plusAte = '';
+    if (!['mensal', 'anual', 'familia', ''].includes(o.plusPlano)) o.plusPlano = '';
+    o.diario = asArr(o.diario).filter(x => x && typeof x.texto === 'string').map(x => ({
+      d: isDate(x.d) ? x.d : '1970-01-01',
+      texto: String(x.texto).slice(0, 2000),
+      pergunta: typeof x.pergunta === 'string' ? x.pergunta.slice(0, 240) : '',
+    })).slice(0, 400);
+    o.marcados = asArr(o.marcados).filter(k => typeof k === 'string' && /^\d{1,2}:\d{1,3}:\d{1,3}$/.test(k)).slice(0, 800);
+    o.notas = asObj(o.notas);
+    Object.keys(o.notas).forEach(k => { if (typeof o.notas[k] !== 'string') delete o.notas[k]; else o.notas[k] = o.notas[k].slice(0, 500); });
+    o.arvore = asArr(o.arvore).filter(p => p && typeof p.nome === 'string' && p.nome.trim()).map(p => ({
+      nome: String(p.nome).slice(0, 40),
+      filhos: asArr(p.filhos).filter(f => f && typeof f.nome === 'string' && f.nome.trim()).map(f => ({ nome: String(f.nome).slice(0, 40) })).slice(0, 20),
+    })).slice(0, 40);
     return o;
   } catch (e) {}
   return fresh();
@@ -181,6 +218,40 @@ const curTrail = () => {
   if (!S.cur || !S.quiz.trilhas.includes(S.cur)) S.cur = S.quiz.trilhas.find(id => !isDone(id)) || S.quiz.trilhas[0];
   return S.cur;
 };
+
+/* Grátis e Manna Plus. O app nunca trava: o cadeado só abre quando a pessoa toca num recurso Plus. */
+function migrateConta() {
+  if (!S.hora) S.hora = (S.quiz && S.quiz.horario) || '7h';
+  if (!S.plusAte && dataOk(S.trialStart)) {
+    const fim = addDays(S.trialStart, MANNA.trialDias);
+    if (fim > todayK()) { S.plusAte = fim; S.plusPlano = S.plusPlano || S.plano || 'anual'; }
+  }
+}
+function plusAtivo() { return dataOk(S.plusAte) && todayK() < S.plusAte; }
+function iniciarTeste(plano) {
+  S.plusPlano = ['mensal', 'anual', 'familia'].includes(plano) ? plano : (S.plusPlano || 'anual');
+  S.plusAte = addDays(todayK(), MANNA.trialDias);
+  S.plano = S.plusPlano;
+  if (!dataOk(S.trialStart)) S.trialStart = todayK();
+  save();
+}
+function gastarIa() {
+  if (!S.iaPermitida) return false;
+  if (plusAtivo()) return true;
+  if (!S.iaDia || S.iaDia.d !== todayK()) S.iaDia = { d: todayK(), n: 0 };
+  if (S.iaDia.n >= MANNA.iaGratisPorDia) return false;
+  S.iaDia.n++;
+  save();
+  return true;
+}
+function eRecursoPlus(id) {
+  const t = trilha(id);
+  return !!(t && t.tipo === 'Plano');
+}
+function salaDe(p) {
+  return p && ['oracao', 'gratidao', 'discussao', 'pergunta'].includes(p.sala) ? p.sala : 'discussao';
+}
+migrateConta();
 
 /* UI (não salvo) */
 const ui = { tab: 'jornada', bib: null, bibMode: 'biblia', expl: 'Sugestões', sug: null, sugBusy: false, ov: null, L: null, pop: null, domMode: 'culto', ebdModo: 'aluno', ligaMode: 'liga', busy: false, aiText: '', aiErr: '', filtro: '', toast: '', notice: '', groupMode: null, confirmReset: false };
